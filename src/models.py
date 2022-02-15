@@ -9,13 +9,13 @@ db = SQLAlchemy()
 class User(db.Model):
     __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    userName = db.Column(db.String(10), nullable=False)
+    name = db.Column(db.String(10), nullable=False)
     phone = db.Column(db.String(11), unique=True)  # 手机号码,用作登录账号,用作主键
     password = db.Column(db.String(20), nullable=False)
     gender = db.Column(db.String(6), nullable=False)  # 性别:male/female
 
-    def __init__(self, userName, phone, password, gender):
-        self.userName = userName
+    def __init__(self, name, phone, password, gender):
+        self.name = name
         self.phone = phone
         self.password = password
         self.gender = gender

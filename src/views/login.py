@@ -4,10 +4,10 @@
 from src.models import User
 from flask import Blueprint, request
 
-api = Blueprint('login', __name__)
+login_page = Blueprint('login_page', __name__)
 
 
-@api.route('/login', methods=['POST'])
+@login_page.route('/login', methods=['POST'])
 def login():
     account = request.json['account']
     password = request.json['password']
@@ -18,7 +18,7 @@ def login():
                 "msg": '登录成功',
                 "info": {
                     "phone": user.phone,
-                    "nickName": user.nickName
+                    "userName": user.userName
                 }
             }
         else:

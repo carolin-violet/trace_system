@@ -15,8 +15,8 @@ def create_app():
     # 创建表
     db.create_all()
 
-    app.register_blueprint(login.api)
-    app.register_blueprint(userInfo.api)
+    app.register_blueprint(login.login_page)
+    app.register_blueprint(userInfo.user_page)
 
     return app
 

@@ -18,7 +18,7 @@ def login():
                 "msg": '登录成功',
                 "info": {
                     "phone": user.phone,
-                    "userName": user.userName
+                    "name": user.name
                 }
             }
         else:

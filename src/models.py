@@ -47,9 +47,9 @@ class Commodity(db.Model):
         return '<Commodity %r>' % self.name
 
 
-# 运输信息
-class Transport(db.Model):
-    __tablename__ = 'transport'
+# 物流信息
+class Logistics(db.Model):
+    __tablename__ = 'logistics'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     product_id = db.Column(db.String(255), nullable=False)  # 编号（ 物流：运单号  仓库：仓库编号）
     com = db.Column(db.String(50), nullable=False)  # 操作的公司名

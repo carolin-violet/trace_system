@@ -4,7 +4,7 @@
 
 from src.models import User
 from flask import Blueprint, request, jsonify
-from src.models import db
+from src.extension import db
 
 user_page = Blueprint('user_page', __name__)
 

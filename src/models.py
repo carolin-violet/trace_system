@@ -1,4 +1,6 @@
-from extension import db
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 
 '''数据库模型'''
 
@@ -83,6 +85,7 @@ class Detail(db.Model):
 
 # 区块链信息
 class Blockchain(db.Model):
+    __tablename__ = 'blockchain'
     id = db.Column(db.Integer, primary_key=True)
     index = db.Column(db.String(100), nullable=False)  # 索引
     commodity_id = db.Column(db.Integer, nullable=False)

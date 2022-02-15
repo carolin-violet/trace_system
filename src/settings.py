@@ -2,34 +2,29 @@
 配置文件
 """
 
-SQLALCHEMY_POOL_RECYCLE = 1
-SQLALCHEMY_POOL_SIZE = 10000
-SQLALCHEMY_TRACK_MODIFICATIONS = True
-DIALCT = "mysql"
-DRIVER = "pymysql"
-USERNAME = "root"
-PASSWORD = "zj20001125"
-HOST = "127.0.0.1"
-PORT = "3306"
-DATABASE = "trace_system"
-
-
 class Config(object):
-    DEBUG = False
-    TESTING = False
-
-    SQLALCHEMY_DATABASE_URI = "{}+{}://{}:{}@{}:{}/{}?charset=utf8".format(DIALCT, DRIVER, USERNAME, PASSWORD, HOST, PORT, DATABASE)
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-
-
-class ProductionConfig(Config):
-    # DATABASE_URI = 'mysql://user@localhost/foo'
-    pass
-
-
-class DevelopmentConfig(Config):
+    """项目的配置"""
     DEBUG = True
+    SECRET_KEY = 'J5RxXy9emBt78iIVP1beu4k4XbbgWxcZI+UrvD7afM9tXNPmnHw8xn4c5+qjnEB1'
+    # 为Mysql添加配置
+    SQLALCHEMY_DATABASE_URI = 'mysql://root:zj20001125@127.0.0.1:3306/trace_system'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    # 修改数据模型后自动执行，不需要commit()
+    SQLALCHEMY_COMMIT_ON_TEARDOWN = True
 
-
-class TestingConfig(Config):
-    TESTING = True
+    # # Redis的配置
+    # REDIS_HOST = '127.0.0.1'
+    # REIDS_PORT = 6379
+    #
+    # # Session保存配置
+    # SESSION_TYPE = 'redis'
+    # # 开启session签名
+    # SESSION_USE_SIGNER = True
+    # # 指定Session保存的redis
+    # SESSION_REDIS = StrictRedis(host=REDIS_HOST, port=REIDS_PORT)
+    # # 设置需要过期
+    # SESSION_PERMANENT = False
+    # # 设置过期时间
+    # PERMANENT_SESSION_LIFETIME = 86400 * 2
+    # # 设置日志等级
+    # LOG_LEVEL = logging.DEBUG

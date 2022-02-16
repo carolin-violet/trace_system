@@ -1,8 +1,12 @@
 from app_init import create_app
 from flask_cors import CORS
+from utils import table_init
 
-app = create_app()
+app, db = create_app()
 cors = CORS(app, resources={'/*': {'origins': '*'}})
+
+
+table_init.initialize(db)
 
 
 @app.route('/', methods=['GET'])

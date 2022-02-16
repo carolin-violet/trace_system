@@ -10,14 +10,11 @@ def create_app():
     db.app = app
     db.init_app(app)
 
-    # 创建表
-    db.create_all()
-
     app.register_blueprint(login.login_page)
     app.register_blueprint(user.user_page)
     app.register_blueprint(commodity.commodity_page)
     app.register_blueprint(logistics.logistics_page)
-    return app
+    return app, db
 
 
 

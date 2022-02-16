@@ -1,43 +1,65 @@
 """
 物流信息模块
 """
-from src.models import Logistics
-from flask import Blueprint
+from src.models import Logistics, db
+from flask import Blueprint, request, jsonify
+import time
 
 logistics_page = Blueprint('logistics_page', __name__)
 
 
-# 添加物流信息
+# 添加物流信息 (同一产品在不同状态时都统一添加物流，前端获取信息修改后一并发过来)
 @logistics_page.route('/logistics', methods=['POST'])
 def add_logistics():
-    pass
+    product_id = request.form['product_id']
+    status = request.form['status']
+    com = request.form['com']
+    ini = request.form['ini']
+    des = request.form['des']
+    cur = request.form['cur']
+    person = request.form['person']
+    tel = request.form['tel']
+    cur_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+
+    if Logistics.query.filter(Logistics.product_id == product_id).first():
+        return '物流已存在'
+    else:
+        logistics = Logistics(product_id, status, com, cur_time, ini, des, cur, person, tel)
+        db.session.add(logistics)
+        db.session.commit()
+        return '添加成功'
 
 
 # 删除物流信息
 @logistics_page.route('/logistics/<product_id>', methods=['DELETE'])
 def del_logistics(product_id):
-    pass
+    logistics = Logistics.query.filter(Logistics.product_id == product_id).first()
+    if logistics:
+        db.session.delete(logistics)
+        db.session.commit()
+        return '删除成功'
+    else:
+        return '物流不存在'
 
 
-# 查询物流信息
+# 查询指定产品的物流信息
 @logistics_page.route('/logistics/<product_id>', methods=['GET'])
 def query_logistics(product_id):
-    pass
-
-
-# 修改物流状态
-@logistics_page.route('/logistics/status/<product_id>', methods=['PATCH'])
-def modify_logistics_status(product_id):
-    pass
-
-
-# 修改物流当前所在地
-@logistics_page.route('/logistics/cur/<product_id>', methods=['PATCH'])
-def modify_logistics_cur(product_id):
-    pass
-
-
-# 修改物流操作信息(包含操作公司，操作时间，操作人，操作人联系方式)
-@logistics_page.route('/logistics/op/<product_id>', methods=['PATCH'])
-def modify_logistics_op(product_id):
-    pass
+    logistics_s = Logistics.query.filter(Logistics.product_id == product_id).all()
+    if logistics_s:
+        data = []
+        for logistics in logistics_s:
+            data.append({
+                'product_id': logistics.product_id,
+                'status': logistics.status,
+                'com': logistics.com,
+                'time': logistics.time,
+                'ini': logistics.ini,
+                'des': logistics.des,
+                'cur': logistics.cur,
+                'person': logistics.person,
+                'tel': logistics.tel,
+            })
+        return jsonify(data)
+    else:
+        return '物流不存在'

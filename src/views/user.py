@@ -5,6 +5,7 @@
 from src.models import User
 from flask import Blueprint, request, jsonify
 from src.models import db
+from uuid import uuid1
 
 user_page = Blueprint('user_page', __name__)
 
@@ -20,7 +21,8 @@ def add_user():
     if User.query.filter(User.phone == phone).first():
         return '用户已存在'
     else:
-        user = User(name, phone, password, gender)
+        user_id = str(uuid1()).replace('-', '')
+        user = User(user_id, name, phone, password, gender)
         db.session.add(user)
         db.session.commit()
         return '添加成功'
@@ -39,9 +41,9 @@ def del_user(phone):
 
 
 # 修改单个用户的密码
-@user_page.route('/users/password/<phone>', methods=['PATCH'])
-def update_user_password(phone):
-    user = User.query.filter(User.phone == phone).first()
+@user_page.route('/users/password/<user_id>', methods=['PATCH'])
+def update_user_password(user_id):
+    user = User.query.filter(User.user_id == user_id).first()
     if user:
         password = request.json['password']
         user.password = password
@@ -52,9 +54,9 @@ def update_user_password(phone):
 
 
 # 修改单个用户的手机号
-@user_page.route('/users/phone/<phone>', methods=['PATCH'])
-def update_user_phone(phone):
-    user = User.query.filter(User.phone == phone).first()
+@user_page.route('/users/phone/<user_id>', methods=['PATCH'])
+def update_user_phone(user_id):
+    user = User.query.filter(User.user_id == user_id).first()
     if user:
         phone = request.json['phone']
         user.phone = phone
@@ -71,7 +73,7 @@ def query_user():
     data = []
     for user in users:
         data.append({
-            'id': user.id,
+            'user_id': user.user_id,
             'name': user.name,
             'phone': user.phone,
             'password': user.password,
@@ -81,12 +83,12 @@ def query_user():
 
 
 # 查询单个用户
-@user_page.route('/users/<phone>', methods=['GET'])
-def all_users(phone):
-    user = User.query.filter(User.phone == phone).first()
+@user_page.route('/users/<user_id>', methods=['GET'])
+def all_users(user_id):
+    user = User.query.filter(User.user_id == user_id).first()
     if user:
         return jsonify({
-            'id': user.id,
+            'user_id': user.user_id,
             'name': user.name,
             'phone': user.phone,
             'password': user.password,

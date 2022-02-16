@@ -9,12 +9,14 @@ db = SQLAlchemy()
 class User(db.Model):
     __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.String(50), nullable=False)  # 用户id
     name = db.Column(db.String(10), nullable=False)
     phone = db.Column(db.String(11), unique=True)  # 手机号码,用作登录账号
     password = db.Column(db.String(20), nullable=False)
     gender = db.Column(db.String(6), nullable=False)  # 性别:male/female
 
-    def __init__(self, name, phone, password, gender):
+    def __init__(self, user_id, name, phone, password, gender):
+        self.user_id = user_id
         self.name = name
         self.phone = phone
         self.password = password
@@ -29,16 +31,20 @@ class Commodity(db.Model):
     __tablename__ = 'commodity'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(10), nullable=False)  # 商品名称
-    price = db.Column(db.Integer, nullable=False)  # 商品单价
-    weight = db.Column(db.String(10), nullable=True)  # 商品重量
+    price = db.Column(db.Float, nullable=False)  # 商品单价(元/斤)
+    weight = db.Column(db.Integer, nullable=True)  # 商品重量(斤)
+    total = db.Column(db.Float, nullable=True)  # 总价
     product_id = db.Column(db.String(255), nullable=False)  # 编号（ 物流：运单号  仓库：仓库编号）
+    user_id = db.Column(db.String(50), nullable=False)  # 厂家用户id
     block_info = db.Column(db.Text, default='')  # 二维码信息
 
-    def __init__(self, name, price, weight, product_id, block_info=''):
+    def __init__(self, name, price, weight, total, product_id, user_id, block_info=''):
         self.name = name
         self.price = price
         self.weight = weight
+        self.total = total
         self.product_id = product_id
+        self.user_id = user_id
         self.block_info = block_info
 
     def __repr__(self):
@@ -50,7 +56,7 @@ class Logistics(db.Model):
     __tablename__ = 'logistics'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     product_id = db.Column(db.String(255), nullable=False)  # 编号（ 物流：运单号  仓库：仓库编号）
-    status = db.Column(db.String(10), nullable=False)  # 商品状态
+    status = db.Column(db.String(10), nullable=False)  # 商品状态  (已发货, 运输中, 已到货, 已签收)
     com = db.Column(db.String(50), nullable=False)  # 操作的公司名
     time = db.Column(db.String(100), nullable=False)  # 操作时间，需要获取当前系统时间
     ini = db.Column(db.String(100), nullable=False)  # 初始地

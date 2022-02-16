@@ -55,16 +55,18 @@ class Logistics(db.Model):
     time = db.Column(db.String(100), nullable=False)  # 操作时间，需要获取当前系统时间
     ini = db.Column(db.String(100), nullable=False)  # 初始地
     des = db.Column(db.String(100), nullable=False)  # 目的地
+    cur = db.Column(db.String(100), nullable=False)  # 当前所在地
     person = db.Column(db.String(20), nullable=False)  # 操作人
     tel = db.Column(db.String(30), nullable=False)  # 操作人联系方式
 
-    def __init__(self, product_id, status, com, time, ini, des, person, tel):
+    def __init__(self, product_id, status, com, time, ini, des, cur, person, tel):
         self.product_id = product_id
         self.status = status
         self.com = com
         self.time = time
         self.ini = ini
         self.des = des
+        self.cur = cur
         self.person = person
         self.tel = tel
 

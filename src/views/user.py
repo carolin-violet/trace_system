@@ -38,21 +38,26 @@ def del_user(phone):
         return '用户不存在'
 
 
-# 修改单个用户的数据
-@user_page.route('/users/<phone>', methods=['PATCH'])
-def update_user(phone):
+# 修改单个用户的密码
+@user_page.route('/users/password/<phone>', methods=['PATCH'])
+def update_user_password(phone):
     user = User.query.filter(User.phone == phone).first()
     if user:
-        data = request.json
-        for key in data.keys():
-            if key == 'name':
-                user.name = data['name']
-            if key == 'phone':
-                user.phone = data['phone']
-            if key == 'password':
-                user.password = data['password']
-            if key == 'gender':
-                user.gender = data['gender']
+        password = request.json['password']
+        user.password = password
+        db.session.commit()
+        return '修改成功'
+    else:
+        return '用户不存在'
+
+
+# 修改单个用户的手机号
+@user_page.route('/users/phone/<phone>', methods=['PATCH'])
+def update_user_phone(phone):
+    user = User.query.filter(User.phone == phone).first()
+    if user:
+        phone = request.json['phone']
+        user.phone = phone
         db.session.commit()
         return '修改成功'
     else:

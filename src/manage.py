@@ -6,7 +6,7 @@ app, db = create_app()
 cors = CORS(app, resources={'/*': {'origins': '*'}})
 
 
-table_init.initialize(db)
+# table_init.initialize(db)
 
 
 @app.route('/', methods=['GET'])

@@ -31,15 +31,13 @@ class Commodity(db.Model):
     name = db.Column(db.String(10), nullable=False)  # 商品名称
     price = db.Column(db.Integer, nullable=False)  # 商品单价
     weight = db.Column(db.String(10), nullable=True)  # 商品重量
-    status = db.Column(db.String(10), nullable=False)  # 商品状态
     product_id = db.Column(db.String(255), nullable=False)  # 编号（ 物流：运单号  仓库：仓库编号）
     block_info = db.Column(db.Text, default='')  # 二维码信息
 
-    def __init__(self, name, price, weight, status, product_id, block_info=''):
+    def __init__(self, name, price, weight, product_id, block_info=''):
         self.name = name
         self.price = price
         self.weight = weight
-        self.status = status
         self.product_id = product_id
         self.block_info = block_info
 
@@ -52,6 +50,7 @@ class Logistics(db.Model):
     __tablename__ = 'logistics'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     product_id = db.Column(db.String(255), nullable=False)  # 编号（ 物流：运单号  仓库：仓库编号）
+    status = db.Column(db.String(10), nullable=False)  # 商品状态
     com = db.Column(db.String(50), nullable=False)  # 操作的公司名
     time = db.Column(db.String(100), nullable=False)  # 操作时间，需要获取当前系统时间
     ini = db.Column(db.String(100), nullable=False)  # 初始地
@@ -59,8 +58,9 @@ class Logistics(db.Model):
     person = db.Column(db.String(20), nullable=False)  # 操作人
     tel = db.Column(db.String(30), nullable=False)  # 操作人联系方式
 
-    def __init__(self, product_id, com, time, ini, des, person, tel):
+    def __init__(self, product_id, status, com, time, ini, des, person, tel):
         self.product_id = product_id
+        self.status = status
         self.com = com
         self.time = time
         self.ini = ini

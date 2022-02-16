@@ -32,7 +32,7 @@ class Commodity(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(10), nullable=False)  # 商品名称
     price = db.Column(db.Float, nullable=False)  # 商品单价(元/斤)
-    weight = db.Column(db.Integer, nullable=True)  # 商品重量(斤)
+    weight = db.Column(db.Float, nullable=True)  # 商品重量(斤)
     total = db.Column(db.Float, nullable=True)  # 总价
     product_id = db.Column(db.String(255), nullable=False)  # 编号（ 物流：运单号  仓库：仓库编号）
     user_id = db.Column(db.String(50), nullable=False)  # 厂家用户id
@@ -63,7 +63,7 @@ class Logistics(db.Model):
     des = db.Column(db.String(100), nullable=False)  # 目的地
     cur = db.Column(db.String(100), nullable=False)  # 当前所在地
     person = db.Column(db.String(20), nullable=False)  # 操作人
-    tel = db.Column(db.String(30), nullable=False)  # 操作人联系方式
+    tel = db.Column(db.String(11), nullable=False)  # 操作人联系方式
 
     def __init__(self, product_id, status, com, time, ini, des, cur, person, tel):
         self.product_id = product_id

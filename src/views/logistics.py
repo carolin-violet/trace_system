@@ -31,9 +31,9 @@ def add_logistics():
 
 
 # 删除物流信息
-@logistics_page.route('/logistics/<product_id>', methods=['DELETE'])
-def del_logistics(product_id):
-    logistics = Logistics.query.filter(Logistics.product_id == product_id).first()
+@logistics_page.route('/logistics/<id>', methods=['DELETE'])
+def del_logistics(id):
+    logistics = Logistics.query.filter(Logistics.id == id).first()
     if logistics:
         db.session.delete(logistics)
         db.session.commit()
@@ -50,6 +50,7 @@ def query_logistics(product_id):
         data = []
         for logistics in logistics_s:
             data.append({
+                "id": logistics.id,
                 'product_id': logistics.product_id,
                 'status': logistics.status,
                 'com': logistics.com,

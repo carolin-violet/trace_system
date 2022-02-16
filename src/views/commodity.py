@@ -14,8 +14,8 @@ def add_commodity():
 
 
 # 删除商品信息
-@commodity_page.route('/commodity', methods=['DELETE'])
-def del_commodity():
+@commodity_page.route('/commodity/<product_id>', methods=['DELETE'])
+def del_commodity(product_id):
     pass
 
 
@@ -32,6 +32,6 @@ def get_commodity(product_id):
 
 
 # 修改商品信息
-@commodity_page.route('/commodity', methods=['PATCH'])
-def modify_commodity():
+@commodity_page.route('/commodity/<product_id>', methods=['PATCH'])
+def modify_commodity(product_id):
     pass

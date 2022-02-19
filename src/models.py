@@ -94,16 +94,17 @@ class Detail(db.Model):
 # 区块链信息
 class Blockchain(db.Model):
     __tablename__ = 'blockchain'
-    id = db.Column(db.Integer, primary_key=True)
-    index = db.Column(db.String(100), nullable=False)  # 索引
-    commodity_id = db.Column(db.Integer, nullable=False)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    index = db.Column(db.Integer, nullable=False)  # 区块编号
+    commodity_id = db.Column(db.Integer, nullable=False)  # 产品id，同时也作为区块链编号
     commodity_name = db.Column(db.String(100), nullable=False)
     data = db.Column(db.Text, nullable=True)
     pre_hash = db.Column(db.String(255), nullable=True)
     cur_hash = db.Column(db.String(255), nullable=True)
     nonce = db.Column(db.String(255), nullable=True)  # 随机数
 
-    def __init__(self, index, commodity_id, commodity_name, data, prehash, curhash, nonce):
+    def __init__(self, chain_index, index, commodity_id, commodity_name, data, prehash, curhash, nonce):
+        self.chain_index = chain_index
         self.index = index
         self.commodity_id = commodity_id
         self.commodity_name = commodity_name

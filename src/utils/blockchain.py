@@ -46,7 +46,7 @@ class Chain:
         index = self.last_block.index + 1
         pre_hash = self.last_block.cur_hash
         data = self.new_logistics(product_id, status, com, time, ini, dec, cur, person, tel)
-        nonce = self.proof_of_work()
+        nonce = self.proof_of_work(self.last_block.nonce)
         cur_hash = self.hash(index, self.commodity_id, data, pre_hash, nonce, time_stamp)
         block = Blockchain(index, self.commodity_id, data, pre_hash, cur_hash, nonce, time_stamp)
         db.session.add(block)

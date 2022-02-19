@@ -1,7 +1,8 @@
 """
 物流信息模块
 """
-from src.models import Logistics, db
+from src.models import Logistics, Blockchain, db
+from src.utils import blockchain
 from flask import Blueprint, request, jsonify
 import time
 
@@ -24,6 +25,10 @@ def add_logistics():
     if Logistics.query.filter(Logistics.product_id == product_id).first():
         return '物流已存在'
     else:
+        block = blockchain.Chain(product_id)
+        blocks = Blockchain.query.filter(Blockchain.commodity_id == product_id).all()
+        if not blocks:
+            block.create_genesis_block(db)
         logistics = Logistics(product_id, status, com, cur_time, ini, des, cur, person, tel)
         db.session.add(logistics)
         db.session.commit()

@@ -28,8 +28,11 @@ class Chain:
         block_string = json.dumps(data, sort_keys=True)
         return sha256(block_string.encode()).hexdigest()
 
-    def proof_of_work(self):
-        pass
+    def proof_of_work(self, pre_nonce):
+        cur_nonce = 0
+        while not sha256(str(pre_nonce)+str(cur_nonce)).hexdigest().startswith('0'):
+            cur_nonce += 1
+        return cur_nonce
 
     @staticmethod
     def new_logistics(product_id, status, com, time, ini, dec, cur, person, tel):
@@ -38,11 +41,11 @@ class Chain:
             + '\n当前所在地:' + cur + '\n操作人:' + person + '\n联系方式:' + tel + '\n'
         return data
 
-    def add_block(self, db):
+    def add_block(self, db, product_id, status, com, time, ini, dec, cur, person, tel):
         time_stamp = '{0:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
         index = self.last_block.index + 1
         pre_hash = self.last_block.cur_hash
-        data = self.new_logistics
+        data = self.new_logistics(product_id, status, com, time, ini, dec, cur, person, tel)
         nonce = self.proof_of_work()
         cur_hash = self.hash(index, self.commodity_id, data, pre_hash, nonce, time_stamp)
         block = Blockchain(index, self.commodity_id, data, pre_hash, cur_hash, nonce, time_stamp)

@@ -102,8 +102,9 @@ class Blockchain(db.Model):
     pre_hash = db.Column(db.String(255), nullable=True)
     cur_hash = db.Column(db.String(255), nullable=True)
     nonce = db.Column(db.String(255), nullable=True)  # 随机数
+    timestamp = db.Column(db.String(100), nullable=True)  # 时间戳
 
-    def __init__(self, chain_index, index, commodity_id, commodity_name, data, prehash, curhash, nonce):
+    def __init__(self, chain_index, index, commodity_id, commodity_name, data, prehash, curhash, nonce, timestamp):
         self.chain_index = chain_index
         self.index = index
         self.commodity_id = commodity_id
@@ -112,3 +113,4 @@ class Blockchain(db.Model):
         self.prehash = prehash
         self.curhash = curhash
         self.nonce = nonce
+        self.timestamp = timestamp

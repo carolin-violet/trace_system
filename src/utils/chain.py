@@ -22,7 +22,8 @@ class Chain:
     '''
     求一个区块信息的哈希值
     '''
-    def hash(self, index, commodity_id, data, pre_hash, nonce, timestamp):
+    @staticmethod
+    def hash(index, commodity_id, data, pre_hash, nonce, timestamp):
         data = {
             "index": index,
             "commodity_id": commodity_id,
@@ -46,7 +47,8 @@ class Chain:
     '''
     验证nonce
     '''
-    def validate_proof(self, pre_nonce, cur_nonce):
+    @staticmethod
+    def validate_proof(pre_nonce, cur_nonce):
         return sha256(str(pre_nonce)+str(cur_nonce)).hexdigest().startswith('0')
 
     '''
@@ -76,8 +78,18 @@ class Chain:
     '''
     验证区块链有效性
     '''
-    def valid_chain(self):
-        pre_block = 
+    def validate_chain(self):
+        pre_block = self.blocks[0]
+        cur_index = 1
+
+        while cur_index < len(self.blocks):
+            # 验证哈希值是否正确
+            if pre_block['cur_hash'] != self.blocks[cur_index]['pre_hash']:
+                return False
+
+            pre_block = self.blocks[cur_index]
+            cur_index += 1
+        return True
 
     '''
     返回最后一个区块

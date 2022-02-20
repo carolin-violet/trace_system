@@ -96,8 +96,8 @@ class Logistics(db.Model):
 '''
 
 
-class Detail(db.Model):
-    __tablename__ = 'detail'
+class Monitor(db.Model):
+    __tablename__ = 'monitor'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     temp = db.Column(db.FLOAT, nullable=False)  # 温度
     hum = db.Column(db.FLOAT, nullable=False)  # 湿度

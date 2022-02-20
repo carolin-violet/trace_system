@@ -56,11 +56,19 @@ class Chain:
     将物流信息转换为字符串
     '''
     @staticmethod
-    def new_logistics(commodity_id, status, com, time, ini, dec, cur, person, tel):
-        data = '单号:' + commodity_id + '商品状态:' + status + '\n公司名称:' + com \
-            + '\n操作时间:' + time + '\n初始地:' + ini + '\n目的地:' + dec \
-            + '\n当前所在地:' + cur + '\n操作人:' + person + '\n联系方式:' + tel + '\n'
-        return data
+    def new_logistics(commodity_id, status, com, time, ini, des, cur, person, tel):
+        data = {
+            "commodity_id": commodity_id,
+            "status": status,
+            "com": com,
+            "time": time,
+            "ini": ini,
+            "des": des,
+            "cur": cur,
+            "person": person,
+            "tel": tel,
+        }
+        return json.dumps(data, sort_keys=True)
 
     '''
     增加新区块
@@ -79,13 +87,14 @@ class Chain:
     '''
     验证区块链有效性
     '''
+    @property
     def validate_chain(self):
         pre_block = self.blocks[0]
         cur_index = 1
 
         while cur_index < len(self.blocks):
             # 验证哈希值是否正确
-            if pre_block['cur_hash'] != self.blocks[cur_index]['pre_hash']:
+            if pre_block.cur_hash != self.blocks[cur_index].pre_hash:
                 return False
 
             pre_block = self.blocks[cur_index]

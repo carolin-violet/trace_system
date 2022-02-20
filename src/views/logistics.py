@@ -29,6 +29,7 @@ def add_logistics():
         blocks = Blockchain.query.filter(Blockchain.commodity_id == product_id).all()
         if not blocks:
             block.create_genesis_block(db)
+        block.add_block(db, product_id, status, com, cur_time, ini, des, cur, person, tel)  # 添加区块信息
         logistics = Logistics(product_id, status, com, cur_time, ini, des, cur, person, tel)
         db.session.add(logistics)
         db.session.commit()

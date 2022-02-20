@@ -16,7 +16,9 @@ chain_page = Blueprint('chain_page', __name__)
 
 @chain_page.route('/chains', methods=['GET'])
 def query_chains():
-    pass
+    chains = Blockchain.query.group_by(Blockchain.commodity_id).all()
+    print(chains)
+    return '1'
 
 
 '''

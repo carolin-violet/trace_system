@@ -10,7 +10,11 @@ from uuid import uuid1
 user_page = Blueprint('user_page', __name__)
 
 
-# 添加一个用户
+'''
+添加一个用户
+'''
+
+
 @user_page.route('/users', methods=['POST'])
 def add_user():
     name = request.form['name']
@@ -28,7 +32,11 @@ def add_user():
         return '添加成功'
 
 
-# 删除单个用户
+'''
+删除单个用户
+'''
+
+
 @user_page.route('/users/<phone>', methods=['DELETE'])
 def del_user(phone):
     user = User.query.filter(User.phone == phone).first()
@@ -40,7 +48,11 @@ def del_user(phone):
         return '用户不存在'
 
 
-# 修改单个用户的密码
+'''
+修改单个用户的密码
+'''
+
+
 @user_page.route('/users/password/<user_id>', methods=['PATCH'])
 def update_user_password(user_id):
     user = User.query.filter(User.user_id == user_id).first()
@@ -53,7 +65,11 @@ def update_user_password(user_id):
         return '用户不存在'
 
 
-# 修改单个用户的手机号
+'''
+修改单个用户的手机号
+'''
+
+
 @user_page.route('/users/phone/<user_id>', methods=['PATCH'])
 def update_user_phone(user_id):
     user = User.query.filter(User.user_id == user_id).first()
@@ -66,7 +82,11 @@ def update_user_phone(user_id):
         return '用户不存在'
 
 
-# 查询所有用户
+'''
+查询所有用户
+'''
+
+
 @user_page.route('/users', methods=['GET'])
 def query_user():
     users = User.query.all()
@@ -82,7 +102,11 @@ def query_user():
     return jsonify(data)
 
 
-# 查询单个用户
+'''
+查询单个用户
+'''
+
+
 @user_page.route('/users/<user_id>', methods=['GET'])
 def all_users(user_id):
     user = User.query.filter(User.user_id == user_id).first()

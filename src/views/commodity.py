@@ -8,7 +8,11 @@ from uuid import uuid1
 commodity_page = Blueprint('commodity_page', __name__)
 
 
-# 添加商品信息
+'''
+添加商品信息
+'''
+
+
 @commodity_page.route('/commodity', methods=['POST'])
 def add_commodity():
     name = request.form['name']
@@ -16,18 +20,22 @@ def add_commodity():
     weight = request.form['weight']
     total = request.form['total']
     user_id = request.form['user_id']
-    product_id = uuid1()
-    commodity = Commodity(name, price, weight, total, product_id, user_id)
+    commodity_id = uuid1()
+    commodity = Commodity(name, price, weight, total, commodity_id, user_id)
     db.session.add(commodity)
     db.session.commit()
 
     return '添加成功'
 
 
-# 删除商品信息
-@commodity_page.route('/commodity/<product_id>', methods=['DELETE'])
-def del_commodity(product_id):
-    commodity = Commodity.query.filter(Commodity.product_id == product_id).first()
+'''
+删除商品信息
+'''
+
+
+@commodity_page.route('/commodity/<commodity_id>', methods=['DELETE'])
+def del_commodity(commodity_id):
+    commodity = Commodity.query.filter(Commodity.commodity_id == commodity_id).first()
     if commodity:
         db.session.delete(commodity)
         db.session.commit()
@@ -36,14 +44,18 @@ def del_commodity(product_id):
         return '商品不存在'
 
 
-# 查询所有商品信息
+'''
+查询所有商品信息
+'''
+
+
 @commodity_page.route('/commodity', methods=['GET'])
 def query_commodity():
     commodities = Commodity.query.all()
     data = []
     for commodity in commodities:
         data.append({
-            'product_id': commodity.product_id,
+            'commodity_id': commodity.commodity_id,
             'user_id': commodity.user_id,
             'name': commodity.name,
             'price': commodity.price,
@@ -53,13 +65,17 @@ def query_commodity():
     return jsonify(data)
 
 
-# 查询指定id商品信息
-@commodity_page.route('/commodity/<product_id>', methods=['GET'])
-def get_commodity(product_id):
-    commodity = Commodity.query.filter(Commodity.product_id == product_id).first()
+'''
+查询指定id商品信息
+'''
+
+
+@commodity_page.route('/commodity/<commodity_id>', methods=['GET'])
+def get_commodity(commodity_id):
+    commodity = Commodity.query.filter(Commodity.commodity_id == commodity_id).first()
     if commodity:
         return jsonify({
-            'product_id': commodity.product_id,
+            'commodity_id': commodity.commodity_id,
             'user_id': commodity.user_id,
             'name': commodity.name,
             'price': commodity.price,
@@ -75,6 +91,6 @@ def get_commodity(product_id):
 '''
 
 
-@commodity_page.route('/commodity/img/<product_id>', methods=['GET'])
-def get_img(product_id):
+@commodity_page.route('/commodity/img/<commodity_id>', methods=['GET'])
+def get_img(commodity_id):
     pass

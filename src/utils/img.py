@@ -1,7 +1,7 @@
 import qrcode
 
 
-def make_qrcode(product_id, data):
+def make_qrcode(commodity_id, data, folder_path):
     qr = qrcode.QRCode(
         version=5,
         error_correction=qrcode.constants.ERROR_CORRECT_L,
@@ -13,9 +13,9 @@ def make_qrcode(product_id, data):
 
     qr.make(fit=True)
     img = qr.make_image()
-    file_path = '../../static/qr_codes/' + str(product_id) + ".png"
+    file_path = folder_path + str(commodity_id) + ".png"
     img.save(file_path)
 
 
 if __name__ == '__main__':
-    make_qrcode('123456', 'hello')
+    make_qrcode('../../static/qr_codes/', '123456', 'hello')

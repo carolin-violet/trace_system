@@ -1,11 +1,17 @@
+"""
+数据库模型
+"""
+
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-'''数据库模型'''
+
+'''
+用户基本信息表
+'''
 
 
-# 用户基本信息表
 class User(db.Model):
     __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -26,7 +32,11 @@ class User(db.Model):
         return '<User %r>' % self.userName
 
 
-# 商品信息表
+'''
+商品信息表
+'''
+
+
 class Commodity(db.Model):
     __tablename__ = 'commodity'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -34,16 +44,16 @@ class Commodity(db.Model):
     price = db.Column(db.Float, nullable=False)  # 商品单价(元/斤)
     weight = db.Column(db.Float, nullable=True)  # 商品重量(斤)
     total = db.Column(db.Float, nullable=True)  # 总价
-    product_id = db.Column(db.String(255), nullable=False)  # 编号（ 物流：运单号  仓库：仓库编号）
+    commodity_id = db.Column(db.String(255), nullable=False)  # 编号（ 物流：运单号  仓库：仓库编号）
     user_id = db.Column(db.String(50), nullable=False)  # 厂家用户id
     block_info = db.Column(db.Text, default='')  # 二维码信息
 
-    def __init__(self, name, price, weight, total, product_id, user_id, block_info=''):
+    def __init__(self, name, price, weight, total, commodity_id, user_id, block_info=''):
         self.name = name
         self.price = price
         self.weight = weight
         self.total = total
-        self.product_id = product_id
+        self.commodity_id = commodity_id
         self.user_id = user_id
         self.block_info = block_info
 
@@ -51,11 +61,15 @@ class Commodity(db.Model):
         return '<Commodity %r>' % self.name
 
 
-# 物流信息
+'''
+物流信息
+'''
+
+
 class Logistics(db.Model):
     __tablename__ = 'logistics'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    product_id = db.Column(db.String(255), nullable=False)  # 编号（ 物流：运单号  仓库：仓库编号）
+    commodity_id = db.Column(db.String(255), nullable=False)  # 编号（ 物流：运单号  仓库：仓库编号）
     status = db.Column(db.String(10), nullable=False)  # 商品状态  (已发货, 运输中, 已到货, 已签收)
     com = db.Column(db.String(50), nullable=False)  # 操作的公司名
     time = db.Column(db.String(100), nullable=False)  # 操作时间，需要获取当前系统时间
@@ -65,8 +79,8 @@ class Logistics(db.Model):
     person = db.Column(db.String(20), nullable=False)  # 操作人
     tel = db.Column(db.String(11), nullable=False)  # 操作人联系方式
 
-    def __init__(self, product_id, status, com, time, ini, des, cur, person, tel):
-        self.product_id = product_id
+    def __init__(self, commodity_id, status, com, time, ini, des, cur, person, tel):
+        self.commodity_id = commodity_id
         self.status = status
         self.com = com
         self.time = time
@@ -77,7 +91,11 @@ class Logistics(db.Model):
         self.tel = tel
 
 
-# 农产品温湿度信息 (时间充足再来完善)
+'''
+农产品温湿度信息 (时间充足再来完善)
+'''
+
+
 class Detail(db.Model):
     __tablename__ = 'detail'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -91,7 +109,11 @@ class Detail(db.Model):
         self.date = date
 
 
-# 区块链信息
+'''
+区块链信息
+'''
+
+
 class Blockchain(db.Model):
     __tablename__ = 'blockchain'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

@@ -47,6 +47,8 @@ def query_chain(commodity_id):
 '''
 验证一条区块链的合理性
 '''
+
+
 @chain_page.route('/chains/validate_proof/<commodity_id>', methods=['GET'])
 def validate_chain(commodity_id):
     pass

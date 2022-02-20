@@ -70,3 +70,11 @@ def get_commodity(product_id):
         return '商品不存在'
 
 
+'''
+获取二维码图片
+'''
+
+
+@commodity_page.route('/commodity/img/<product_id>', methods=['GET'])
+def get_img(product_id):
+    pass

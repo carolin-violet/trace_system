@@ -49,7 +49,8 @@ class Chain:
     '''
     @staticmethod
     def validate_proof(pre_nonce, cur_nonce):
-        return sha256(str(pre_nonce)+str(cur_nonce)).hexdigest().startswith('0')
+        data = str(pre_nonce)+str(cur_nonce)
+        return sha256(data.encode()).hexdigest().startswith('0')
 
     '''
     将物流信息转换为字符串

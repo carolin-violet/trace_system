@@ -1,7 +1,7 @@
 """
 区块链api模块
 """
-from src.models import Blockchain, db
+from src.models import Blockchain
 from src.utils import chain
 from flask import Blueprint, jsonify
 
@@ -44,6 +44,7 @@ def query_chain(commodity_id):
         })
     return jsonify(data)
 
+
 '''
 验证一条区块链的合理性
 '''
@@ -51,4 +52,9 @@ def query_chain(commodity_id):
 
 @chain_page.route('/chains/validate_proof/<commodity_id>', methods=['GET'])
 def validate_chain(commodity_id):
-    pass
+    verify_chain = chain.Chain(commodity_id)
+    is_correct = verify_chain.validate_chain()
+    if is_correct:
+        return 'true'  # 区块链正确
+    else:
+        return 'false'   # 区块链中有错

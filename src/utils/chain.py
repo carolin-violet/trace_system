@@ -39,9 +39,15 @@ class Chain:
     '''
     def proof_of_work(self, pre_nonce):
         cur_nonce = 0
-        while not sha256(str(pre_nonce)+str(cur_nonce)).hexdigest().startswith('0'):
+        while not self.validate_proof(pre_nonce, cur_nonce):
             cur_nonce += 1
         return cur_nonce
+
+    '''
+    验证nonce
+    '''
+    def validate_proof(self, pre_nonce, cur_nonce):
+        return sha256(str(pre_nonce)+str(cur_nonce)).hexdigest().startswith('0')
 
     '''
     将物流信息转换为字符串
@@ -68,10 +74,10 @@ class Chain:
         db.session.commit()
 
     '''
-    验证区块合理性，即比对前后区块的哈希值
+    验证区块链有效性
     '''
-    def validate_proof(self):
-        pass
+    def valid_chain(self):
+        pre_block = 
 
     '''
     返回最后一个区块

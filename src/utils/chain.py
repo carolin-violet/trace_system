@@ -99,7 +99,7 @@ class Chain:
     def last_block(self):
         if len(self.blocks) > 1:
             return self.blocks[-1]
-        else:
+        elif len(self.blocks) == 1:
             return self.blocks[0]
 
 

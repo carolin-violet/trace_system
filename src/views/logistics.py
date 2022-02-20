@@ -42,6 +42,8 @@ def add_logistics():
 
     if not blocks:
         block.create_genesis_block(db)
+        blocks = Blockchain.query.filter(Blockchain.commodity_id == commodity_id).all()
+        block = chain.Chain(commodity_id, blocks)
     block.add_block(db, commodity_id, status, com, cur_time, ini, des, cur, person, tel)
 
     '''

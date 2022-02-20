@@ -125,16 +125,14 @@ class Blockchain(db.Model):
     nonce = db.Column(db.String(255), nullable=True)  # 随机数
     timestamp = db.Column(db.String(100), nullable=True)  # 时间戳
 
-    def __init__(self, index, commodity_id, data, prehash, curhash, nonce, timestamp):
+    def __init__(self, index, commodity_id, data, pre_hash, cur_hash, nonce, timestamp):
         self.index = index
         self.commodity_id = commodity_id
         self.data = data
-        self.prehash = prehash
-        self.curhash = curhash
+        self.pre_hash = pre_hash
+        self.cur_hash = cur_hash
         self.nonce = nonce
         self.timestamp = timestamp
 
-    def __repr__(self):
-        return '<block: %r>' % self.index
 
 

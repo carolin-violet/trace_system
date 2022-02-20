@@ -27,45 +27,43 @@ def add_logistics():
     tel = request.form['tel']
     cur_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
-    if Logistics.query.filter(Logistics.commodity_id == commodity_id).first():
-        return '物流已存在'
-    else:
-        '''
-        添加物流
-        '''
-        logistics = Logistics(commodity_id, status, com, cur_time, ini, des, cur, person, tel)
-        db.session.add(logistics)
-        db.session.commit()
+    '''
+    添加物流
+    '''
+    logistics = Logistics(commodity_id, status, com, cur_time, ini, des, cur, person, tel)
+    db.session.add(logistics)
+    db.session.commit()
 
-        '''
-        添加区块
-        '''
-        block = chain.Chain(commodity_id)
-        blocks = Blockchain.query.filter(Blockchain.commodity_id == commodity_id).all()
-        if not blocks:
-            block.create_genesis_block(db)
-        block.add_block(db, commodity_id, status, com, cur_time, ini, des, cur, person, tel)
+    '''
+    添加区块
+    '''
+    blocks = Blockchain.query.filter(Blockchain.commodity_id == commodity_id).all()
+    block = chain.Chain(commodity_id, blocks)
 
-        '''
-        添加二维码信息
-        '''
-        data = {
-            "商品id": commodity_id,
-            "始发地": ini,
-            "目的地": des,
-            "运输信息": []
-        }
-        for item in blocks[1:-1]:
-            data['运输信息'].append({
-                "时间": item.time,
-                "状态": item.status,
-                "操作公司": item.com,
-                "当前所在地": item.cur,
-                "操作人": item.person,
-                "操作人电话": item.tel
-            })
-        img.make_qrcode('../../static/qr_codes/', commodity_id, json.dumps(data, sort_keys=True))
-        return '添加成功'
+    if not blocks:
+        block.create_genesis_block(db)
+    block.add_block(db, commodity_id, status, com, cur_time, ini, des, cur, person, tel)
+
+    '''
+    添加二维码信息
+    '''
+    data = {
+        "商品id": commodity_id,
+        "始发地": ini,
+        "目的地": des,
+        "运输信息": []
+    }
+    for item in blocks[1:-1]:
+        data['运输信息'].append({
+            "时间": item.time,
+            "状态": item.status,
+            "操作公司": item.com,
+            "当前所在地": item.cur,
+            "操作人": item.person,
+            "操作人电话": item.tel
+        })
+    img.make_qrcode('../../static/qr_codes/', commodity_id, json.dumps(data, sort_keys=True))
+    return '添加成功'
 
 
 '''

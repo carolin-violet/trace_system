@@ -5,17 +5,17 @@ from hashlib import sha256
 
 
 class Chain:
-    def __init__(self, commodity_id):
+    def __init__(self, commodity_id, blocks):
         self.commodity_id = commodity_id
-        self.blocks = Blockchain.query.filter(Blockchain.commodity_id == self.commodity_id).all()
+        self.blocks = blocks
 
     '''
     创建初始区块
     '''
     def create_genesis_block(self, db):
         time_stamp = '{0:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
-        cur_hash = self.hash(0, self.commodity_id, '', 1, 0, time_stamp)
-        genesis_block = Blockchain(0, self.commodity_id, '', 1, cur_hash, 0, time_stamp)
+        cur_hash = self.hash(0, self.commodity_id, 'genesis_block', 1, 0, time_stamp)
+        genesis_block = Blockchain(0, self.commodity_id, 'genesis_block', 1, cur_hash, 0, time_stamp)
         db.session.add(genesis_block)
         db.session.commit()
 
@@ -70,8 +70,8 @@ class Chain:
         pre_hash = self.last_block.cur_hash
         data = self.new_logistics(commodity_id, status, com, time, ini, dec, cur, person, tel)
         nonce = self.proof_of_work(self.last_block.nonce)
-        cur_hash = self.hash(index, self.commodity_id, data, pre_hash, nonce, time_stamp)
-        block = Blockchain(index, self.commodity_id, data, pre_hash, cur_hash, nonce, time_stamp)
+        cur_hash = self.hash(index, commodity_id, data, pre_hash, nonce, time_stamp)
+        block = Blockchain(index, commodity_id, data, pre_hash, cur_hash, nonce, time_stamp)
         db.session.add(block)
         db.session.commit()
 
@@ -96,7 +96,10 @@ class Chain:
     '''
     @property
     def last_block(self):
-        return self.blocks[-1]
+        if len(self.blocks) > 1:
+            return self.blocks[-1]
+        else:
+            return self.blocks[0]
 
 
 

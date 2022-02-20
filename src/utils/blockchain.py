@@ -9,6 +9,7 @@ class Chain:
         self.commodity_id = commodity_id
         self.blocks = Blockchain.query.filter(Blockchain.commodity_id == self.commodity_id).all()
 
+    '''创建初始区块'''
     def create_genesis_block(self, db):
         time_stamp = '{0:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
         cur_hash = self.hash(0, self.commodity_id, '', 1, 0, time_stamp)
@@ -16,6 +17,7 @@ class Chain:
         db.session.add(genesis_block)
         db.session.commit()
 
+    '''求一个区块信息的哈希值'''
     def hash(self, index, commodity_id, data, pre_hash, nonce, timestamp):
         data = {
             "index": index,
@@ -28,12 +30,14 @@ class Chain:
         block_string = json.dumps(data, sort_keys=True)
         return sha256(block_string.encode()).hexdigest()
 
+    '''工作量证明求解'''
     def proof_of_work(self, pre_nonce):
         cur_nonce = 0
         while not sha256(str(pre_nonce)+str(cur_nonce)).hexdigest().startswith('0'):
             cur_nonce += 1
         return cur_nonce
 
+    '''将物流信息转换为字符串'''
     @staticmethod
     def new_logistics(product_id, status, com, time, ini, dec, cur, person, tel):
         data = '单号:' + product_id + '商品状态:' + status + '\n公司名称:' + com \
@@ -41,6 +45,7 @@ class Chain:
             + '\n当前所在地:' + cur + '\n操作人:' + person + '\n联系方式:' + tel + '\n'
         return data
 
+    '''增加新区块'''
     def add_block(self, db, product_id, status, com, time, ini, dec, cur, person, tel):
         time_stamp = '{0:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
         index = self.last_block.index + 1
@@ -52,6 +57,11 @@ class Chain:
         db.session.add(block)
         db.session.commit()
 
+    '''验证区块合理性，即比对前后区块的哈希值'''
+    def valid_proof(self):
+        pass
+
+    '''返回最后一个区块'''
     @property
     def last_block(self):
         return self.blocks[-1]

@@ -58,7 +58,7 @@ class Chain:
         db.session.commit()
 
     '''验证区块合理性，即比对前后区块的哈希值'''
-    def valid_proof(self):
+    def validate_proof(self):
         pass
 
     '''返回最后一个区块'''

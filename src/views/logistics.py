@@ -47,13 +47,14 @@ def add_logistics():
     '''
     添加二维码信息
     '''
+    logistics_s = Logistics.query.filter(Logistics.commodity_id == commodity_id).all()
     data = {
         "商品id": commodity_id,
         "始发地": ini,
         "目的地": des,
         "运输信息": []
     }
-    for item in blocks[1:-1]:
+    for item in logistics_s:
         data['运输信息'].append({
             "时间": item.time,
             "状态": item.status,
@@ -62,7 +63,7 @@ def add_logistics():
             "操作人": item.person,
             "操作人电话": item.tel
         })
-    img.make_qrcode('../../static/qr_codes/', commodity_id, json.dumps(data, sort_keys=True))
+    img.make_qrcode(commodity_id, data)
     return '添加成功'
 
 

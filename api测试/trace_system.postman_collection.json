@@ -213,13 +213,13 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"key": "product_id",
-									"value": "3781e166-8f26-11ec-bfa3-1cbfc0eb0cdc",
+									"key": "commodity_id",
+									"value": "bbbf89b4-92ab-11ec-836d-1eb0cdc",
 									"type": "text"
 								},
 								{
 									"key": "status",
-									"value": "已发货",
+									"value": "已签收",
 									"type": "text"
 								},
 								{
@@ -239,7 +239,7 @@
 								},
 								{
 									"key": "cur",
-									"value": "1.1",
+									"value": "12312",
 									"type": "text"
 								},
 								{
@@ -294,7 +294,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:5000/logistics/3781e166-8f26-11ec-bfa3-1cbfc0eb0cdc",
+							"raw": "http://localhost:5000/logistics/bbb238f0-9245-11ec-a587-1cbfc0eb0cdc",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -302,7 +302,7 @@
 							"port": "5000",
 							"path": [
 								"logistics",
-								"3781e166-8f26-11ec-bfa3-1cbfc0eb0cdc"
+								"bbb238f0-9245-11ec-a587-1cbfc0eb0cdc"
 							]
 						}
 					},
@@ -368,7 +368,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:5000/commodity/9f4e3840-8f24-11ec-93a4-1cbfc0eb0cdc",
+							"raw": "http://localhost:5000/commodity/3539bb12-923c-11ec-b90c-1cbfc0eb0cdc",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -376,7 +376,7 @@
 							"port": "5000",
 							"path": [
 								"commodity",
-								"9f4e3840-8f24-11ec-93a4-1cbfc0eb0cdc"
+								"3539bb12-923c-11ec-b90c-1cbfc0eb0cdc"
 							]
 						}
 					},
@@ -407,7 +407,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:5000/commodity/e33d159c-8f24-11ec-bdf1-1cbfc0eb0cdc",
+							"raw": "http://localhost:5000/commodity/44695a48-923c-11ec-b933-1cbfc0eb0cdc",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -415,7 +415,73 @@
 							"port": "5000",
 							"path": [
 								"commodity",
-								"e33d159c-8f24-11ec-bdf1-1cbfc0eb0cdc"
+								"44695a48-923c-11ec-b933-1cbfc0eb0cdc"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "区块链",
+			"item": [
+				{
+					"name": "获取所有链的数据",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/chains/count",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"chains",
+								"count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "获取特定链的数据",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/chains/bbb238f0-9245-11ec-a587-1cbfc0eb0cdc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"chains",
+								"bbb238f0-9245-11ec-a587-1cbfc0eb0cdc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "验证区块链正确性",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/chains/validate_proof/bbbf89b4-92ab-11ec-836d-1cbfc0eb0cdc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"chains",
+								"validate_proof",
+								"bbbf89b4-92ab-11ec-836d-1cbfc0eb0cdc"
 							]
 						}
 					},

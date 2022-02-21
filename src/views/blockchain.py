@@ -18,9 +18,7 @@ chain_page = Blueprint('chain_page', __name__)
 
 @chain_page.route('/chains/count', methods=['GET'])
 def query_count():
-    chains = db.session.query(
-        Blockchain.commodity_id,
-    ).group_by("commodity_id").count()
+    chains = Blockchain.query.group_by(Blockchain.commodity_id).count()
     return str(chains)
 
 
@@ -34,7 +32,7 @@ def query_chain(commodity_id):
     blocks = Blockchain.query.filter(Blockchain.commodity_id == commodity_id).all()
 
     data_1 = json.loads(blocks[1].data, strict=False)
-    print(data_1)
+    # print(data_1)
     data = {
         "商品id": commodity_id,
         "始发地": data_1["ini"],
@@ -42,16 +40,16 @@ def query_chain(commodity_id):
         "运输信息": []
     }
     for block in blocks:
-        detail_data = json.loads(block.data)
-        print(detail_data)
-        data['运输信息'].append({
-            "时间": detail_data["time"],
-            "状态": detail_data["status"],
-            "操作公司": detail_data["com"],
-            "当前所在地": detail_data["cur"],
-            "操作人": detail_data["person"],
-            "操作人电话": detail_data["tel"]
-        })
+        if block.index != 0:
+            detail_data = json.loads(block.data, strict=False)
+            data['运输信息'].append({
+                "时间": detail_data["time"],
+                "状态": detail_data["status"],
+                "操作公司": detail_data["com"],
+                "当前所在地": detail_data["cur"],
+                "操作人": detail_data["person"],
+                "操作人电话": detail_data["tel"]
+            })
     return jsonify(data)
 
 

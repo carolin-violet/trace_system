@@ -14,8 +14,8 @@ class Chain:
     '''
     def create_genesis_block(self, db):
         time_stamp = '{0:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
-        cur_hash = self.hash(0, self.commodity_id, 'genesis_block', 1, 0, time_stamp)
-        genesis_block = Blockchain(0, self.commodity_id, 'genesis_block', 1, cur_hash, 0, time_stamp)
+        cur_hash = self.hash(0, self.commodity_id, 'genesis_block', '1', 0, time_stamp)
+        genesis_block = Blockchain(0, self.commodity_id, 'genesis_block', '1', cur_hash, 0, time_stamp)
         db.session.add(genesis_block)
         db.session.commit()
 
@@ -93,8 +93,9 @@ class Chain:
         cur_index = 1
 
         while cur_index < len(self.blocks):
-            # 验证哈希值是否正确
-            if pre_block.cur_hash != self.blocks[cur_index].pre_hash:
+            # 重新计算前一个区块的哈希值并与后一个区块中记载的上一个区块的哈希值比对
+            pre_hash = self.hash(pre_block.index, pre_block.commodity_id, pre_block.data, pre_block.pre_hash, pre_block.nonce, pre_block.timestamp)
+            if pre_hash != self.blocks[cur_index].pre_hash:
                 return False
 
             pre_block = self.blocks[cur_index]

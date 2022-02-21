@@ -11,3 +11,5 @@ def initialize(db):
     db.session.add(admin)
     db.session.commit()
 
+
+

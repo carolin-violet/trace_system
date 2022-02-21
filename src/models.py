@@ -122,7 +122,7 @@ class Blockchain(db.Model):
     data = db.Column(db.Text, nullable=True)
     pre_hash = db.Column(db.String(255), nullable=True)
     cur_hash = db.Column(db.String(255), nullable=True)
-    nonce = db.Column(db.String(255), nullable=True)  # 随机数
+    nonce = db.Column(db.BIGINT, nullable=True)  # 随机数
     timestamp = db.Column(db.String(100), nullable=True)  # 时间戳
 
     def __init__(self, index, commodity_id, data, pre_hash, cur_hash, nonce, timestamp):

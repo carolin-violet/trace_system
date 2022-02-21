@@ -1,7 +1,7 @@
 """
 区块链api模块
 """
-from src.models import Blockchain
+from src.models import Blockchain, db
 from src.utils import chain
 from flask import Blueprint, jsonify
 import json
@@ -18,7 +18,15 @@ chain_page = Blueprint('chain_page', __name__)
 
 @chain_page.route('/chains', methods=['GET'])
 def query_chains():
-    chains = Blockchain.query.group_by(Blockchain.commodity_id).all()
+    chains = db.session.query(
+        Blockchain.commodity_id,
+        Blockchain.index,
+        Blockchain.data,
+        Blockchain.pre_hash,
+        Blockchain.cur_hash,
+        Blockchain.nonce,
+        Blockchain.timestamp,
+    ).group_by("commodity_id").all()
     print(chains)
     return '1'
 

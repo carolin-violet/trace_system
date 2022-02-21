@@ -116,7 +116,7 @@ class Monitor(db.Model):
 
 class Blockchain(db.Model):
     __tablename__ = 'blockchain'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     index = db.Column(db.Integer, nullable=False)  # 区块编号
     commodity_id = db.Column(db.String(255), nullable=False)  # 产品id，同时也作为区块链编号
     data = db.Column(db.Text, nullable=True)

@@ -11,24 +11,17 @@ chain_page = Blueprint('chain_page', __name__)
 
 
 '''
-查询所有区块链信息
+查询一共有多少条区块链
 每条链作为一组数据
 '''
 
 
-@chain_page.route('/chains', methods=['GET'])
-def query_chains():
+@chain_page.route('/chains/count', methods=['GET'])
+def query_count():
     chains = db.session.query(
         Blockchain.commodity_id,
-        Blockchain.index,
-        Blockchain.data,
-        Blockchain.pre_hash,
-        Blockchain.cur_hash,
-        Blockchain.nonce,
-        Blockchain.timestamp,
-    ).group_by("commodity_id").all()
-    print(chains)
-    return '1'
+    ).group_by("commodity_id").count()
+    return str(chains)
 
 
 '''

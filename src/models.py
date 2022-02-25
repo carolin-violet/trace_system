@@ -98,8 +98,9 @@ class Commodity(db.Model):
     ini = db.Column(db.String(100), nullable=False)  # 初始地
     des = db.Column(db.String(100), nullable=False)  # 目的地
     qrcode_url = db.Column(db.Text, nullable=False)  # 二维码存放的网址
+    cur_hash = db.Column(db.String(255), nullable=False)  # 此产品对应区块链的当前hash值，作为区块链的索引
 
-    def __init__(self, commodity_id, user_id, area, name, weight, ini, des, qrcode_url):
+    def __init__(self, commodity_id, user_id, area, name, weight, ini, des, qrcode_url, cur_hash=''):
         self.commodity_id = commodity_id
         self.user_id = user_id
         self.area = area
@@ -108,6 +109,7 @@ class Commodity(db.Model):
         self.ini = ini
         self.des = des
         self.qrcode_url = qrcode_url
+        self.cur_hash = cur_hash
 
     def __repr__(self):
         return '<Commodity %r>' % self.commodity_id
@@ -147,22 +149,20 @@ class Logistics(db.Model):
 class Blockchain(db.Model):
     __tablename__ = 'blockchain'
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    index = db.Column(db.Integer, nullable=False)  # 区块编号
-    commodity_id = db.Column(db.String(255), nullable=False)  # 产品id，同时也作为区块链编号
-    data = db.Column(db.Text, nullable=True)
     pre_hash = db.Column(db.String(255), nullable=True)
     cur_hash = db.Column(db.String(255), nullable=True)
-    nonce = db.Column(db.BIGINT, nullable=True)  # 随机数
     timestamp = db.Column(db.String(100), nullable=True)  # 时间戳
+    nonce = db.Column(db.BIGINT, nullable=False)  # 随机数
+    merkel = db.Column(db.Text, nullable=False)  # merkel根值
+    data = db.Column(db.Text, nullable=True)  # 数据部分
 
-    def __init__(self, index, commodity_id, data, pre_hash, cur_hash, nonce, timestamp):
-        self.index = index
-        self.commodity_id = commodity_id
-        self.data = data
+    def __init__(self, pre_hash, cur_hash, timestamp, nonce, merkel, data):
         self.pre_hash = pre_hash
         self.cur_hash = cur_hash
-        self.nonce = nonce
         self.timestamp = timestamp
+        self.nonce = nonce
+        self.merkel = merkel
+        self.data = data
 
 
 

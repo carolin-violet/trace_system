@@ -2,10 +2,11 @@
 管理员管理用户信息
 """
 
-from src.models import User
+
 from flask import Blueprint, request, jsonify
-from src.models import db
 from uuid import uuid1
+from src.models import User, db
+from src.security.RSA import create_keys
 
 user_page = Blueprint('user_page', __name__)
 
@@ -17,6 +18,7 @@ user_page = Blueprint('user_page', __name__)
 
 @user_page.route('/users', methods=['POST'])
 def add_user():
+    role_id = request.form['role_id']
     name = request.form['name']
     phone = request.form['phone']
     password = request.form['password']
@@ -26,7 +28,8 @@ def add_user():
         return '用户已存在'
     else:
         user_id = str(uuid1()).replace('-', '')
-        user = User(user_id, name, phone, password, gender)
+        public_key, private_key = create_keys()
+        user = User(user_id, role_id, name, phone, password, gender, public_key, private_key)
         db.session.add(user)
         db.session.commit()
         return '添加成功'

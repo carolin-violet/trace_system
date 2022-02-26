@@ -1,16 +1,17 @@
 import rsa
+from base64 import b64encode, b64decode
 import pickle
 
 '''
 生成公私钥对,
 512这个数字表示可以加密的字符串长度，可以是1024，4096等等，
-由于生成的公私钥对是对象，所以需要用pickle先将对象序列化成二进制字节才能存入数据库
+由于生成的公私钥对是对象，所以需要用pickle先将对象序列化成二进制字节,再用base64编码压缩一下二进制字节存入数据库
 '''
 
 
 def create_keys():
     public_key, private_key = rsa.newkeys(512)
-    return pickle.dumps(public_key), pickle.dumps(private_key)
+    return b64encode(pickle.dumps(public_key)), b64encode(pickle.dumps(private_key))
 
 
 '''
@@ -19,7 +20,7 @@ def create_keys():
 
 
 def normalize_keys(key):
-    return pickle.loads(key)
+    return pickle.loads(b64decode(key))
 
 
 '''
@@ -74,6 +75,11 @@ def verify_signature(message, signature, public_key):
 #     print(pickle.loads(pickle.dumps(public_key)))
 #     print(type(pickle.loads(pickle.dumps(public_key))))
 #
+#     print('--------------------------------------------------------------')
+#     print(pickle.dumps(public_key))
+#     print(b64encode(pickle.dumps(public_key)))
+#     print(b64decode(b64encode(pickle.dumps(public_key))))
+#
 #     message = 'hello'.encode('utf-8')
 #
 #     cipher = rsa.encrypt(message, public_key)
@@ -85,7 +91,6 @@ def verify_signature(message, signature, public_key):
 #     signature = rsa.sign(message, private_key, 'SHA-256')
 #     print(signature)
 #
-#     message = 'a'.encode('utf-8')
 #     res = rsa.verify(message, signature, public_key)
 #     print(res)
 #     print(type(res))

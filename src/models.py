@@ -21,8 +21,8 @@ class User(db.Model):
     phone = db.Column(db.String(11), unique=True)  # 手机号码,用作登录账号
     password = db.Column(db.String(20), nullable=False)  # 登录密码
     gender = db.Column(db.String(6), nullable=False)  # 性别:male/female
-    public_key = db.Column(db.BINARY, nullable=False)  # 用户公钥
-    private_key = db.Column(db.BINARY, nullable=False)  # 用户私钥
+    public_key = db.Column(db.VARBINARY(1000), nullable=False)  # 用户公钥
+    private_key = db.Column(db.VARBINARY(1000), nullable=False)  # 用户私钥
 
     def __init__(self, user_id, role_id, name, phone, password, gender, public_key, private_key):
         self.user_id = user_id

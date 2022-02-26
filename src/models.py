@@ -148,9 +148,9 @@ class Logistics(db.Model):
 
 class Blockchain(db.Model):
     __tablename__ = 'blockchain'
-    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    pre_hash = db.Column(db.String(255), nullable=True)
-    cur_hash = db.Column(db.String(255), nullable=True)
+    id = db.Column(db.Integer, autoincrement=True,)
+    cur_hash = db.Column(db.String(255), primary_key=True, nullable=True)  # 当前区块hash值，作为主键
+    pre_hash = db.Column(db.String(255), nullable=True)  # 前一个区块的hash值
     timestamp = db.Column(db.String(100), nullable=True)  # 时间戳
     nonce = db.Column(db.BIGINT, nullable=False)  # 随机数
     merkel = db.Column(db.Text, nullable=False)  # merkel根值

@@ -1,7 +1,7 @@
 """
 数据库模型
 """
-
+import json
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -35,7 +35,16 @@ class User(db.Model):
         self.private_key = private_key
 
     def __repr__(self):
-        return '<User %r>' % self.user_id
+        return json.dumps({
+            "user_id": self.user_id,
+            "role_id": self.role_id,
+            "name": self.name,
+            "phone": self.phone,
+            "password": self.password,
+            "gender": self.gender,
+            "public_key": str(self.public_key),
+            "private_key": str(self.private_key)
+        })
 
 
 '''

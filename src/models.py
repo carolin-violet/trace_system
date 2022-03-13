@@ -159,29 +159,33 @@ class StoreTH(db.Model):
 class Commodity(db.Model):
     __tablename__ = 'commodity'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    commodity_id = db.Column(db.String(255), nullable=False)  # 编号（ 物流：运单号  仓库：仓库编号）
     user_id = db.Column(db.String(255), nullable=False)  # 所属生产厂家用户id
     area_id = db.Column(db.Integer, nullable=False)  # 农田区域
+    batch = db.Column(db.Integer, nullable=False)  # 生产批次
     name = db.Column(db.String(10), nullable=False)  # 商品名称
+    price = db.Column(db.Float, nullable=True)  # 商品单价(元/斤)
     weight = db.Column(db.Float, nullable=True)  # 商品重量(斤)
+    logistics_id = db.Column(db.String(255), nullable=False)  # 编号（ 物流：运单号  仓库：仓库编号）
     ini = db.Column(db.String(100), nullable=False)  # 初始地
     des = db.Column(db.String(100), nullable=False)  # 目的地
     qrcode_url = db.Column(db.Text, nullable=False)  # 二维码存放的网址
     cur_hash = db.Column(db.String(255), nullable=False)  # 此产品对应区块链的当前hash值，作为区块链的索引
 
-    def __init__(self, commodity_id, user_id, area_id, name, weight, ini, des, qrcode_url, cur_hash=''):
-        self.commodity_id = commodity_id
+    def __init__(self, user_id, area_id, batch, name, price, weight, logistics_id, ini, des, qrcode_url, cur_hash):
         self.user_id = user_id
         self.area_id = area_id
+        self.batch = batch
         self.name = name
+        self.price = price
         self.weight = weight
+        self.logistics_id = logistics_id
         self.ini = ini
         self.des = des
         self.qrcode_url = qrcode_url
         self.cur_hash = cur_hash
 
     def __repr__(self):
-        return '<Commodity %r>' % self.commodity_id
+        return '<Commodity %r>' % self.cur_hash
 
 
 '''
@@ -192,7 +196,7 @@ class Commodity(db.Model):
 class Logistics(db.Model):
     __tablename__ = 'logistics'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    commodity_id = db.Column(db.String(255), nullable=False)  # 编号（ 物流：运单号  仓库：仓库编号）
+    logistics_id = db.Column(db.String(255), nullable=False)  # 编号（ 物流：运单号  仓库：仓库编号）
     status = db.Column(db.String(10), nullable=False)  # 商品状态  (已发货, 运输中, 已到货, 已签收)
     com = db.Column(db.String(50), nullable=False)  # 操作的公司名
     time = db.Column(db.String(100), nullable=False)  # 操作时间，需要获取当前系统时间
@@ -200,8 +204,8 @@ class Logistics(db.Model):
     person = db.Column(db.String(20), nullable=False)  # 操作人
     tel = db.Column(db.String(11), nullable=False)  # 操作人联系方式
 
-    def __init__(self, commodity_id, status, com, time, cur, person, tel):
-        self.commodity_id = commodity_id
+    def __init__(self, logistics_id, status, com, time, cur, person, tel):
+        self.logistics_id = logistics_id
         self.status = status
         self.com = com
         self.time = time

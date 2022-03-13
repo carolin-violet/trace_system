@@ -1,7 +1,7 @@
 import qrcode
 
 
-def make_qrcode(commodity_id, data):
+def make_qrcode(data, file_path):
     qr = qrcode.QRCode(
         version=5,
         error_correction=qrcode.constants.ERROR_CORRECT_L,
@@ -13,7 +13,6 @@ def make_qrcode(commodity_id, data):
 
     qr.make(fit=True)
     img = qr.make_image()
-    file_path = 'D:/study_software/pycharm/trace_system/static/qr_codes/' + str(commodity_id) + ".png"
     img.save(file_path)
 
 

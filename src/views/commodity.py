@@ -1,9 +1,12 @@
 """
 商品信息模块
 """
-from src.models import Commodity, db
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_file
 from uuid import uuid1
+import os
+from src.models import Commodity, db
+from src.utils import img
+
 
 commodity_page = Blueprint('commodity_page', __name__)
 
@@ -15,13 +18,24 @@ commodity_page = Blueprint('commodity_page', __name__)
 
 @commodity_page.route('/commodity', methods=['POST'])
 def add_commodity():
+    user_id = request.form['user_id']
+    area_id = request.form['area_id']
+    batch = request.form['batch']
     name = request.form['name']
     price = request.form['price']
     weight = request.form['weight']
-    total = request.form['total']
-    user_id = request.form['user_id']
     commodity_id = uuid1()
-    commodity = Commodity(name, price, weight, total, commodity_id, user_id)
+    ini = request.form['ini']
+    des = request.form['des']
+
+    qrcode_url = "http://127.0.0.1:5000" + "/commodity/img/" + str(commodity_id)
+    qr_path = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.getcwd())), 'static/qr_codes/'+str(commodity_id)+'.png'))
+    img.make_qrcode(qrcode_url, qr_path)
+
+    '''待完善'''
+    cur_hash = ''
+
+    commodity = Commodity(user_id, area_id, batch, name, price, weight, commodity_id, ini, des, qrcode_url, cur_hash)
     db.session.add(commodity)
     db.session.commit()
 
@@ -33,9 +47,9 @@ def add_commodity():
 '''
 
 
-@commodity_page.route('/commodity/<commodity_id>', methods=['DELETE'])
-def del_commodity(commodity_id):
-    commodity = Commodity.query.filter(Commodity.commodity_id == commodity_id).first()
+@commodity_page.route('/commodity/<cur_hash>', methods=['DELETE'])
+def del_commodity(cur_hash):
+    commodity = Commodity.query.filter(Commodity.cur_hash == cur_hash).first()
     if commodity:
         db.session.delete(commodity)
         db.session.commit()
@@ -55,12 +69,17 @@ def query_commodity():
     data = []
     for commodity in commodities:
         data.append({
-            'commodity_id': commodity.commodity_id,
             'user_id': commodity.user_id,
+            'area_id': commodity.area_id,
+            'batch': commodity.batch,
             'name': commodity.name,
             'price': commodity.price,
             'weight': commodity.weight,
-            'total': commodity.total,
+            'commodity_id': commodity.commodity_id,
+            'ini': commodity.ini,
+            'des': commodity.des,
+            'qrcode_url': commodity.qrcode_url,
+            'cur_hash': commodity.cur_hash
         })
     return jsonify(data)
 
@@ -70,17 +89,22 @@ def query_commodity():
 '''
 
 
-@commodity_page.route('/commodity/<commodity_id>', methods=['GET'])
-def get_commodity(commodity_id):
-    commodity = Commodity.query.filter(Commodity.commodity_id == commodity_id).first()
+@commodity_page.route('/commodity/<cur_hash>', methods=['GET'])
+def get_commodity(cur_hash):
+    commodity = Commodity.query.filter(Commodity.cur_hash == cur_hash).first()
     if commodity:
         return jsonify({
-            'commodity_id': commodity.commodity_id,
             'user_id': commodity.user_id,
+            'area_id': commodity.area_id,
+            'batch': commodity.batch,
             'name': commodity.name,
             'price': commodity.price,
             'weight': commodity.weight,
-            'total': commodity.total,
+            'commodity_id': commodity.commodity_id,
+            'ini': commodity.ini,
+            'des': commodity.des,
+            'qrcode_url': commodity.qrcode_url,
+            'cur_hash': commodity.cur_hash
         })
     else:
         return '商品不存在'
@@ -93,4 +117,6 @@ def get_commodity(commodity_id):
 
 @commodity_page.route('/commodity/img/<commodity_id>', methods=['GET'])
 def get_img(commodity_id):
-    pass
+    img_path = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.getcwd())), 'static/qr_codes/'+str(commodity_id)+'.png'))
+    return send_file(img_path, mimetype='image/gif')
+

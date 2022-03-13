@@ -98,6 +98,7 @@ def query_user():
         print(user)
         data.append({
             'user_id': user.user_id,
+            'role_id': user.role_id,
             'name': user.name,
             'phone': user.phone,
             'password': user.password,
@@ -117,6 +118,7 @@ def all_users(user_id):
     if user:
         return jsonify({
             'user_id': user.user_id,
+            'role_id': user.role_id,
             'name': user.name,
             'phone': user.phone,
             'password': user.password,

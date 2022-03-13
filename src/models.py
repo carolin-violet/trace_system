@@ -216,12 +216,11 @@ class Blockchain(db.Model):
     nonce = db.Column(db.BIGINT, nullable=False)  # 随机数
     data = db.Column(db.Text, nullable=True)  # 数据部分
 
-    def __init__(self, pre_hash, cur_hash, timestamp, nonce, merkel, data):
+    def __init__(self, pre_hash, cur_hash, timestamp, nonce, data):
         self.pre_hash = pre_hash
         self.cur_hash = cur_hash
         self.timestamp = timestamp
         self.nonce = nonce
-        self.merkel = merkel
         self.data = data
 
 

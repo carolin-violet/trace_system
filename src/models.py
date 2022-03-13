@@ -56,13 +56,15 @@ class Produce(db.Model):
     __tablename__ = 'produce'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.String(255), nullable=False)  # 生产厂家用户id
+    area_id = db.Column(db.Integer, nullable=False)  # 农田区域id
     op_type = db.Column(db.String(2), nullable=False)  # 播种,浇水,施肥,除虫,除草,收割
     op_time = db.Column(db.DateTime, nullable=False)  # 操作时间
     description = db.Column(db.Text, default='')  # 详情描述
     img_path = db.Column(db.Text, default='')  # 照片存放地址
 
-    def __init__(self, user_id, op_type, op_time, description, img_path):
+    def __init__(self, user_id, area_id, op_type, op_time, description, img_path=''):
         self.user_id = user_id
+        self.area_id = area_id
         self.op_type = op_type
         self.op_time = op_time
         self.description = description
@@ -74,16 +76,18 @@ class Produce(db.Model):
 '''
 
 
-class ProduceMonitor(db.Model):
-    __tablename__ = 'produce_monitor'
+class ProduceTH(db.Model):
+    __tablename__ = 'produce_th'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.String(255), primary_key=True, nullable=False)  # 生产厂家用户id
+    area_id = db.Column(db.Integer, nullable=False)  # 农田区域id
     temp = db.Column(db.FLOAT, nullable=False)  # 温度
     hum = db.Column(db.FLOAT, nullable=False)  # 湿度
     date = db.Column(db.String(100), nullable=False)  # 时间
 
-    def __init__(self, user_id, temp, hum, date):
+    def __init__(self, area_id, user_id, temp, hum, date):
         self.user_id = user_id
+        self.area_id = area_id
         self.temp = temp
         self.hum = hum
         self.date = date
@@ -98,14 +102,16 @@ class Store(db.Model):
     __tablename__ = 'store'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.String(255), nullable=False)  # 生产厂家用户id
+    area_id = db.Column(db.Integer, nullable=False)  # 农田区域id
     repository_index = db.Column(db.Integer, nullable=False)  # 仓库区域编号
     in_time = db.Column(db.DateTime, nullable=False)  # 入库时间
     out_time = db.Column(db.DateTime, nullable=False)  # 出库时间
     description = db.Column(db.Text, default='')  # 详情描述
     img_path = db.Column(db.Text, default='')  # 照片存放地址
 
-    def __init__(self, user_id, repository_index, in_time, out_time, description, img_path):
+    def __init__(self, user_id, area_id, repository_index, in_time, out_time, description, img_path):
         self.user_id = user_id
+        self.area_id = area_id
         self.repository_index = repository_index
         self.in_time = in_time
         self.out_time = out_time
@@ -118,17 +124,19 @@ class Store(db.Model):
 '''
 
 
-class StoreMonitor(db.Model):
-    __tablename__ = 'store_monitor'
+class StoreTH(db.Model):
+    __tablename__ = 'store_th'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.String(255), primary_key=True, nullable=False)  # 生产厂家用户id
+    area_id = db.Column(db.Integer, nullable=False)  # 农田区域id
     repository_index = db.Column(db.Integer, nullable=False)  # 仓库区域编号
     temp = db.Column(db.FLOAT, nullable=False)  # 温度
     hum = db.Column(db.FLOAT, nullable=False)  # 湿度
     date = db.Column(db.String(100), nullable=False)  # 时间
 
-    def __init__(self, user_id, repository_index, temp, hum, date):
+    def __init__(self, user_id, area_id, repository_index, temp, hum, date):
         self.user_id = user_id
+        self.area_id = area_id
         self.repository_index = repository_index
         self.temp = temp
         self.hum = hum
@@ -145,7 +153,7 @@ class Commodity(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     commodity_id = db.Column(db.String(255), nullable=False)  # 编号（ 物流：运单号  仓库：仓库编号）
     user_id = db.Column(db.String(255), nullable=False)  # 所属生产厂家用户id
-    area = db.Column(db.Integer, nullable=False)  # 农田区域
+    area_id = db.Column(db.Integer, nullable=False)  # 农田区域
     name = db.Column(db.String(10), nullable=False)  # 商品名称
     weight = db.Column(db.Float, nullable=True)  # 商品重量(斤)
     ini = db.Column(db.String(100), nullable=False)  # 初始地
@@ -153,10 +161,10 @@ class Commodity(db.Model):
     qrcode_url = db.Column(db.Text, nullable=False)  # 二维码存放的网址
     cur_hash = db.Column(db.String(255), nullable=False)  # 此产品对应区块链的当前hash值，作为区块链的索引
 
-    def __init__(self, commodity_id, user_id, area, name, weight, ini, des, qrcode_url, cur_hash=''):
+    def __init__(self, commodity_id, user_id, area_id, name, weight, ini, des, qrcode_url, cur_hash=''):
         self.commodity_id = commodity_id
         self.user_id = user_id
-        self.area = area
+        self.area_id = area_id
         self.name = name
         self.weight = weight
         self.ini = ini

@@ -14,8 +14,8 @@ db = SQLAlchemy()
 
 class User(db.Model):
     __tablename__ = "user"
-    id = db.Column(db.Integer, autoincrement=True)
-    user_id = db.Column(db.String(255), primary_key=True, nullable=False)  # 用户id
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.String(255), nullable=False)  # 用户id
     role_id = db.Column(db.Integer, nullable=False)  # 用户角色,0为管理员,1为生产商,2为运输商,3为消费者
     name = db.Column(db.String(10), nullable=False)  # 姓名
     phone = db.Column(db.String(11), unique=True)  # 手机号码,用作登录账号

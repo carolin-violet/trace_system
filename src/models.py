@@ -54,8 +54,8 @@ class User(db.Model):
 
 class Produce(db.Model):
     __tablename__ = 'produce'
-    id = db.Column(db.Integer, autoincrement=True)
-    user_id = db.Column(db.String(255), primary_key=True, nullable=False)  # 生产厂家用户id
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.String(255), nullable=False)  # 生产厂家用户id
     op_type = db.Column(db.String(2), nullable=False)  # 播种,浇水,施肥,除虫,除草,收割
     op_time = db.Column(db.DateTime, nullable=False)  # 操作时间
     description = db.Column(db.Text, default='')  # 详情描述
@@ -96,8 +96,8 @@ class ProduceMonitor(db.Model):
 
 class Store(db.Model):
     __tablename__ = 'store'
-    id = db.Column(db.Integer, autoincrement=True)
-    user_id = db.Column(db.String(255), primary_key=True, nullable=False)  # 生产厂家用户id
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.String(255), nullable=False)  # 生产厂家用户id
     repository_index = db.Column(db.Integer, nullable=False)  # 仓库区域编号
     in_time = db.Column(db.DateTime, nullable=False)  # 入库时间
     out_time = db.Column(db.DateTime, nullable=False)  # 出库时间
@@ -142,8 +142,8 @@ class StoreMonitor(db.Model):
 
 class Commodity(db.Model):
     __tablename__ = 'commodity'
-    id = db.Column(db.Integer, autoincrement=True)
-    commodity_id = db.Column(db.String(255), primary_key=True, nullable=False)  # 编号（ 物流：运单号  仓库：仓库编号）
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    commodity_id = db.Column(db.String(255), nullable=False)  # 编号（ 物流：运单号  仓库：仓库编号）
     user_id = db.Column(db.String(255), nullable=False)  # 所属生产厂家用户id
     area = db.Column(db.Integer, nullable=False)  # 农田区域
     name = db.Column(db.String(10), nullable=False)  # 商品名称
@@ -175,8 +175,8 @@ class Commodity(db.Model):
 
 class Logistics(db.Model):
     __tablename__ = 'logistics'
-    id = db.Column(db.Integer, autoincrement=True)
-    commodity_id = db.Column(db.String(255), primary_key=True, nullable=False)  # 编号（ 物流：运单号  仓库：仓库编号）
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    commodity_id = db.Column(db.String(255), nullable=False)  # 编号（ 物流：运单号  仓库：仓库编号）
     status = db.Column(db.String(10), nullable=False)  # 商品状态  (已发货, 运输中, 已到货, 已签收)
     com = db.Column(db.String(50), nullable=False)  # 操作的公司名
     time = db.Column(db.String(100), nullable=False)  # 操作时间，需要获取当前系统时间
@@ -201,8 +201,8 @@ class Logistics(db.Model):
 
 class Blockchain(db.Model):
     __tablename__ = 'blockchain'
-    id = db.Column(db.BIGINT, autoincrement=True,)
-    cur_hash = db.Column(db.String(255), primary_key=True, nullable=True)  # 当前区块data的hash值，作为主键
+    id = db.Column(db.BIGINT, primary_key=True, autoincrement=True,)
+    cur_hash = db.Column(db.String(255), nullable=True)  # 当前区块data的hash值，作为主键
     pre_hash = db.Column(db.String(255), nullable=True)  # 前一个区块的hash值
     timestamp = db.Column(db.String(100), nullable=True)  # 时间戳
     nonce = db.Column(db.BIGINT, nullable=False)  # 随机数

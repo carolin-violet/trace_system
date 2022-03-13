@@ -95,7 +95,6 @@ def query_user():
     users = User.query.all()
     data = []
     for user in users:
-        print(user)
         data.append({
             'user_id': user.user_id,
             'role_id': user.role_id,

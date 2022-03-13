@@ -56,15 +56,13 @@ class Produce(db.Model):
     __tablename__ = 'produce'
     id = db.Column(db.Integer, autoincrement=True)
     user_id = db.Column(db.String(255), primary_key=True, nullable=False)  # 生产厂家用户id
-    area_id = db.Column(db.Integer, nullable=False)  # 农田区域
     op_type = db.Column(db.String(2), nullable=False)  # 播种,浇水,施肥,除虫,除草,收割
     op_time = db.Column(db.DateTime, nullable=False)  # 操作时间
     description = db.Column(db.Text, default='')  # 详情描述
     img_path = db.Column(db.Text, default='')  # 照片存放地址
 
-    def __init__(self, user_id, area_id, op_type, op_time, description, img_path):
+    def __init__(self, user_id, op_type, op_time, description, img_path):
         self.user_id = user_id
-        self.area_id = area_id
         self.op_type = op_type
         self.op_time = op_time
         self.description = description
@@ -80,14 +78,12 @@ class ProduceMonitor(db.Model):
     __tablename__ = 'produce_monitor'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.String(255), primary_key=True, nullable=False)  # 生产厂家用户id
-    area_id = db.Column(db.Integer, nullable=False)  # 农田区域
     temp = db.Column(db.FLOAT, nullable=False)  # 温度
     hum = db.Column(db.FLOAT, nullable=False)  # 湿度
     date = db.Column(db.String(100), nullable=False)  # 时间
 
-    def __init__(self, user_id, area_id, temp, hum, date):
+    def __init__(self, user_id, temp, hum, date):
         self.user_id = user_id
-        self.area_id = area_id
         self.temp = temp
         self.hum = hum
         self.date = date
@@ -102,16 +98,14 @@ class Store(db.Model):
     __tablename__ = 'store'
     id = db.Column(db.Integer, autoincrement=True)
     user_id = db.Column(db.String(255), primary_key=True, nullable=False)  # 生产厂家用户id
-    area_id = db.Column(db.Integer, nullable=False)  # 农田区域
     repository_index = db.Column(db.Integer, nullable=False)  # 仓库区域编号
     in_time = db.Column(db.DateTime, nullable=False)  # 入库时间
     out_time = db.Column(db.DateTime, nullable=False)  # 出库时间
     description = db.Column(db.Text, default='')  # 详情描述
     img_path = db.Column(db.Text, default='')  # 照片存放地址
 
-    def __init__(self, user_id, area_id, repository_index, in_time, out_time, description, img_path):
+    def __init__(self, user_id, repository_index, in_time, out_time, description, img_path):
         self.user_id = user_id
-        self.area_id = area_id
         self.repository_index = repository_index
         self.in_time = in_time
         self.out_time = out_time
@@ -128,15 +122,13 @@ class StoreMonitor(db.Model):
     __tablename__ = 'store_monitor'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.String(255), primary_key=True, nullable=False)  # 生产厂家用户id
-    area_id = db.Column(db.Integer, nullable=False)  # 农田区域
     repository_index = db.Column(db.Integer, nullable=False)  # 仓库区域编号
     temp = db.Column(db.FLOAT, nullable=False)  # 温度
     hum = db.Column(db.FLOAT, nullable=False)  # 湿度
     date = db.Column(db.String(100), nullable=False)  # 时间
 
-    def __init__(self, user_id, area_id, repository_index, temp, hum, date):
+    def __init__(self, user_id, repository_index, temp, hum, date):
         self.user_id = user_id
-        self.area_id = area_id
         self.repository_index = repository_index
         self.temp = temp
         self.hum = hum

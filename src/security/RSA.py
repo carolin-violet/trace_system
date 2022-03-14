@@ -52,15 +52,15 @@ def encrypt(message, public_key):
 
 def decrypt(cipher, private_key):
     try:   # 将字符串数据反序列化为字节列表
-        str_data = json.loads(cipher)
+        ini_data = json.loads(cipher, strict=False)
     except json.decoder.JSONDecodeError:
-        str_data = cipher
+        ini_data = cipher
 
-    if type(str_data) == list:  # 加密数据为字符串列表
+    if type(ini_data) == list:  # 加密数据为字符串列表
         list_data = [rsa.decrypt(bytes(i), normalize_keys(private_key)).decode('utf-8') for i in str_data]
         print(list_data)
-    elif type(str_data) == str:  # 加密数据为字符串
-        message = rsa.decrypt(bytes(str_data), normalize_keys(private_key)).decode('utf-8')
+    elif type(ini_data) == str:  # 加密数据为字符串
+        message = rsa.decrypt(bytes(ini_data), normalize_keys(private_key)).decode('utf-8')
         return message
 
 

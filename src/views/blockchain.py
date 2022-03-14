@@ -113,14 +113,6 @@ def query_chain():
     data = []
 
     for block in blocks:
-        '''
-        使用json序列化的长加密数据需要反序列化,
-        没使用json序列化的短加密数据则不需要反序列化
-        '''
-        try:
-            detail_data = json.loads(block.data)
-        except json.decoder.JSONDecodeError:
-            detail_data = block.data
 
         data.append({
             "logistics_id": block.logistics_id,
@@ -128,7 +120,7 @@ def query_chain():
             "pre_hash": block.pre_hash,
             "timestamp": block.timestamp,
             "nonce": block.nonce,
-            "data": detail_data,
+            "data": block.data,
         })
     return jsonify(data)
 
@@ -142,22 +134,13 @@ def query_chain():
 def query_block(logistics_id):
     block = Blockchain.query.filter(Blockchain.logistics_id == logistics_id).first()
 
-    '''
-    使用json序列化的长加密数据需要反序列化,
-    没使用json序列化的短加密数据则不需要反序列化
-    '''
-    try:
-        detail_data = json.loads(block.data)
-    except json.decoder.JSONDecodeError:
-        detail_data = block.data
-
     return jsonify({
         "logistics_id": block.logistics_id,
         "cur_hash": block.cur_hash,
         "pre_hash": block.pre_hash,
         "timestamp": block.timestamp,
         "nonce": block.nonce,
-        "data": detail_data,
+        "data": block.data,
     })
 
 

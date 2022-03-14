@@ -75,11 +75,12 @@ def add_block():
     '''
     汇总数据并加密
     '''
-    summary = {}
-    summary['commodity_data'] = commodity_data
-    summary['produce_data'] = produce_data
-    summary['th_data'] = th_data
-    summary['logistics_data'] = logistics_data
+    summary = {
+        'commodity_data': commodity_data,
+        'produce_data': produce_data,
+        'th_data': th_data,
+        'logistics_data': logistics_data
+    }
 
     purchaser = Purchase.query.filter(Purchase.logistics_id == logistics_id).first()
     purchaser_id = purchaser.purchaser_id

@@ -57,7 +57,7 @@ def decrypt(cipher, private_key):
         ini_data = cipher
 
     if type(ini_data) == list:  # 加密数据为字符串列表
-        list_data = [rsa.decrypt(bytes(i), normalize_keys(private_key)).decode('utf-8') for i in str_data]
+        list_data = [rsa.decrypt(bytes(i), normalize_keys(private_key)).decode('utf-8') for i in ini_data]
         print(list_data)
     elif type(ini_data) == str:  # 加密数据为字符串
         message = rsa.decrypt(bytes(ini_data), normalize_keys(private_key)).decode('utf-8')

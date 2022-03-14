@@ -3,7 +3,8 @@
 """
 
 from flask import Blueprint, jsonify, request, render_template
-from src.models import Purchase, db, User
+from src.models import Purchase, db, User, Blockchain
+from src.security import RSA
 
 purchase_page = Blueprint('purchase_page', __name__)
 
@@ -46,15 +47,15 @@ def query_purchase(user_id):
 
 @purchase_page.route('/purchase/detail/<logistics_id>', methods=['GET'])
 def query_detail(logistics_id):
+    block = Blockchain.query.filter(Blockchain.logistics_id == logistics_id).first()
 
     # 获取私钥
     purchaser_id = Purchase.query.filter(Purchase.logistics_id == logistics_id).first().user_id
     private_key = User.query.filter(User.user_id == purchaser_id).first().private_key
-    print(private_key)
 
     # 解密区块链中的加密数据
+    message = RSA.decrypt(block.data, private_key)
 
-
-    detail_data = 'hello'
-    return render_template('detail.html', data=detail_data)
+    detaildata = 'hello'
+    return render_template('detail.html', data=detaildata)
 

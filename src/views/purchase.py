@@ -49,11 +49,5 @@ def query_purchase(user_id):
 @purchase_page.route('/purchase/<logistics_id>', methods=['GET'])
 def get_img(logistics_id):
     block = Blockchain.query.filter(Blockchain.logistics_id == logistics_id).first()
-    cipher_data = block.data
-
-    user_id = Purchase.query.filter(Purchase.logistics_id == logistics_id).first().user_id
-    private_key = User.query.filter(User.user_id == user_id).first().private_key
-
-    data = json.loads(RSA.decrypt(cipher_data, RSA.normalize_keys(private_key)))
-    return render_template('show_data.html', data=data)
+    return render_template('show_data.html', data=block.data)
 

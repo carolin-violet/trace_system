@@ -1,6 +1,7 @@
 import rsa
 from base64 import b64encode, b64decode
 import pickle
+import json
 
 '''
 生成公私钥对,
@@ -29,6 +30,8 @@ def normalize_keys(key):
 
 
 def encrypt(message, public_key):
+    if type(message) == dict:
+        message = json.dumps(message, sort_keys=True)
     cipher = rsa.encrypt(message.encode('utf-8'), public_key)
     return cipher
 
@@ -67,30 +70,18 @@ def verify_signature(message, signature, public_key):
 
 
 
-# if __name__ == '__main__':
-#     public_key, private_key = rsa.newkeys(512)
-#     print(public_key, private_key)
-#     print(type(public_key))
-#     print(type(pickle.dumps(public_key)))
-#     print(pickle.loads(pickle.dumps(public_key)))
-#     print(type(pickle.loads(pickle.dumps(public_key))))
-#
-#     print('--------------------------------------------------------------')
-#     print(pickle.dumps(public_key))
-#     print(b64encode(pickle.dumps(public_key)))
-#     print(b64decode(b64encode(pickle.dumps(public_key))))
-#
-#     message = 'hello'.encode('utf-8')
-#
-#     cipher = rsa.encrypt(message, public_key)
-#     print(cipher)
-#
-#     plain = rsa.decrypt(cipher, private_key).decode('utf-8')
-#     print(plain)
-#
-#     signature = rsa.sign(message, private_key, 'SHA-256')
-#     print(signature)
-#
-#     res = rsa.verify(message, signature, public_key)
-#     print(res)
-#     print(type(res))
+if __name__ == '__main__':
+    pub_key, pri_key = create_keys()
+    pub_key = normalize_keys(pub_key)
+    pri_key = normalize_keys(pri_key)
+    print(pub_key, pri_key)
+    me = {
+        "a": 'faw'
+    }
+    cipher_text = encrypt(me, pub_key)
+    print(cipher_text)
+    mes = decrypt(cipher_text, pri_key)
+    print(mes)
+    print(type(mes))
+    print(json.loads(mes))
+    print(type(json.loads(mes)))

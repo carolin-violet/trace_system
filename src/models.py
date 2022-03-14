@@ -1,7 +1,6 @@
 """
 数据库模型
 """
-import json
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -33,6 +32,22 @@ class User(db.Model):
         self.gender = gender
         self.public_key = public_key
         self.private_key = private_key
+
+
+'''
+购买信息表
+'''
+
+
+class Purchase(db.Model):
+    __tablename__ = "user"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.String(255), nullable=False)  # 顾客id
+    logistics_id = db.Column(db.String(255), nullable=False)  # 物流单号
+
+    def __init__(self, user_id, logistics_id):
+        self.user_id = user_id
+        self.logistics_id = logistics_id
 
 
 '''

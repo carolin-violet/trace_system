@@ -26,6 +26,16 @@ def add_produce_info():
 
 
 '''
+添加生产过程拍摄的图片
+'''
+
+
+@produce_page.route('/produce/img', methods=['POST'])
+def add_produce_image():
+    pass
+
+
+'''
 查询指定产商的生产信息
 '''
 

@@ -30,10 +30,20 @@ def normalize_keys(key):
 
 
 def encrypt(message, public_key):
+    default_length = 53  # 每次最多加密53字节
     if type(message) == dict:
         message = json.dumps(message, sort_keys=True)
-    cipher = rsa.encrypt(message.encode('utf-8'), public_key)
-    return cipher
+
+    '''
+    当需加密的数据超过53字节时就分段加密
+    '''
+    if len(message.encode('utf-8')) > 53:
+        message_list = make_group(message.encode('utf-8'), default_length)
+        cipher = [rsa.encrypt(i, normalize_keys(public_key)) for i in message_list]
+        print(cipher)
+    else:
+        cipher = rsa.encrypt(message.encode('utf-8'), normalize_keys(public_key))
+        return cipher
 
 
 '''
@@ -42,7 +52,7 @@ def encrypt(message, public_key):
 
 
 def decrypt(cipher, private_key):
-    message = rsa.decrypt(cipher, private_key).decode('utf-8')
+    message = rsa.decrypt(cipher, normalize_keys(private_key)).decode('utf-8')
     return message
 
 
@@ -52,7 +62,7 @@ def decrypt(cipher, private_key):
 
 
 def get_signature(message, private_key):
-    return rsa.sign(message, private_key, 'SHA-256')
+    return rsa.sign(message, normalize_keys(private_key), 'SHA-256')
 
 
 '''
@@ -61,7 +71,7 @@ def get_signature(message, private_key):
 
 
 def verify_signature(message, signature, public_key):
-    res = rsa.verify(message, signature, public_key)
+    res = rsa.verify(message, signature, normalize_keys(public_key))
     try:
         if res:
             return 'true'
@@ -69,19 +79,32 @@ def verify_signature(message, signature, public_key):
         return 'error'
 
 
+'''
+对长数据进行分组
+'''
 
-if __name__ == '__main__':
-    pub_key, pri_key = create_keys()
-    pub_key = normalize_keys(pub_key)
-    pri_key = normalize_keys(pri_key)
-    print(pub_key, pri_key)
-    me = {
-        "a": 'faw'
-    }
-    cipher_text = encrypt(me, pub_key)
-    print(cipher_text)
-    mes = decrypt(cipher_text, pri_key)
-    print(mes)
-    print(type(mes))
-    print(json.loads(mes))
-    print(type(json.loads(mes)))
+
+def make_group(data, default_length):
+    final_data = []
+    i = 0
+    while True:
+        if (i + default_length) > len(data):
+            final_data.append(data[i:])
+            break
+        final_data.append(data[i:i+default_length])
+        i += default_length
+    return final_data
+
+
+
+
+# if __name__ == '__main__':
+#     pub_key, pri_key = create_keys()
+#
+#     qqqq = {
+#         "a": 'faw'
+#     }
+#     cipher_text = encrypt(qqqq, pub_key)
+#     print(cipher_text)
+#     mes = decrypt(cipher_text, pri_key)
+#     print(mes)

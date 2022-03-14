@@ -1,6 +1,7 @@
 """
 区块链api模块
 """
+
 from flask import Blueprint, jsonify, request
 from src.models import Blockchain, db, Logistics, Commodity, ProduceTH, Produce, Purchase, User
 from src.utils import chain
@@ -85,9 +86,7 @@ def add_block():
     purchaser = Purchase.query.filter(Purchase.logistics_id == logistics_id).first()
     purchaser_id = purchaser.user_id
 
-    public_key = RSA.normalize_keys(User.query.filter(User.user_id == purchaser_id).first().public_key)
-    print(public_key)
-    print(type(summary))
+    public_key = User.query.filter(User.user_id == purchaser_id).first().public_key
     data = RSA.encrypt(summary, public_key)
 
     '''

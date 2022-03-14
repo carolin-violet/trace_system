@@ -2,8 +2,8 @@
 区块链api模块
 """
 
-from flask import Blueprint, jsonify, request
-from src.models import Purchase, db
+from flask import Blueprint, jsonify, request, render_template
+from src.models import Purchase, db, User
 
 purchase_page = Blueprint('purchase_page', __name__)
 
@@ -39,4 +39,22 @@ def query_purchase(user_id):
     return jsonify(data)
 
 
+'''
+扫了二维码后跳转指定页面
+'''
+
+
+@purchase_page.route('/purchase/detail/<logistics_id>', methods=['GET'])
+def query_detail(logistics_id):
+
+    # 获取私钥
+    purchaser_id = Purchase.query.filter(Purchase.logistics_id == logistics_id).first().user_id
+    private_key = User.query.filter(User.user_id == purchaser_id).first().private_key
+    print(private_key)
+
+    # 解密区块链中的加密数据
+
+
+    detail_data = 'hello'
+    return render_template('detail.html', data=detail_data)
 

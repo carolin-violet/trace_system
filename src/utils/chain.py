@@ -78,7 +78,14 @@ class Chain:
 
         while cur_index < len(self.chain):
             # 重新计算前一个区块的哈希值并与后一个区块中记载的上一个区块的哈希值比对
-            pre_hash = self.chain(pre_block.index, pre_block.commodity_id, pre_block.data, pre_block.pre_hash, pre_block.nonce, pre_block.timestamp)
+            pre_info = {
+                "logistics_id": pre_block.logistics_id,
+                "pre_hash": pre_block.pre_hash,
+                "timestamp": pre_block.timestamp,
+                "nonce": pre_block.nonce,
+                "data": pre_block.data,
+            }
+            pre_hash = Hash.get_hash(pre_info)
             if pre_hash != self.chain[cur_index].pre_hash:
                 return False
 

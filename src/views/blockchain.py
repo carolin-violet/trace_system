@@ -134,3 +134,4 @@ def validate_chain():
         return 'true'  # 区块链正确
     else:
         return 'false'   # 区块链中有错
+

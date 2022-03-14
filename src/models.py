@@ -40,7 +40,7 @@ class User(db.Model):
 
 
 class Purchase(db.Model):
-    __tablename__ = "user"
+    __tablename__ = "purchase"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.String(255), nullable=False)  # 顾客id
     logistics_id = db.Column(db.String(255), nullable=False)  # 物流单号

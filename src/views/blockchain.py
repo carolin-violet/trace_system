@@ -1,6 +1,7 @@
 """
 区块链api模块
 """
+import base64
 
 from flask import Blueprint, jsonify, request
 from src.models import Blockchain, db, Logistics, Commodity, ProduceTH, Produce, Purchase, User

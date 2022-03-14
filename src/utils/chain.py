@@ -46,9 +46,7 @@ class Chain:
             "nonce": nonce,
             "data": data,
         }
-        print(info)
         cur_hash = Hash.get_hash(info)
-        print(cur_hash)
         block = Blockchain(logistics_id, cur_hash, pre_hash, timestamp, nonce, data)
         self.db.session.add(block)
         self.db.session.commit()

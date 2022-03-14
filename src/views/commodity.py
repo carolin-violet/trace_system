@@ -32,10 +32,7 @@ def add_commodity():
     qr_path = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.getcwd())), 'static/qr_codes/'+str(logistics_id)+'.png'))
     img.make_qrcode(qrcode_url, qr_path)
 
-    '''待完善'''
-    cur_hash = ''
-
-    commodity = Commodity(user_id, area_id, batch, name, price, weight, logistics_id, ini, des, qrcode_url, cur_hash)
+    commodity = Commodity(user_id, area_id, batch, name, price, weight, logistics_id, ini, des, qrcode_url, cur_hash='')
     db.session.add(commodity)
     db.session.commit()
 

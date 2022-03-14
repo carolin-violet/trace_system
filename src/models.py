@@ -153,13 +153,12 @@ class Commodity(db.Model):
     name = db.Column(db.String(10), nullable=False)  # 商品名称
     price = db.Column(db.Float, nullable=True)  # 商品单价(元/斤)
     weight = db.Column(db.Float, nullable=True)  # 商品重量(斤)
-    logistics_id = db.Column(db.String(255), nullable=False)  # 编号（ 物流：运单号  仓库：仓库编号）
+    logistics_id = db.Column(db.String(255), nullable=False)  # 物流单号
     ini = db.Column(db.String(100), nullable=False)  # 初始地
     des = db.Column(db.String(100), nullable=False)  # 目的地
     qrcode_url = db.Column(db.Text, nullable=False)  # 二维码存放的网址
-    cur_hash = db.Column(db.String(255), nullable=False)  # 此产品对应区块链的当前hash值，作为区块链的索引
 
-    def __init__(self, user_id, area_id, batch, name, price, weight, logistics_id, ini, des, qrcode_url, cur_hash):
+    def __init__(self, user_id, area_id, batch, name, price, weight, logistics_id, ini, des, qrcode_url):
         self.user_id = user_id
         self.area_id = area_id
         self.batch = batch
@@ -170,10 +169,9 @@ class Commodity(db.Model):
         self.ini = ini
         self.des = des
         self.qrcode_url = qrcode_url
-        self.cur_hash = cur_hash
 
     def __repr__(self):
-        return '<Commodity %r>' % self.cur_hash
+        return '<Commodity %r>' % self.logistics_id
 
 
 '''
@@ -184,8 +182,8 @@ class Commodity(db.Model):
 class Logistics(db.Model):
     __tablename__ = 'logistics'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    logistics_id = db.Column(db.String(255), nullable=False)  # 编号（ 物流：运单号  仓库：仓库编号）
-    status = db.Column(db.String(10), nullable=False)  # 商品状态  (已发货, 运输中, 已到货, 已签收)
+    logistics_id = db.Column(db.String(255), nullable=False)  # 物流单号
+    status = db.Column(db.String(10), nullable=False)  # 商品状态  (已发货, 运输中, 已到货)
     com = db.Column(db.String(50), nullable=False)  # 操作的公司名
     time = db.Column(db.String(100), nullable=False)  # 操作时间，需要获取当前系统时间
     cur = db.Column(db.String(100), nullable=False)  # 当前所在地
@@ -210,13 +208,15 @@ class Logistics(db.Model):
 class Blockchain(db.Model):
     __tablename__ = 'blockchain'
     id = db.Column(db.BIGINT, primary_key=True, autoincrement=True,)
-    cur_hash = db.Column(db.String(255), nullable=True)  # 当前区块的hash值，作为主键
+    logistics_id = db.Column(db.String(255), nullable=False)  # 物流单号
+    cur_hash = db.Column(db.String(255), nullable=True)  # 当前区块的hash值
     pre_hash = db.Column(db.String(255), nullable=True)  # 前一个区块的hash值
     timestamp = db.Column(db.String(100), nullable=True)  # 时间戳
     nonce = db.Column(db.BIGINT, nullable=False)  # 随机数
     data = db.Column(db.Text, nullable=True)  # 数据部分
 
-    def __init__(self, cur_hash, pre_hash, timestamp, nonce, data):
+    def __init__(self, logistics_id, cur_hash, pre_hash, timestamp, nonce, data):
+        self.logistics_id = logistics_id
         self.cur_hash = cur_hash
         self.pre_hash = pre_hash
         self.timestamp = timestamp

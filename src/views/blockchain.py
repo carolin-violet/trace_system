@@ -11,28 +11,26 @@ chain_page = Blueprint('chain_page', __name__)
 
 
 '''
-查询一共有多少条区块链
-每条链作为一组数据
+增加一个区块
 '''
 
 
-@chain_page.route('/chains/count', methods=['GET'])
-def query_count():
-    chains = Blockchain.query.group_by(Blockchain.commodity_id).count()
+@chain_page.route('/blockchain', methods=['POST'])
+def add_block():
+
     return str(chains)
 
 
 '''
-查询一条区块链信息
+查询整条区块链信息
 '''
 
 
-@chain_page.route('/chains/<commodity_id>', methods=['GET'])
+@chain_page.route('/blockchain/<commodity_id>', methods=['GET'])
 def query_chain(commodity_id):
     blocks = Blockchain.query.filter(Blockchain.commodity_id == commodity_id).all()
 
     data_1 = json.loads(blocks[1].data, strict=False)
-    # print(data_1)
     data = {
         "商品id": commodity_id,
         "始发地": data_1["ini"],
@@ -54,11 +52,11 @@ def query_chain(commodity_id):
 
 
 '''
-验证一条区块链的合理性
+验证区块链的合理性
 '''
 
 
-@chain_page.route('/chains/validate_proof/<commodity_id>', methods=['GET'])
+@chain_page.route('/blockchain/validate_proof/<commodity_id>', methods=['GET'])
 def validate_chain(commodity_id):
     blocks = Blockchain.query.filter(Blockchain.commodity_id == commodity_id).all()
     verify_chain = chain.Chain(commodity_id, blocks)

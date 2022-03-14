@@ -18,13 +18,14 @@ class Chain:
     def create_genesis_block(self):
         timestamp = '{0:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
         info = {
+            "logistics_id": '0',
             "pre_hash": '0',
             "timestamp": timestamp,
             "nonce": 0,
             "data": '',
         }
         cur_hash = Hash.get_hash(info)
-        genesis_block = Blockchain(cur_hash, '0', timestamp, 0, '')
+        genesis_block = Blockchain('0', cur_hash, '0', timestamp, 0, '')
         self.db.session.add(genesis_block)
         self.db.session.commit()
 
@@ -32,13 +33,14 @@ class Chain:
     增加新区块,
     data为加密后的data
     '''
-    def new_block(self, data):
+    def new_block(self, logistics_id, data):
         pre_hash = self.last_block.cur_hash
         timestamp = '{0:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
         pre_nonce = self.last_block.nonce
         nonce = self.proof_of_work(pre_nonce)
 
         info = {
+            "logistics_id": logistics_id,
             "pre_hash": pre_hash,
             "timestamp": timestamp,
             "nonce": nonce,
@@ -46,7 +48,7 @@ class Chain:
         }
         cur_hash = Hash.get_hash(info)
 
-        block = Blockchain(cur_hash, pre_hash, timestamp, nonce, data)
+        block = Blockchain(logistics_id, cur_hash, pre_hash, timestamp, nonce, data)
         self.db.session.add(block)
         self.db.session.commit()
 

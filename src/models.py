@@ -62,7 +62,7 @@ class Produce(db.Model):
     area_id = db.Column(db.Integer, nullable=False)  # 农田区域id
     batch = db.Column(db.Integer, nullable=False)  # 生产批次
     op_type = db.Column(db.String(2), nullable=False)  # 播种,浇水,施肥,除虫,除草,收割,存储,出库
-    op_time = db.Column(db.DateTime, nullable=False)  # 操作时间
+    op_time = db.Column(db.String(100), nullable=False)  # 操作时间
     description = db.Column(db.Text, default='')  # 详情描述
     img_path = db.Column(db.Text, default='')  # 照片存放地址
 

@@ -86,6 +86,8 @@ def add_block():
     purchaser_id = purchaser.user_id
 
     public_key = RSA.normalize_keys(User.query.filter(User.user_id == purchaser_id).first().public_key)
+    print(public_key)
+    print(type(summary))
     data = RSA.encrypt(summary, public_key)
 
     '''

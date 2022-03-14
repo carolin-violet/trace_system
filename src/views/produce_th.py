@@ -25,13 +25,15 @@ def add_produce_th():
     db.session.add(th)
     db.session.commit()
 
+    return '添加成功'
+
 
 '''
 查询指定产商指定区域农作物的温湿度
 '''
 
 
-@produce_th_page.route('/produce/<producer_id>/<area_id>', methods=['GET'])
+@produce_th_page.route('/produce_th/<producer_id>/<area_id>', methods=['GET'])
 def query_produce_th(producer_id, area_id):
     information = ProduceTH.query.filter((ProduceTH.user_id == producer_id) & (ProduceTH.area_id == area_id)).all()
 

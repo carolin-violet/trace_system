@@ -1,21 +1,26 @@
-from src.models import Blockchain
+"""
+区块链类
+"""
+
 import datetime
 import json
-from hashlib import sha256
+from src.models import Blockchain
+from src.security import Hash, RSA
 
 
 class Chain:
-    def __init__(self, commodity_id, blocks):
-        self.commodity_id = commodity_id
-        self.blocks = blocks
+    def __init__(self, chain):
+        self.chain = chain
 
     '''
     创建初始区块
     '''
-    def create_genesis_block(self, db):
+    @staticmethod
+    def create_genesis_block(db):
         time_stamp = '{0:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
-        cur_hash = self.hash(0, self.commodity_id, 'genesis_block', '1', 0, time_stamp)
-        genesis_block = Blockchain(0, self.commodity_id, 'genesis_block', '1', cur_hash, 0, time_stamp)
+        genesis_data = ''
+        cur_hash = Hash.get_hash(genesis_data)
+        genesis_block = Blockchain(cur_hash, '0', time_stamp, 0, genesis_data)
         db.session.add(genesis_block)
         db.session.commit()
 

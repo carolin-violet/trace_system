@@ -2,6 +2,7 @@
 区块链api模块
 """
 import base64
+import json
 
 from flask import Blueprint, jsonify, request
 from src.models import Blockchain, db, Logistics, Commodity, ProduceTH, Produce, Purchase, User
@@ -111,13 +112,17 @@ def query_chain():
 
     data = []
     for block in blocks:
+        try:
+            detail_data = json.loads(block.data)
+        except json.decoder.JSONDecodeError:
+            detail_data = block.data
         data.append({
             "logistics_id": block.logistics_id,
             "cur_hash": block.cur_hash,
             "pre_hash": block.pre_hash,
             "timestamp": block.timestamp,
             "nonce": block.nonce,
-            "data": block.data,
+            "data": detail_data,
         })
     return jsonify(data)
 

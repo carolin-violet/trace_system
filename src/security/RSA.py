@@ -40,7 +40,6 @@ def encrypt(message, public_key):
     if len(message.encode('utf-8')) > 53:
         message_list = make_group(message.encode('utf-8'), default_length)
         cipher = json.dumps([str(rsa.encrypt(i, normalize_keys(public_key))) for i in message_list])
-        print(len(cipher))
     else:
         cipher = str(rsa.encrypt(message.encode('utf-8'), normalize_keys(public_key)))
     return cipher

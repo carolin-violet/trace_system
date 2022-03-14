@@ -111,11 +111,17 @@ def query_chain():
     blocks = Blockchain.query.all()
 
     data = []
+
     for block in blocks:
+        '''
+        使用json序列化的长加密数据需要反序列化,
+        没使用json序列化的短加密数据则不需要反序列化
+        '''
         try:
             detail_data = json.loads(block.data)
         except json.decoder.JSONDecodeError:
             detail_data = block.data
+
         data.append({
             "logistics_id": block.logistics_id,
             "cur_hash": block.cur_hash,

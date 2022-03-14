@@ -28,11 +28,11 @@ def add_commodity():
     ini = request.form['ini']
     des = request.form['des']
 
-    qrcode_url = "http://127.0.0.1:5000" + "/commodity/img/" + str(logistics_id)
+    qrcode_url = "http://127.0.0.1:5000" + "/commodity/" + str(logistics_id)
     qr_path = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.getcwd())), 'static/qr_codes/'+str(logistics_id)+'.png'))
     img.make_qrcode(qrcode_url, qr_path)
 
-    commodity = Commodity(user_id, area_id, batch, name, price, weight, logistics_id, ini, des, qrcode_url, cur_hash='')
+    commodity = Commodity(user_id, area_id, batch, name, price, weight, logistics_id, ini, des, qrcode_url)
     db.session.add(commodity)
     db.session.commit()
 
@@ -116,4 +116,5 @@ def get_commodity(cur_hash):
 def get_img(logistics_id):
     img_path = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.getcwd())), 'static/qr_codes/'+str(logistics_id)+'.png'))
     return send_file(img_path, mimetype='image/gif')
+
 

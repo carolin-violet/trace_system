@@ -7,7 +7,7 @@ from flask import Blueprint, jsonify, render_template
 from src.models import Purchase, Blockchain, User
 from src.security import RSA
 
-purchaser_page = Blueprint('purchaser_page', __name__)
+purchase_page = Blueprint('purchase_page', __name__)
 
 
 '''
@@ -15,7 +15,7 @@ purchaser_page = Blueprint('purchaser_page', __name__)
 '''
 
 
-@purchaser_page.route('/purchase/<user_id>', methods=['GET'])
+@purchase_page.route('/purchase/<user_id>', methods=['GET'])
 def query_purchase(user_id):
     purchases = Purchase.query.filter(Purchase.user_id == user_id).all()
     data = []
@@ -29,7 +29,7 @@ def query_purchase(user_id):
 '''
 
 
-@purchaser_page.route('/purchase/<logistics_id>', methods=['GET'])
+@purchase_page.route('/purchase/<logistics_id>', methods=['GET'])
 def get_img(logistics_id):
     block = Blockchain.query.filter(Blockchain.logistics_id == logistics_id).first()
     cipher_data = block.data

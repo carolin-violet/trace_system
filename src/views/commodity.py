@@ -28,7 +28,7 @@ def add_commodity():
     ini = request.form['ini']
     des = request.form['des']
 
-    qrcode_url = "http://127.0.0.1:5000" + "/commodity/" + str(logistics_id)
+    qrcode_url = "http://127.0.0.1:7777" + "/commodity/" + str(logistics_id)
     qr_path = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.getcwd())), 'static/qr_codes/'+str(logistics_id)+'.png'))
     img.make_qrcode(qrcode_url, qr_path)
 

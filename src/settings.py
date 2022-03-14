@@ -17,6 +17,8 @@ class Config(object):
     # 自动回收连接的秒数。这对 MySQL 是必须的，默认 情况下 MySQL 会自动移除闲置 8 小时或者以上的连接。 需要注意地是如果使用 MySQL 的话， Flask-SQLAlchemy 会自动地设置这个值为 2 小时
     SQLALCHEMY_POOL_RECYCLE = 1
 
+    SERVER_NAME = '127.0.0.1:7777'
+
     # # Redis的配置
     # REDIS_HOST = '127.0.0.1'
     # REIDS_PORT = 6379

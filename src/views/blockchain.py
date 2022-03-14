@@ -2,7 +2,7 @@
 区块链api模块
 """
 from flask import Blueprint, jsonify, request
-from src.models import Blockchain, db, Logistics, Commodity
+from src.models import Blockchain, db, Logistics, Commodity, ProduceTH, Produce
 from src.utils import chain
 from src.security import RSA
 
@@ -18,7 +18,6 @@ chain_page = Blueprint('chain_page', __name__)
 @chain_page.route('/blockchain', methods=['POST'])
 def add_block():
     logistics_id = request.json['logistics_id']
-    summary = {}
 
     '''
     汇总物流信息
@@ -53,12 +52,30 @@ def add_block():
     }
 
     '''
-    汇总存储信息
+    汇总发货前的生产信息
     '''
+    th_data = []
+    produce_data = []
+    ths = ProduceTH.query.filter((ProduceTH.user_id == commodity.user_id) & (ProduceTH.area_id == commodity.area_id) & (ProduceTH.batch == commodity.batch)).all()
+    for th in ths:
+        th_data.append({
+            "temp": th.temp,
+            "hum": th.hum,
+            "date": th.date,
+        })
+    produces = Produce.query.filter((Produce.user_id == commodity.user_id) & (Produce.area_id == commodity.area_id) & (Produce.batch == commodity.batch)).all()
+    for produce in produces:
+        produce_data.append({
+            "op_type": produce.op_type,
+            "op_time": produce.op_time,
+            "description": produce.description,
+            "img_path": produce.img_path,
+        })
 
     '''
-    汇总生产信息
+    汇总数据并加密
     '''
+    summary = {}
 
 
     blocks = Blockchain.query.all()

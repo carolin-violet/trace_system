@@ -92,6 +92,7 @@ def add_block():
     '''
     blocks = Blockchain.query.all()
     blockchain = chain.Chain(blocks, db)
+    blockchain.new_block(logistics_id, data)
 
     return '添加成功'
 
@@ -124,10 +125,10 @@ def query_chain():
 
 
 @chain_page.route('/blockchain/validate_proof', methods=['GET'])
-def validate_chain(commodity_id):
+def validate_chain():
     blocks = Blockchain.query.all()
-    verify_chain = chain.Chain(commodity_id, blocks)
-    is_correct = verify_chain.validate_chain
+    blockchain = chain.Chain(blocks, db)
+    is_correct = blockchain.validate_chain()
     if is_correct:
         return 'true'  # 区块链正确
     else:

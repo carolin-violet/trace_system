@@ -1,8 +1,9 @@
 """
 生产信息
 """
-from src.models import Produce, db
 from flask import Blueprint, request, jsonify
+import time
+from src.models import Produce, db
 
 produce_page = Blueprint('produce_page', __name__)
 
@@ -17,12 +18,14 @@ def add_produce_info():
     area_id = request.form['area_id']
     batch = request.form['batch']
     op_type = request.form['op_type']
-    op_time = request.form['op_time']
+    op_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     description = request.form['description']
 
     produce_info = Produce(user_id, area_id, batch, op_type, op_time, description)
     db.session.add(produce_info)
     db.session.commit()
+
+    return '添加成功'
 
 
 '''

@@ -1,11 +1,9 @@
 """
 区块链api模块
 """
-import json
 
-from flask import Blueprint, jsonify, render_template, request
-from src.models import Purchase, Blockchain, User, db
-from src.security import RSA
+from flask import Blueprint, jsonify, request
+from src.models import Purchase, db
 
 purchase_page = Blueprint('purchase_page', __name__)
 
@@ -41,13 +39,4 @@ def query_purchase(user_id):
     return jsonify(data)
 
 
-'''
-扫了二维码后跳转指定页面
-'''
-
-
-@purchase_page.route('/purchase/<logistics_id>', methods=['GET'])
-def get_img(logistics_id):
-    block = Blockchain.query.filter(Blockchain.logistics_id == logistics_id).first()
-    return render_template('show_data.html', data=block.data)
 

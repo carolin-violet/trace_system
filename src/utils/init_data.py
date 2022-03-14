@@ -1,5 +1,6 @@
 from src.models import User
 from src.security.RSA import create_keys
+from chain import Chain
 
 
 def initialize(db):
@@ -13,5 +14,8 @@ def initialize(db):
     db.session.add(admin)
     db.session.commit()
 
+    # 创建初始区块
+    blockchain = Chain('', db)
+    blockchain.create_genesis_block()
 
 

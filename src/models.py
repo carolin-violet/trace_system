@@ -210,15 +210,15 @@ class Logistics(db.Model):
 class Blockchain(db.Model):
     __tablename__ = 'blockchain'
     id = db.Column(db.BIGINT, primary_key=True, autoincrement=True,)
-    cur_hash = db.Column(db.String(255), nullable=True)  # 当前区块data的hash值，作为主键
+    cur_hash = db.Column(db.String(255), nullable=True)  # 当前区块的hash值，作为主键
     pre_hash = db.Column(db.String(255), nullable=True)  # 前一个区块的hash值
     timestamp = db.Column(db.String(100), nullable=True)  # 时间戳
     nonce = db.Column(db.BIGINT, nullable=False)  # 随机数
     data = db.Column(db.Text, nullable=True)  # 数据部分
 
-    def __init__(self, pre_hash, cur_hash, timestamp, nonce, data):
-        self.pre_hash = pre_hash
+    def __init__(self, cur_hash, pre_hash, timestamp, nonce, data):
         self.cur_hash = cur_hash
+        self.pre_hash = pre_hash
         self.timestamp = timestamp
         self.nonce = nonce
         self.data = data

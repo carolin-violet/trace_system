@@ -3,42 +3,48 @@
 """
 
 import datetime
-import json
 from src.models import Blockchain
-from src.security import Hash, RSA
+from src.security import Hash
 
 
 class Chain:
-    def __init__(self, chain):
+    def __init__(self, chain, db):
         self.chain = chain
+        self.db = db
 
     '''
     创建初始区块
     '''
-    @staticmethod
-    def create_genesis_block(db):
-        time_stamp = '{0:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
+    def create_genesis_block(self):
+        timestamp = '{0:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
         genesis_data = ''
+
         cur_hash = Hash.get_hash(genesis_data)
-        genesis_block = Blockchain(cur_hash, '0', time_stamp, 0, genesis_data)
-        db.session.add(genesis_block)
-        db.session.commit()
+        genesis_block = Blockchain(cur_hash, '0', timestamp, 0, genesis_data)
+        self.db.session.add(genesis_block)
+        self.db.session.commit()
 
     '''
-    求一个区块信息的哈希值
+    增加新区块,
+    data为加密后的data
     '''
-    @staticmethod
-    def hash(index, commodity_id, data, pre_hash, nonce, timestamp):
-        data = {
-            "index": index,
-            "commodity_id": commodity_id,
-            "data": data,
+    def new_block(self, data):
+        pre_hash = self.last_block.cur_hash
+        timestamp = '{0:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
+        pre_nonce = self.last_block.nonce
+        nonce = self.proof_of_work(pre_nonce)
+
+        info = {
             "pre_hash": pre_hash,
-            "nonce": nonce,
             "timestamp": timestamp,
+            "nonce": nonce,
+            "data": data,
         }
-        block_string = json.dumps(data, sort_keys=True)
-        return sha256(block_string.encode()).hexdigest()
+        cur_hash = Hash.get_hash(info)
+
+        block = Blockchain(cur_hash, pre_hash, timestamp, nonce, data)
+        self.db.session.add(block)
+        self.db.session.commit()
 
     '''
     工作量证明求解
@@ -57,37 +63,6 @@ class Chain:
         data = str(pre_nonce)+str(cur_nonce)
         return sha256(data.encode()).hexdigest().startswith('0')
 
-    '''
-    将物流信息转换为字符串
-    '''
-    @staticmethod
-    def new_logistics(commodity_id, status, com, time, ini, des, cur, person, tel):
-        data = {
-            "commodity_id": commodity_id,
-            "status": status,
-            "com": com,
-            "time": time,
-            "ini": ini,
-            "des": des,
-            "cur": cur,
-            "person": person,
-            "tel": tel,
-        }
-        return json.dumps(data, sort_keys=True)
-
-    '''
-    增加新区块
-    '''
-    def add_block(self, db, commodity_id, status, com, time, ini, dec, cur, person, tel):
-        time_stamp = '{0:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
-        index = self.last_block.index + 1
-        pre_hash = self.last_block.cur_hash
-        data = self.new_logistics(commodity_id, status, com, time, ini, dec, cur, person, tel)
-        nonce = self.proof_of_work(self.last_block.nonce)
-        cur_hash = self.hash(index, commodity_id, data, pre_hash, nonce, time_stamp)
-        block = Blockchain(index, commodity_id, data, pre_hash, cur_hash, nonce, time_stamp)
-        db.session.add(block)
-        db.session.commit()
 
     '''
     验证区块链有效性
@@ -112,10 +87,10 @@ class Chain:
     '''
     @property
     def last_block(self):
-        if len(self.blocks) > 1:
-            return self.blocks[-1]
-        elif len(self.blocks) == 1:
-            return self.blocks[0]
+        if len(self.chain) > 1:
+            return self.chain[-1]
+        elif len(self.chain) == 1:
+            return self.chain[0]
 
 
 

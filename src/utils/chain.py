@@ -17,10 +17,14 @@ class Chain:
     '''
     def create_genesis_block(self):
         timestamp = '{0:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
-        genesis_data = ''
-
-        cur_hash = Hash.get_hash(genesis_data)
-        genesis_block = Blockchain(cur_hash, '0', timestamp, 0, genesis_data)
+        info = {
+            "pre_hash": '0',
+            "timestamp": timestamp,
+            "nonce": 0,
+            "data": '',
+        }
+        cur_hash = Hash.get_hash(info)
+        genesis_block = Blockchain(cur_hash, '0', timestamp, 0, '')
         self.db.session.add(genesis_block)
         self.db.session.commit()
 
@@ -61,24 +65,22 @@ class Chain:
     @staticmethod
     def validate_proof(pre_nonce, cur_nonce):
         data = str(pre_nonce)+str(cur_nonce)
-        return sha256(data.encode()).hexdigest().startswith('0')
-
+        return Hash.get_hash(data).startswith('0')
 
     '''
     验证区块链有效性
     '''
-    @property
     def validate_chain(self):
-        pre_block = self.blocks[0]
+        pre_block = self.chain[0]
         cur_index = 1
 
-        while cur_index < len(self.blocks):
+        while cur_index < len(self.chain):
             # 重新计算前一个区块的哈希值并与后一个区块中记载的上一个区块的哈希值比对
-            pre_hash = self.hash(pre_block.index, pre_block.commodity_id, pre_block.data, pre_block.pre_hash, pre_block.nonce, pre_block.timestamp)
-            if pre_hash != self.blocks[cur_index].pre_hash:
+            pre_hash = self.chain(pre_block.index, pre_block.commodity_id, pre_block.data, pre_block.pre_hash, pre_block.nonce, pre_block.timestamp)
+            if pre_hash != self.chain[cur_index].pre_hash:
                 return False
 
-            pre_block = self.blocks[cur_index]
+            pre_block = self.chain[cur_index]
             cur_index += 1
         return True
 

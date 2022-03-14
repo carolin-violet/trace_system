@@ -24,18 +24,18 @@ def add_commodity():
     name = request.form['name']
     price = request.form['price']
     weight = request.form['weight']
-    commodity_id = uuid1()
+    logistics_id = uuid1()
     ini = request.form['ini']
     des = request.form['des']
 
-    qrcode_url = "http://127.0.0.1:5000" + "/commodity/img/" + str(commodity_id)
-    qr_path = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.getcwd())), 'static/qr_codes/'+str(commodity_id)+'.png'))
+    qrcode_url = "http://127.0.0.1:5000" + "/commodity/img/" + str(logistics_id)
+    qr_path = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.getcwd())), 'static/qr_codes/'+str(logistics_id)+'.png'))
     img.make_qrcode(qrcode_url, qr_path)
 
     '''待完善'''
     cur_hash = ''
 
-    commodity = Commodity(user_id, area_id, batch, name, price, weight, commodity_id, ini, des, qrcode_url, cur_hash)
+    commodity = Commodity(user_id, area_id, batch, name, price, weight, logistics_id, ini, des, qrcode_url, cur_hash)
     db.session.add(commodity)
     db.session.commit()
 
@@ -115,8 +115,8 @@ def get_commodity(cur_hash):
 '''
 
 
-@commodity_page.route('/commodity/img/<commodity_id>', methods=['GET'])
-def get_img(commodity_id):
-    img_path = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.getcwd())), 'static/qr_codes/'+str(commodity_id)+'.png'))
+@commodity_page.route('/commodity/img/<logistics_id>', methods=['GET'])
+def get_img(logistics_id):
+    img_path = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.getcwd())), 'static/qr_codes/'+str(logistics_id)+'.png'))
     return send_file(img_path, mimetype='image/gif')
 

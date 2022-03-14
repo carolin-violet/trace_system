@@ -1,6 +1,6 @@
 from src.models import User
 from src.security.RSA import create_keys
-from chain import Chain
+from src.utils.chain import Chain
 
 
 def initialize(db):

@@ -39,7 +39,7 @@ def encrypt(message, public_key):
     '''
     if len(message.encode('utf-8')) > 53:
         message_list = make_group(message.encode('utf-8'), default_length)
-        cipher = json.dumps([str(rsa.encrypt(i, normalize_keys(public_key))) for i in message_list])
+        cipher = json.dumps([rsa.encrypt(i, normalize_keys(public_key)) for i in message_list])
     else:
         cipher = str(rsa.encrypt(message.encode('utf-8'), normalize_keys(public_key)))
     return cipher
@@ -57,8 +57,10 @@ def decrypt(cipher, private_key):
         ini_data = cipher
 
     if type(ini_data) == list:  # 加密数据为字符串列表
-        list_data = [rsa.decrypt(bytes(i), normalize_keys(private_key)).decode('utf-8') for i in ini_data]
-        print(list_data)
+        list_data = []
+        for item in ini_data:
+            print(item)
+            print(bytes(item[2:-1], encoding='utf-8'))
     elif type(ini_data) == str:  # 加密数据为字符串
         message = rsa.decrypt(bytes(ini_data), normalize_keys(private_key)).decode('utf-8')
         return message

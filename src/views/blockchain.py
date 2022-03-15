@@ -1,8 +1,6 @@
 """
 区块链api模块
 """
-import base64
-import json
 
 from flask import Blueprint, jsonify, request
 from src.models import Blockchain, db, Logistics, Commodity, ProduceTH, Produce, Purchase, User
@@ -109,7 +107,6 @@ def add_block():
 @chain_page.route('/blockchain', methods=['GET'])
 def query_chain():
     blocks = Blockchain.query.all()
-
     data = []
 
     for block in blocks:

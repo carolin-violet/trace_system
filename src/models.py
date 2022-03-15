@@ -174,7 +174,7 @@ class Blockchain(db.Model):
     pre_hash = db.Column(db.String(255), nullable=True)  # 前一个区块的hash值
     timestamp = db.Column(db.String(100), nullable=True)  # 时间戳
     nonce = db.Column(db.BIGINT, nullable=False)  # 随机数
-    data = db.Column(db.Text, nullable=True)  # 数据部分
+    data = db.Column(db.VARBINARY(1000), nullable=True)  # 数据部分
 
     def __init__(self, logistics_id, cur_hash, pre_hash, timestamp, nonce, data):
         self.logistics_id = logistics_id

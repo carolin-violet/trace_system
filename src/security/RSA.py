@@ -33,13 +33,16 @@ def encrypt(message, public_key):
     default_length = 53  # 每次最多加密53字节
     if type(message) == dict:
         message = json.dumps(message, sort_keys=True)
-
     '''
-    当需加密的数据超过53字节时就分段加密
+    当需加密的数据超过53字长时就分段加密,
+    加密后每一段数据都是64字长字节
     '''
     if len(message.encode('utf-8')) > 53:
         message_list = make_group(message.encode('utf-8'), default_length)
-        cipher = json.dumps([rsa.encrypt(i, normalize_keys(public_key)) for i in message_list])
+        for item in message_list:
+            cipher_item = rsa.encrypt(item, normalize_keys(public_key))
+            print(cipher_item)
+            print(b64encode(cipher_item))
     else:
         cipher = str(rsa.encrypt(message.encode('utf-8'), normalize_keys(public_key)))
     return cipher

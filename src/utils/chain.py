@@ -102,6 +102,10 @@ class Chain:
         elif len(self.chain) == 1:
             return self.chain[0]
 
-
+    '''
+    存储密文，返回文件路径
+    '''
+    @staticmethod
+    def store_cipher(data):
 
 

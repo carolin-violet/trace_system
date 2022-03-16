@@ -2,6 +2,7 @@ import rsa
 from base64 import b64encode, b64decode
 import pickle
 import json
+import os
 
 '''
 生成公私钥对,
@@ -39,13 +40,14 @@ def encrypt(message, public_key):
     '''
     if len(message.encode('utf-8')) > 53:
         message_list = make_group(message.encode('utf-8'), default_length)
+        cipher_list = []
         for item in message_list:
             cipher_item = rsa.encrypt(item, normalize_keys(public_key))
-            print(cipher_item)
-            print(b64encode(cipher_item))
+            cipher_list.append(b64encode(cipher_item))
+        return cipher_list
     else:
-        cipher = str(rsa.encrypt(message.encode('utf-8'), normalize_keys(public_key)))
-    return cipher
+        cipher = rsa.encrypt(message.encode('utf-8'), normalize_keys(public_key))
+        return b64encode(cipher)
 
 
 '''
@@ -107,8 +109,6 @@ def make_group(data, default_length):
         final_data.append(data[i:i+default_length])
         i += default_length
     return final_data
-
-
 
 
 # if __name__ == '__main__':

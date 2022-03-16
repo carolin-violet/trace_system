@@ -3,6 +3,7 @@
 """
 from flask import Blueprint, request, jsonify
 import time
+import os
 from src.models import Produce, db
 
 produce_page = Blueprint('produce_page', __name__)
@@ -21,21 +22,19 @@ def add_produce_info():
     op_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     description = request.form['description']
 
-    produce_info = Produce(user_id, area_id, batch, op_type, op_time, description)
+    '''
+    接收并保存图片
+    '''
+    img = request.files.get('photo')
+    rel_path = user_id + '--' + area_id + '--' + batch + '--' + op_type + '--' + op_time.split(' ')[0] + '.' + img.filename.split('.')[-1]
+    img_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__))) + '/static/produce_img/' + rel_path
+    img.save(img_path)
+
+    produce_info = Produce(user_id, area_id, batch, op_type, op_time, description, img_path)
     db.session.add(produce_info)
     db.session.commit()
 
     return '添加成功'
-
-
-'''
-添加生产过程拍摄的图片
-'''
-
-
-@produce_page.route('/produce/img', methods=['POST'])
-def add_produce_image():
-    pass
 
 
 '''

@@ -61,8 +61,11 @@ class Chain:
     def store_cipher(logistics_id, data):
         data_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__))) + '/static/data/' + logistics_id + '.txt'
         with open(data_path, 'wb') as fp:
-            for item in data:
-                fp.write(item+'\n')
+            if type(data) == list:
+                for item in data:
+                    fp.write(item+'\n')
+            elif type(data) == bytes:
+                fp.write(data)
         return data_path
 
     '''

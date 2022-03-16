@@ -174,15 +174,15 @@ class Blockchain(db.Model):
     pre_hash = db.Column(db.String(255), nullable=True)  # 前一个区块的hash值
     timestamp = db.Column(db.String(100), nullable=True)  # 时间戳
     nonce = db.Column(db.BIGINT, nullable=False)  # 随机数
-    data = db.Column(db.String(255), nullable=True)  # 数据部分,存储加密数据所在文件路径
+    data_path = db.Column(db.String(255), nullable=True)  # 数据部分,存储加密数据所在文件路径
 
-    def __init__(self, logistics_id, cur_hash, pre_hash, timestamp, nonce, data):
+    def __init__(self, logistics_id, cur_hash, pre_hash, timestamp, nonce, data_path):
         self.logistics_id = logistics_id
         self.cur_hash = cur_hash
         self.pre_hash = pre_hash
         self.timestamp = timestamp
         self.nonce = nonce
-        self.data = data
+        self.data_path = data_path
 
 
 

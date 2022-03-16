@@ -54,8 +54,15 @@ def query_detail(logistics_id):
     private_key = User.query.filter(User.user_id == purchaser_id).first().private_key
 
     # 解密区块链中的加密数据
-    message = RSA.decrypt(block.data, private_key)
+    cipher_path = block.data_path
+    with open(cipher_path, 'rb') as fp:
+        cipher = fp.read()
+        i = 0
+        cipher_list = []
+        while i < len(cipher):
+            cipher_list.append(cipher[i:i+64])
+            i += 64
+    message = RSA.decrypt(cipher_list, private_key)
 
-    detaildata = 'hello'
-    return render_template('detail.html', data=detaildata)
+    return render_template('detail.html', data=message)
 

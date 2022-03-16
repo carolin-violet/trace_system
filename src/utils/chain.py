@@ -3,6 +3,7 @@
 """
 
 import datetime
+import os
 from src.models import Blockchain
 from src.security import Hash
 
@@ -38,18 +39,31 @@ class Chain:
         timestamp = '{0:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
         pre_nonce = self.last_block.nonce
         nonce = self.proof_of_work(pre_nonce)
+        data_path = self.store_cipher(logistics_id, data)
 
         info = {
             "logistics_id": logistics_id,
             "pre_hash": pre_hash,
             "timestamp": timestamp,
             "nonce": nonce,
-            "data": data,
+            "data": data_path,
         }
         cur_hash = Hash.get_hash(info)
-        block = Blockchain(logistics_id, cur_hash, pre_hash, timestamp, nonce, data)
+        block = Blockchain(logistics_id, cur_hash, pre_hash, timestamp, nonce, data_path)
         self.db.session.add(block)
         self.db.session.commit()
+
+    '''
+    存储密文，返回文件路径
+    '''
+
+    @staticmethod
+    def store_cipher(logistics_id, data):
+        data_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__))) + '/static/data/' + logistics_id + '.txt'
+        with open(data_path, 'wb') as fp:
+            for item in data:
+                fp.write(item+'\n')
+        return data_path
 
     '''
     工作量证明求解
@@ -101,11 +115,5 @@ class Chain:
             return self.chain[-1]
         elif len(self.chain) == 1:
             return self.chain[0]
-
-    '''
-    存储密文，返回文件路径
-    '''
-    @staticmethod
-    def store_cipher(data):
 
 

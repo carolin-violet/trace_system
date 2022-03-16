@@ -2,7 +2,6 @@ import rsa
 from base64 import b64encode, b64decode
 import pickle
 import json
-import os
 
 '''
 生成公私钥对,
@@ -43,11 +42,11 @@ def encrypt(message, public_key):
         cipher_list = []
         for item in message_list:
             cipher_item = rsa.encrypt(item, normalize_keys(public_key))
-            cipher_list.append(b64encode(cipher_item))
+            cipher_list.append(cipher_item)
         return cipher_list
     else:
         cipher = rsa.encrypt(message.encode('utf-8'), normalize_keys(public_key))
-        return b64encode(cipher)
+        return cipher
 
 
 '''

@@ -63,7 +63,7 @@ class Chain:
         with open(data_path, 'wb') as fp:
             if type(data) == list:
                 for item in data:
-                    fp.write(item+'\n')
+                    fp.write(item)
             elif type(data) == bytes:
                 fp.write(data)
         return data_path

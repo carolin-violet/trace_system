@@ -11,7 +11,7 @@ login_page = Blueprint('login_page', __name__)
 def login():
     account = request.json['account']
     password = request.json['password']
-    user = User.query.filter(User.phone == account).first()
+    user = User.query.filter((User.phone == account) or (User.name == account)).first()
     if user:
         if user.password == password:
             return {

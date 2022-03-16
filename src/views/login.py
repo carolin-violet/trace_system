@@ -15,11 +15,7 @@ def login():
     if user:
         if user.password == password:
             return {
-                "msg": '登录成功',
-                "info": {
-                    "phone": user.phone,
-                    "name": user.name
-                }
+                "msg": '登录成功'
             }
         else:
             return {

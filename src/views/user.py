@@ -38,7 +38,7 @@ def login():
 
 
 '''
-添加一个用户
+注册用户
 '''
 
 
@@ -66,15 +66,21 @@ def add_user():
 '''
 
 
-@user_page.route('/users/<phone>', methods=['DELETE'])
-def del_user(phone):
-    user = User.query.filter(User.phone == phone).first()
-    if user:
-        db.session.delete(user)
-        db.session.commit()
-        return '删除成功'
+@user_page.route('/users/<user_id>', methods=['DELETE'])
+def del_user(user_id):
+    token_data = token_auth.verify_token(request.headers['token'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
+    if token_data['user_id'] == 'admin':
+        user = User.query.filter(User.user_id == user_id).first()
+        if user:
+            db.session.delete(user)
+            db.session.commit()
+            return '删除成功'
+        else:
+            return '用户不存在'
     else:
-        return '用户不存在'
+        return '无权限'
 
 
 '''
@@ -84,14 +90,20 @@ def del_user(phone):
 
 @user_page.route('/users/password/<user_id>', methods=['PATCH'])
 def update_user_password(user_id):
-    user = User.query.filter(User.user_id == user_id).first()
-    if user:
-        password = request.json['password']
-        user.password = password
-        db.session.commit()
-        return '修改成功'
+    token_data = token_auth.verify_token(request.headers['token'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
+    if token_data['user_id'] == 'admin' or user_id:
+        user = User.query.filter(User.user_id == user_id).first()
+        if user:
+            password = request.json['password']
+            user.password = password
+            db.session.commit()
+            return '修改成功'
+        else:
+            return '用户不存在'
     else:
-        return '用户不存在'
+        return '无权限'
 
 
 '''
@@ -101,14 +113,20 @@ def update_user_password(user_id):
 
 @user_page.route('/users/phone/<user_id>', methods=['PATCH'])
 def update_user_phone(user_id):
-    user = User.query.filter(User.user_id == user_id).first()
-    if user:
-        phone = request.json['phone']
-        user.phone = phone
-        db.session.commit()
-        return '修改成功'
+    token_data = token_auth.verify_token(request.headers['token'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
+    if token_data['user_id'] == 'admin' or user_id:
+        user = User.query.filter(User.user_id == user_id).first()
+        if user:
+            phone = request.json['phone']
+            user.phone = phone
+            db.session.commit()
+            return '修改成功'
+        else:
+            return '用户不存在'
     else:
-        return '用户不存在'
+        return '无权限'
 
 
 '''
@@ -118,18 +136,24 @@ def update_user_phone(user_id):
 
 @user_page.route('/users', methods=['GET'])
 def query_user():
-    users = User.query.all()
-    data = []
-    for user in users:
-        data.append({
-            'user_id': user.user_id,
-            'role_id': user.role_id,
-            'name': user.name,
-            'phone': user.phone,
-            'password': user.password,
-            'gender': user.gender,
-            })
-    return jsonify(data)
+    token_data = token_auth.verify_token(request.headers['token'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
+    if token_data['user_id'] == 'admin':
+        users = User.query.all()
+        data = []
+        for user in users:
+            data.append({
+                'user_id': user.user_id,
+                'role_id': user.role_id,
+                'name': user.name,
+                'phone': user.phone,
+                'password': user.password,
+                'gender': user.gender,
+                })
+        return jsonify(data)
+    else:
+        return '无权限'
 
 
 '''
@@ -139,16 +163,22 @@ def query_user():
 
 @user_page.route('/users/<user_id>', methods=['GET'])
 def all_users(user_id):
-    user = User.query.filter(User.user_id == user_id).first()
-    if user:
-        return jsonify({
-            'user_id': user.user_id,
-            'role_id': user.role_id,
-            'name': user.name,
-            'phone': user.phone,
-            'password': user.password,
-            'gender': user.gender,
-        })
+    token_data = token_auth.verify_token(request.headers['token'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
+    if token_data['user_id'] == 'admin' or user_id:
+        user = User.query.filter(User.user_id == user_id).first()
+        if user:
+            return jsonify({
+                'user_id': user.user_id,
+                'role_id': user.role_id,
+                'name': user.name,
+                'phone': user.phone,
+                'password': user.password,
+                'gender': user.gender,
+            })
+        else:
+            return '用户不存在'
     else:
-        return '用户不存在'
+        return '无权限'
 

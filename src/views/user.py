@@ -25,14 +25,10 @@ def login():
         if user.password == password:
             return {
                 "msg": '登录成功',
-                "userInfo": {
-                    "user_id": user.user_id,
+                "loginInfo": {
+                    "token": token,
                     "role_id": user.role_id,
-                    "name": user.name,
-                    "phone": user.phone,
-                    "password": user.password,
-                    "gender": user.gender,
-                    "token": token
+                    "name": user.name
                 }
             }
         else:

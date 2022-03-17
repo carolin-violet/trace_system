@@ -11,6 +11,7 @@ class Config(object):
     # SERVER_NAME = "0.0.0.0:5000"
 
     SECRET_KEY = 'J5RxXy9emBt78iIVP1beu4k4XbbgWxcZI+UrvD7afM9tXNPmnHw8xn4c5+qjnEB1'
+    TOKEN_EXPIRATION = 3600
 
     # 为Mysql添加配置
     SQLALCHEMY_DATABASE_URI = 'mysql://root:zj20001125@127.0.0.1:3306/trace_system'

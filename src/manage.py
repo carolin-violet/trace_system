@@ -2,7 +2,7 @@ from app_init import create_app
 from flask_cors import CORS
 
 
-app, db, auth = create_app()
+app, db = create_app()
 cors = CORS(app, resources={'/*': {'origins': '*'}})
 
 

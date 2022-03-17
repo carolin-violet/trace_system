@@ -1,15 +1,14 @@
 """
 用户信息
 """
-
-
 from flask import Blueprint, request, jsonify
+from src.security import token_auth
 from uuid import uuid1
 from src.models import User, db
 from src.security.RSA import create_keys
 
-user_page = Blueprint('user_page', __name__)
 
+user_page = Blueprint('user_page', __name__)
 
 '''
 登录
@@ -21,10 +20,12 @@ def login():
     account = request.json['account']
     password = request.json['password']
     user = User.query.filter((User.phone == account) or (User.name == account)).first()
+    token = token_auth.create_token(user.user_id)
     if user:
         if user.password == password:
             return {
-                "msg": '登录成功'
+                "msg": '登录成功',
+                "token": token
             }
         else:
             return {
@@ -152,6 +153,7 @@ def all_users(user_id):
         return '用户不存在'
 
 
-
-
-
+@user_page.route('/test', methods=['GET'])
+@token_auth.login_required
+def test():
+    return 'test'

@@ -152,8 +152,3 @@ def all_users(user_id):
     else:
         return '用户不存在'
 
-
-@user_page.route('/test', methods=['GET'])
-@token_auth.login_required
-def test():
-    return 'test'

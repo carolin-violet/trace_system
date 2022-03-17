@@ -1,29 +1,24 @@
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from src.settings import Config
-import functools
-from flask import request
+
+'''
+验证token
+'''
 
 
-def login_required(view_func):
-    @functools.wraps(view_func)
-    def verify_token(*args, **kwargs):
+def verify_token(token):
+    s = Serializer(Config.SECRET_KEY)
+    if token:
         try:
-            # 在请求头上拿到token
-            token = request.headers["token"]
+            # 转换为字典
+            data = s.loads(token)
+            return data
         except Exception:
-            # 没接收的到token,给前端抛出错误
-            # 这里的code推荐写一个文件统一管理。这里为了看着直观就先写死了。
-            return '缺少参数token'
+            return 'token过期或错误'
+    else:
+        return '无token'
 
-        s = Serializer(Config.SECRET_KEY)
-        try:
-            s.loads(token)
-        except Exception:
-            return "登录已过期"
 
-        return view_func(*args, **kwargs)
-
-    return verify_token
 '''
 生成token
 '''
@@ -38,19 +33,3 @@ def create_token(user_id):
     return token
 
 
-def verify_token(token):
-    '''
-    校验token
-    :param token:
-    :return: 用户信息 or None
-    '''
-
-    # 参数为私有秘钥，跟上面方法的秘钥保持一致
-    s = Serializer(Config.SECRET_KEY)
-    try:
-        # 转换为字典
-        data = s.loads(token)
-    except Exception:
-        return None
-    print(data)
-    return True

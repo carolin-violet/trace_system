@@ -12,17 +12,42 @@ user_page = Blueprint('user_page', __name__)
 
 
 '''
+登录
+'''
+
+
+@user_page.route('/login', methods=['POST'])
+def login():
+    account = request.json['account']
+    password = request.json['password']
+    user = User.query.filter((User.phone == account) or (User.name == account)).first()
+    if user:
+        if user.password == password:
+            return {
+                "msg": '登录成功'
+            }
+        else:
+            return {
+                "msg": '密码错误'
+            }
+    else:
+        return {
+                "msg": '用户不存在'
+            }
+
+
+'''
 添加一个用户
 '''
 
 
 @user_page.route('/users', methods=['POST'])
 def add_user():
-    role_id = request.form['role_id']
-    name = request.form['name']
-    phone = request.form['phone']
-    password = request.form['password']
-    gender = request.form['gender']
+    role_id = request.json['role_id']
+    name = request.json['name']
+    phone = request.json['phone']
+    password = request.json['password']
+    gender = request.json['gender']
 
     if User.query.filter(User.phone == phone).first():
         return '用户已存在'
@@ -32,7 +57,7 @@ def add_user():
         user = User(user_id, role_id, name, phone, password, gender, public_key, private_key)
         db.session.add(user)
         db.session.commit()
-        return '添加成功'
+        return '注册成功'
 
 
 '''

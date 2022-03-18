@@ -2,42 +2,22 @@
 区块链api模块
 """
 
-from flask import Blueprint, jsonify, request, render_template
-from src.models import Purchase, db, User, Blockchain
+from flask import Blueprint, request, render_template, send_file
+import os
+from src.models import db, User, Blockchain
 from src.security import RSA
 
-purchase_page = Blueprint('purchase_page', __name__)
-
-
-'''
-添加购买信息
-'''
-
-
-@purchase_page.route('/purchase', methods=['POST'])
-def add_purchase():
-    user_id = request.json['user_id']
-    logistics_id = request.json['logistics_id']
-    purchases = Purchase(user_id, logistics_id)
-
-    db.session.add(purchases)
-    db.session.commit()
-
-    return '添加成功'
-
+sale_page = Blueprint('sale_page', __name__)
 
 '''
-指定顾客查询自己的所有购买商品
+获取二维码图片
 '''
 
 
-@purchase_page.route('/purchase/<user_id>', methods=['GET'])
-def query_purchase(user_id):
-    purchases = Purchase.query.filter(Purchase.user_id == user_id).all()
-    data = []
-    for purchase in purchases:
-        data.append(purchase.logistics_id)
-    return jsonify(data)
+@sale_page.route('/commodity/qrcode_img/<logistics_id>', methods=['GET'])
+def get_qrcode(logistics_id):
+    img_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__))) + '/static/qr_codes/'+logistics_id+'.png'
+    return send_file(img_path, mimetype='image/gif')
 
 
 '''
@@ -45,8 +25,8 @@ def query_purchase(user_id):
 '''
 
 
-@purchase_page.route('/purchase/detail/<logistics_id>', methods=['GET'])
-def query_detail(logistics_id):
+@sale_page.route('/commodity/detail/<logistics_id>/<saler_id>', methods=['GET'])
+def query_detail(logistics_id, saler_id):
     block = Blockchain.query.filter(Blockchain.logistics_id == logistics_id).first()
 
     # 获取私钥
@@ -67,12 +47,3 @@ def query_detail(logistics_id):
     return render_template('detail.html', data=message)
 
 
-'''
-获取二维码图片
-'''
-
-
-@commodity_page.route('/commodity/qrcode_img/<logistics_id>', methods=['GET'])
-def get_qrcode(logistics_id):
-    img_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__))) + '/static/qr_codes/'+logistics_id+'.png'
-    return send_file(img_path, mimetype='image/gif')

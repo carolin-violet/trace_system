@@ -49,6 +49,7 @@ def power():
         return '请重新登录'
     role = User.query.filter(User.user_id == token_data['user_id']).first().role
     return {
+        "user_id": token_data['user_id'],
         "role": role
     }
 

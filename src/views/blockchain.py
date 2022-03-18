@@ -6,6 +6,7 @@ from flask import Blueprint, jsonify, request
 from src.models import Blockchain, db, Logistics, Commodity, TH, Produce, User
 from src.utils import chain
 from src.security import RSA
+from src.security import token_auth
 
 
 chain_page = Blueprint('chain_page', __name__)
@@ -13,6 +14,7 @@ chain_page = Blueprint('chain_page', __name__)
 
 '''
 增加一个区块
+当物流到达销售商的时候添加
 '''
 
 
@@ -101,20 +103,26 @@ def add_block():
 
 @chain_page.route('/blockchain', methods=['GET'])
 def query_chain():
-    blocks = Blockchain.query.all()
-    data = []
+    token_data = token_auth.verify_token(request.headers['token'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
+    if token_data['user_id'] == '0':
+        blocks = Blockchain.query.all()
+        data = []
 
-    for block in blocks:
+        for block in blocks:
 
-        data.append({
-            "logistics_id": block.logistics_id,
-            "cur_hash": block.cur_hash,
-            "pre_hash": block.pre_hash,
-            "timestamp": block.timestamp,
-            "nonce": block.nonce,
-            "data": block.data,
-        })
-    return jsonify(data)
+            data.append({
+                "logistics_id": block.logistics_id,
+                "cur_hash": block.cur_hash,
+                "pre_hash": block.pre_hash,
+                "timestamp": block.timestamp,
+                "nonce": block.nonce,
+                "data": block.data,
+            })
+        return jsonify(data)
+    else:
+        return '无权限'
 
 
 '''
@@ -124,16 +132,22 @@ def query_chain():
 
 @chain_page.route('/blockchain/<logistics_id>', methods=['GET'])
 def query_block(logistics_id):
-    block = Blockchain.query.filter(Blockchain.logistics_id == logistics_id).first()
+    token_data = token_auth.verify_token(request.headers['token'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
+    if token_data['user_id'] == '0':
+        block = Blockchain.query.filter(Blockchain.logistics_id == logistics_id).first()
 
-    return jsonify({
-        "logistics_id": block.logistics_id,
-        "cur_hash": block.cur_hash,
-        "pre_hash": block.pre_hash,
-        "timestamp": block.timestamp,
-        "nonce": block.nonce,
-        "data": block.data,
-    })
+        return jsonify({
+            "logistics_id": block.logistics_id,
+            "cur_hash": block.cur_hash,
+            "pre_hash": block.pre_hash,
+            "timestamp": block.timestamp,
+            "nonce": block.nonce,
+            "data": block.data,
+        })
+    else:
+        return '无权限'
 
 
 '''
@@ -143,11 +157,16 @@ def query_block(logistics_id):
 
 @chain_page.route('/blockchain/validate_proof', methods=['GET'])
 def validate_chain():
-    blocks = Blockchain.query.all()
-    blockchain = chain.Chain(blocks, db)
-    is_correct = blockchain.validate_chain()
-    if is_correct:
-        return 'true'  # 区块链正确
+    token_data = token_auth.verify_token(request.headers['token'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
+    if token_data['user_id'] == '0':
+        blocks = Blockchain.query.all()
+        blockchain = chain.Chain(blocks, db)
+        is_correct = blockchain.validate_chain()
+        if is_correct:
+            return 'true'  # 区块链正确
+        else:
+            return 'false'   # 区块链中有错
     else:
-        return 'false'   # 区块链中有错
-
+        return '无权限'

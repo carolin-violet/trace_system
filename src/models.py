@@ -15,39 +15,23 @@ class User(db.Model):
     __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.String(255), nullable=False)  # 用户id
-    role = db.Column(db.String(10), nullable=False)  # 用户角色,admin为管理员,producer为生产商,transporter为运输商,customer为消费者
+    role = db.Column(db.String(10), nullable=False)  # 用户角色,admin为管理员,producer为生产商,transporter为运输商,saler为销售者,customer为消费者
     name = db.Column(db.String(10), nullable=False)  # 姓名
-    phone = db.Column(db.String(11), unique=True)  # 手机号码,用作登录账号
+    tel = db.Column(db.String(11), unique=True)  # 手机号码,用作登录账号
     password = db.Column(db.String(20), nullable=False)  # 登录密码
     gender = db.Column(db.String(6), nullable=False)  # 性别:male/female
     public_key = db.Column(db.VARBINARY(1000), nullable=False)  # 用户公钥
     private_key = db.Column(db.VARBINARY(1000), nullable=False)  # 用户私钥
 
-    def __init__(self, user_id, role, name, phone, password, gender, public_key, private_key):
+    def __init__(self, user_id, role, name, tel, password, gender, public_key, private_key):
         self.user_id = user_id
         self.role = role
         self.name = name
-        self.phone = phone
+        self.tel = tel
         self.password = password
         self.gender = gender
         self.public_key = public_key
         self.private_key = private_key
-
-
-'''
-购买信息表
-'''
-
-
-class Purchase(db.Model):
-    __tablename__ = "purchase"
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.String(255), nullable=False)  # 顾客id
-    logistics_id = db.Column(db.String(255), nullable=False)  # 物流单号
-
-    def __init__(self, user_id, logistics_id):
-        self.user_id = user_id
-        self.logistics_id = logistics_id
 
 
 '''
@@ -81,8 +65,8 @@ class Produce(db.Model):
 '''
 
 
-class ProduceTH(db.Model):
-    __tablename__ = 'produce_th'
+class TH(db.Model):
+    __tablename__ = 'th'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.String(255), nullable=False)  # 生产厂家用户id
     area_id = db.Column(db.Integer, nullable=False)  # 农田区域id
@@ -112,8 +96,8 @@ class Commodity(db.Model):
     area_id = db.Column(db.Integer, nullable=False)  # 农田区域
     batch = db.Column(db.Integer, nullable=False)  # 生产批次
     name = db.Column(db.String(10), nullable=False)  # 商品名称
-    price = db.Column(db.Float, nullable=True)  # 商品单价(元/斤)
     weight = db.Column(db.Float, nullable=True)  # 商品重量(斤)
+    saler_id = db.Column(db.String(255), nullable=False)  # 销售商id
     logistics_id = db.Column(db.String(255), nullable=False)  # 物流单号
     ini = db.Column(db.String(100), nullable=False)  # 初始地
     des = db.Column(db.String(100), nullable=False)  # 目的地
@@ -136,6 +120,26 @@ class Commodity(db.Model):
 
 
 '''
+运输公司信息
+'''
+
+
+class TransportCmp(db.Model):
+    __tablename__ = 'transport_company'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    com = db.Column(db.String(50), nullable=False)  # 公司名
+    transporter_id = db.Column(db.String(255), nullable=False)  # 操作人id
+    person = db.Column(db.String(20), nullable=False)  # 操作人姓名
+    tel = db.Column(db.String(11), nullable=False)  # 操作人联系方式
+
+    def __init__(self, com, transporter_id, person, tel):
+        self.com = com
+        self.transporter_id = transporter_id
+        self.person = person
+        self.tel = tel
+
+
+'''
 物流信息
 '''
 
@@ -144,21 +148,17 @@ class Logistics(db.Model):
     __tablename__ = 'logistics'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     logistics_id = db.Column(db.String(255), nullable=False)  # 物流单号
-    status = db.Column(db.String(10), nullable=False)  # 商品状态  (已发货, 运输中, 已到货)
-    com = db.Column(db.String(50), nullable=False)  # 操作的公司名
+    transporter_id = db.Column(db.String(255), nullable=False)  # 操作人id
     time = db.Column(db.String(100), nullable=False)  # 操作时间，需要获取当前系统时间
+    status = db.Column(db.String(10), nullable=False)  # 商品状态  (已发货, 运输中, 已到货)
     cur = db.Column(db.String(100), nullable=False)  # 当前所在地
-    person = db.Column(db.String(20), nullable=False)  # 操作人
-    tel = db.Column(db.String(11), nullable=False)  # 操作人联系方式
 
-    def __init__(self, logistics_id, status, com, time, cur, person, tel):
+    def __init__(self, logistics_id, transporter_id, time, status, cur):
         self.logistics_id = logistics_id
-        self.status = status
-        self.com = com
+        self.transporter_id = transporter_id
         self.time = time
+        self.status = status
         self.cur = cur
-        self.person = person
-        self.tel = tel
 
 
 '''

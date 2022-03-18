@@ -63,16 +63,16 @@ def power():
 def add_user():
     role_id = request.json['role_id']
     name = request.json['name']
-    phone = request.json['phone']
+    tel = request.json['tel']
     password = request.json['password']
     gender = request.json['gender']
 
-    if User.query.filter(User.phone == phone).first():
-        return '用户已存在'
+    if User.query.filter(User.tel == tel).first():
+        return '该手机号已被注册'
     else:
         user_id = str(uuid1()).replace('-', '')
         public_key, private_key = create_keys()
-        user = User(user_id, role_id, name, phone, password, gender, public_key, private_key)
+        user = User(user_id, role_id, name, tel, password, gender, public_key, private_key)
         db.session.add(user)
         db.session.commit()
         return '注册成功'

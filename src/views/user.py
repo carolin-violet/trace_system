@@ -88,7 +88,7 @@ def del_user(user_id):
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['user_id'] == 'admin':
+    if token_data['user_id'] == '0':
         user = User.query.filter(User.user_id == user_id).first()
         if user:
             db.session.delete(user)
@@ -110,7 +110,7 @@ def update_user_password(user_id):
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['user_id'] == 'admin' or user_id:
+    if token_data['user_id'] == '0' or user_id:
         user = User.query.filter(User.user_id == user_id).first()
         if user:
             password = request.json['password']
@@ -133,7 +133,7 @@ def update_user_phone(user_id):
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['user_id'] == 'admin' or user_id:
+    if token_data['user_id'] == '0' or user_id:
         user = User.query.filter(User.user_id == user_id).first()
         if user:
             phone = request.json['phone']
@@ -183,7 +183,7 @@ def all_users(user_id):
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['user_id'] == 'admin' or user_id:
+    if token_data['user_id'] == '0' or user_id:
         user = User.query.filter(User.user_id == user_id).first()
         if user:
             return jsonify({

@@ -1,7 +1,7 @@
 from flask import Flask
 
 from models import db
-from views import user, commodity, logistics, blockchain, produce, produce_th, purchase
+from views import user, commodity, logistics, blockchain, produce, th, sale
 
 
 def create_app():
@@ -16,8 +16,8 @@ def create_app():
     app.register_blueprint(logistics.logistics_page)
     app.register_blueprint(blockchain.chain_page)
     app.register_blueprint(produce.produce_page)
-    app.register_blueprint(produce_th.produce_th_page)
-    app.register_blueprint(purchase.purchase_page)
+    app.register_blueprint(th.produce_th_page)
+    app.register_blueprint(sale.purchase_page)
     return app, db
 
 

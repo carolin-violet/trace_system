@@ -103,13 +103,13 @@ class Commodity(db.Model):
     des = db.Column(db.String(100), nullable=False)  # 目的地
     qrcode_url = db.Column(db.Text, nullable=False)  # 二维码存放的网址
 
-    def __init__(self, user_id, area_id, batch, name, price, weight, logistics_id, ini, des, qrcode_url):
+    def __init__(self, user_id, area_id, batch, name, weight, saler_id, logistics_id, ini, des, qrcode_url):
         self.user_id = user_id
         self.area_id = area_id
         self.batch = batch
         self.name = name
-        self.price = price
         self.weight = weight
+        self.saler_id = saler_id
         self.logistics_id = logistics_id
         self.ini = ini
         self.des = des

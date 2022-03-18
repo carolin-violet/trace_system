@@ -6,6 +6,7 @@ from uuid import uuid1
 import os
 from src.models import Commodity, db
 from src.utils import img
+from src.security import token_auth
 
 
 commodity_page = Blueprint('commodity_page', __name__)

@@ -66,3 +66,13 @@ def query_detail(logistics_id):
 
     return render_template('detail.html', data=message)
 
+
+'''
+获取二维码图片
+'''
+
+
+@commodity_page.route('/commodity/qrcode_img/<logistics_id>', methods=['GET'])
+def get_qrcode(logistics_id):
+    img_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__))) + '/static/qr_codes/'+logistics_id+'.png'
+    return send_file(img_path, mimetype='image/gif')

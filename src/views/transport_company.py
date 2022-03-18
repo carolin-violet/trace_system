@@ -16,16 +16,23 @@ transport_company_page = Blueprint('transport_company_page', __name__)
 
 @transport_company_page.route('/transport_company', methods=['POST'])
 def add_company_info():
-    company_name = request.json['company_name']
-    staff_id = request.json['staff_role']
-    staff_role = request.json['staff_role']
-    staff_name = request.json['staff_name']
-    staff_tel = request.json['staff_tel']
+    token_data = token_auth.verify_token(request.headers['token'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
+    role = TransportCmp.query.filter(TransportCmp.staff_id == token_data['user_id']).first().role
+    if (token_data['user_id'] == '0') | (role == 'manager'):
+        company_name = request.json['company_name']
+        staff_id = request.json['staff_role']
+        staff_role = request.json['staff_role']
+        staff_name = request.json['staff_name']
+        staff_tel = request.json['staff_tel']
 
-    transport_company_info = TransportCmp(company_name, staff_id, staff_role, staff_name, staff_tel)
-    db.session.add(transport_company_info)
-    db.session.commit()
-    return '添加成功'
+        transport_company_info = TransportCmp(company_name, staff_id, staff_role, staff_name, staff_tel)
+        db.session.add(transport_company_info)
+        db.session.commit()
+        return '添加成功'
+    else:
+        return '无权限'
 
 
 '''
@@ -35,12 +42,19 @@ def add_company_info():
 
 @transport_company_page.route('/transport_company/<staff_id>', methods=['DELETE'])
 def del_staff(staff_id):
-    staff = TransportCmp.query.filter(TransportCmp.staff_id == staff_id).first()
-    if staff:
-        db.session.delete(staff)
-        db.session.commit()
+    token_data = token_auth.verify_token(request.headers['token'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
+    role = TransportCmp.query.filter(TransportCmp.staff_id == token_data['user_id']).first().role
+    if role == 'manager':
+        staff = TransportCmp.query.filter(TransportCmp.staff_id == staff_id).first()
+        if staff:
+            db.session.delete(staff)
+            db.session.commit()
+        else:
+            return '不存在此员工'
     else:
-        return '不存在此员工'
+        return '无权限'
 
 
 '''
@@ -50,17 +64,23 @@ def del_staff(staff_id):
 
 @transport_company_page.route('/transport_company', methods=['GET'])
 def query_all_company():
-    information = TransportCmp.query.all()
-    data = []
-    for info in information:
-        data.append({
-            "company_name": info.company_name,
-            "staff_id": info.staff_id,
-            "staff_role": info.staff_role,
-            "staff_name": info.staff_name,
-            "staff_tel": info.staff_tel
-        })
-    return jsonify(data)
+    token_data = token_auth.verify_token(request.headers['token'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
+    if token_data['user_id'] == '0':
+        information = TransportCmp.query.all()
+        data = []
+        for info in information:
+            data.append({
+                "company_name": info.company_name,
+                "staff_id": info.staff_id,
+                "staff_role": info.staff_role,
+                "staff_name": info.staff_name,
+                "staff_tel": info.staff_tel
+            })
+        return jsonify(data)
+    else:
+        return '无权限'
 
 
 '''
@@ -70,16 +90,23 @@ def query_all_company():
 
 @transport_company_page.route('/transport_company/<company_name>', methods=['GET'])
 def query_company(company_name):
-    information = TransportCmp.query.filter(TransportCmp.company_name == company_name).all()
-    data = []
-    for info in information:
-        data.append({
-            "company_name": info.company_name,
-            "staff_id": info.staff_id,
-            "staff_role": info.staff_role,
-            "staff_name": info.staff_name,
-            "staff_tel": info.staff_tel
-        })
-    return jsonify(data)
+    token_data = token_auth.verify_token(request.headers['token'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
+    role = TransportCmp.query.filter(TransportCmp.staff_id == token_data['user_id']).first().role
+    if (token_data['user_id'] == '0') | (role == 'manager'):
+        information = TransportCmp.query.filter(TransportCmp.company_name == company_name).all()
+        data = []
+        for info in information:
+            data.append({
+                "company_name": info.company_name,
+                "staff_id": info.staff_id,
+                "staff_role": info.staff_role,
+                "staff_name": info.staff_name,
+                "staff_tel": info.staff_tel
+            })
+        return jsonify(data)
+    else:
+        return '无权限'
 
 

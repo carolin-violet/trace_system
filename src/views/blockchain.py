@@ -3,7 +3,7 @@
 """
 
 from flask import Blueprint, jsonify, request
-from src.models import Blockchain, db, Logistics, Commodity, ProduceTH, Produce, Purchase, User
+from src.models import Blockchain, db, Logistics, Commodity, TH, Produce, User
 from src.utils import chain
 from src.security import RSA
 
@@ -27,12 +27,10 @@ def add_block():
     logistics_data = []
     for lgs in logistics_s:
         logistics_data.append({
-            "status": lgs.status,
-            "com": lgs.com,
-            "time": lgs.time,
-            "cur": lgs.cur,
-            "person": lgs.person,
-            "tel": lgs.tel,
+            'transporter_id': lgs.transporter_id,
+            'time': lgs.time,
+            'status': lgs.status,
+            'cur': lgs.cur
         })
 
     '''
@@ -40,16 +38,16 @@ def add_block():
     '''
     commodity = Commodity.query.filter(Commodity.logistics_id == logistics_id).first()
     commodity_data = {
-        "user_id": commodity.user_id,
-        "area_id": commodity.area_id,
-        "batch": commodity.batch,
-        "name": commodity.name,
-        "price": commodity.price,
-        "weight": commodity.weight,
-        "logistics_id": commodity.logistics_id,
-        "ini": commodity.ini,
-        "des": commodity.des,
-        "qrcode_url": commodity.qrcode_url
+        'user_id': commodity.user_id,
+        'area_id': commodity.area_id,
+        'batch': commodity.batch,
+        'name': commodity.name,
+        'weight': commodity.weight,
+        'saler_id': commodity.saler_id,
+        'logistics_id': commodity.logistics_id,
+        'ini': commodity.ini,
+        'des': commodity.des,
+        'qrcode_url': commodity.qrcode_url
     }
 
     '''
@@ -57,7 +55,7 @@ def add_block():
     '''
     th_data = []
     produce_data = []
-    ths = ProduceTH.query.filter((ProduceTH.user_id == commodity.user_id) & (ProduceTH.area_id == commodity.area_id) & (ProduceTH.batch == commodity.batch)).all()
+    ths = TH.query.filter((TH.user_id == commodity.user_id) & (TH.area_id == commodity.area_id) & (TH.batch == commodity.batch)).all()
     for th in ths:
         th_data.append({
             "temp": th.temp,
@@ -83,10 +81,7 @@ def add_block():
         'logistics_data': logistics_data
     }
 
-    purchaser = Purchase.query.filter(Purchase.logistics_id == logistics_id).first()
-    purchaser_id = purchaser.user_id
-
-    public_key = User.query.filter(User.user_id == purchaser_id).first().public_key
+    public_key = User.query.filter(User.user_id == commodity.saler_id).first().public_key
     data = RSA.encrypt(summary, public_key)
 
     '''

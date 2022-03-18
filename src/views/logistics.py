@@ -3,7 +3,8 @@
 """
 from flask import Blueprint, request, jsonify
 import time
-from src.models import Logistics, db
+from src.models import Logistics, db, TransportCmp
+from src.security import token_auth
 
 logistics_page = Blueprint('logistics_page', __name__)
 
@@ -15,15 +16,13 @@ logistics_page = Blueprint('logistics_page', __name__)
 
 @logistics_page.route('/logistics', methods=['POST'])
 def add_logistics():
-    logistics_id = request.form['logistics_id']
-    status = request.form['status']
-    com = request.form['com']
+    logistics_id = request.json['logistics_id']
+    transporter_id = request.json['transporter_id']
     cur_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-    cur = request.form['cur']
-    person = request.form['person']
-    tel = request.form['tel']
+    status = request.json['status']
+    cur = request.json['cur']
 
-    logistics = Logistics(logistics_id, status, com, cur_time, cur, person, tel)
+    logistics = Logistics(logistics_id, transporter_id, cur_time, status, cur)
     db.session.add(logistics)
     db.session.commit()
 
@@ -37,13 +36,20 @@ def add_logistics():
 
 @logistics_page.route('/logistics/<logistics_id>', methods=['DELETE'])
 def del_logistics(logistics_id):
-    logistics = Logistics.query.filter(Logistics.logistics_id == logistics_id).first()
-    if logistics:
-        db.session.delete(logistics)
-        db.session.commit()
-        return '删除成功'
+    token_data = token_auth.verify_token(request.headers['token'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
+    role = TransportCmp.query.filter(TransportCmp.staff_id == token_data['user_id']).first().role
+    if role == 'manager':
+        logistics = Logistics.query.filter(Logistics.logistics_id == logistics_id).first()
+        if logistics:
+            db.session.delete(logistics)
+            db.session.commit()
+            return '删除成功'
+        else:
+            return '物流不存在'
     else:
-        return '物流不存在'
+        return '无权限'
 
 
 '''
@@ -58,12 +64,10 @@ def query_logistics(logistics_id):
         data = []
         for logistics in logistics_s:
             data.append({
-                'status': logistics.status,
-                'com': logistics.com,
+                'transporter_id': logistics.transporter_id,
                 'time': logistics.time,
+                'status': logistics.status,
                 'cur': logistics.cur,
-                'person': logistics.person,
-                'tel': logistics.tel,
             })
         return jsonify(data)
     else:

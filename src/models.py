@@ -128,9 +128,10 @@ class TransportCmp(db.Model):
     __tablename__ = 'transport_company'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     com = db.Column(db.String(50), nullable=False)  # 公司名
-    transporter_id = db.Column(db.String(255), nullable=False)  # 操作人id
-    person = db.Column(db.String(20), nullable=False)  # 操作人姓名
-    tel = db.Column(db.String(11), nullable=False)  # 操作人联系方式
+    transporter_id = db.Column(db.String(255), nullable=False)  # 员工id
+    role = db.Column(db.String(10), nullable=False)  # 员工职位 manager为管理者,common为普通员工
+    person = db.Column(db.String(20), nullable=False)  # 员工姓名
+    tel = db.Column(db.String(11), nullable=False)  # 员工联系方式
 
     def __init__(self, com, transporter_id, person, tel):
         self.com = com

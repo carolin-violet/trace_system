@@ -1,127 +1,85 @@
 """
 商品信息模块
 """
-from flask import Blueprint, request, jsonify, send_file
-from uuid import uuid1
-import os
-from src.models import Commodity, db, User
+from flask import Blueprint, request, jsonify
+from src.models import TransportCmp, db, User
 from src.utils import img
 from src.security import token_auth
-
 
 transport_company_page = Blueprint('transport_company_page', __name__)
 
 
 '''
-添加商品信息
+添加运输公司信息
 '''
 
 
-@transport_company_page.route('/commodity', methods=['POST'])
-def add_commodity():
-    user_id = request.json['user_id']
-    area_id = int(request.json['area_id'])
-    batch = int(request.json['batch'])
-    name = request.json['name']
-    weight = float(request.json['weight'])
-    saler_id = float(request.json['saler_id'])
-    logistics_id = str(uuid1())
-    ini = request.json['ini']
-    des = request.json['des']
+@transport_company_page.route('/transport_company', methods=['POST'])
+def add_company_info():
+    company_name = request.json['company_name']
+    staff_id = request.json['staff_role']
+    staff_role = request.json['staff_role']
+    staff_name = request.json['staff_name']
+    staff_tel = request.json['staff_tel']
 
-    qrcode_url = "http://127.0.0.1:5000" + "/commodity/" + str(logistics_id) + '/' + str(saler_id)
-    qr_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__))) + '/static/qr_codes/'+logistics_id+'.png'
-    img.make_qrcode(qrcode_url, qr_path)
-
-    commodity = Commodity(user_id, area_id, batch, name, weight, saler_id, logistics_id, ini, des, qrcode_url)
-    db.session.add(commodity)
+    transport_company_info = TransportCmp(company_name, staff_id, staff_role, staff_name, staff_tel)
+    db.session.add(transport_company_info)
     db.session.commit()
-
     return '添加成功'
 
 
 '''
-删除商品信息
+删除员工
 '''
 
 
-@transport_company_page.route('/commodity/<logistics_id>', methods=['DELETE'])
-def del_commodity(logistics_id):
-    token_data = token_auth.verify_token(request.headers['token'])
-    if token_data == 'token过期或错误':
-        return '请重新登录'
-    role = User.query.filter(User.user_id == token_data['user_id']).first().role
-    if role == 'producer' or 'admin':
-        commodity = Commodity.query.filter(Commodity.logistics_id == logistics_id).first()
-        if commodity:
-            db.session.delete(commodity)
-            db.session.commit()
-            return '删除成功'
-        else:
-            return '商品不存在'
+@transport_company_page.route('/transport_company/<staff_id>', methods=['DELETE'])
+def del_staff(staff_id):
+    staff = TransportCmp.query.filter(TransportCmp.staff_id == staff_id).first()
+    if staff:
+        db.session.delete(staff)
+        db.session.commit()
     else:
-        return '无权限'
+        return '不存在此员工'
 
 
 '''
-查询所有商品信息
+查询所有公司信息
 '''
 
 
-@commodity_page.route('/commodity', methods=['GET'])
-def query_commodity():
-    token_data = token_auth.verify_token(request.headers['token'])
-    if token_data == 'token过期或错误':
-        return '请重新登录'
-    if token_data['user_id'] == '0':
-        commodities = Commodity.query.all()
-        data = []
-        for commodity in commodities:
-            data.append({
-                'user_id': commodity.user_id,
-                'area_id': commodity.area_id,
-                'batch': commodity.batch,
-                'name': commodity.name,
-                'price': commodity.price,
-                'weight': commodity.weight,
-                'logistics_id': commodity.logistics_id,
-                'ini': commodity.ini,
-                'des': commodity.des,
-                'qrcode_url': commodity.qrcode_url
-            })
-        return jsonify(data)
-    else:
-        return '无权限'
+@transport_company_page.route('/transport_company', methods=['GET'])
+def query_all_company():
+    information = TransportCmp.query.all()
+    data = []
+    for info in information:
+        data.append({
+            "company_name": info.company_name,
+            "staff_id": info.staff_id,
+            "staff_role": info.staff_role,
+            "staff_name": info.staff_name,
+            "staff_tel": info.staff_tel
+        })
+    return jsonify(data)
 
 
 '''
-查询指定id商品信息
+查询一个公司的所有信息
 '''
 
 
-@commodity_page.route('/commodity/<logistics_id>', methods=['GET'])
-def get_commodity(logistics_id):
-    token_data = token_auth.verify_token(request.headers['token'])
-    if token_data == 'token过期或错误':
-        return '请重新登录'
-    if token_data['user_id'] == '0':
-        commodity = Commodity.query.filter(Commodity.logistics_id == logistics_id).first()
-        if commodity:
-            return jsonify({
-                'user_id': commodity.user_id,
-                'area_id': commodity.area_id,
-                'batch': commodity.batch,
-                'name': commodity.name,
-                'price': commodity.price,
-                'weight': commodity.weight,
-                'logistics_id': commodity.logistics_id,
-                'ini': commodity.ini,
-                'des': commodity.des,
-                'qrcode_url': commodity.qrcode_url
-            })
-        else:
-            return '商品不存在'
-    else:
-        return '无权限'
+@transport_company_page.route('/transport_company/<company_name>', methods=['GET'])
+def query_company(company_name):
+    information = TransportCmp.query.filter(TransportCmp.company_name == company_name).all()
+    data = []
+    for info in information:
+        data.append({
+            "company_name": info.company_name,
+            "staff_id": info.staff_id,
+            "staff_role": info.staff_role,
+            "staff_name": info.staff_name,
+            "staff_tel": info.staff_tel
+        })
+    return jsonify(data)
 
 

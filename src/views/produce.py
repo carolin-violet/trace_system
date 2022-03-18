@@ -1,7 +1,7 @@
 """
 生产信息
 """
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_file
 import time
 import os
 from src.security import token_auth
@@ -74,4 +74,20 @@ def query_produce_info(producer_id):
     else:
         '无权限'
 
+
+'''
+根据前端发来的图片路径返回图片
+'''
+
+
+@produce_page.route('/produce/img/<img_path>', methods=['GET'])
+def query_img(img_path):
+    token_data = token_auth.verify_token(request.headers['token'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
+    role = User.query.filter(User.user_id == token_data['user_id']).first().role
+    if (role == 'producer' or 'admin') & (token_data['user_id'] == request.json['user_id'] or '0'):
+        return send_file(img_path, mimetype='image/gif')
+    else:
+        '无权限'
 

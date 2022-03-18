@@ -5,8 +5,7 @@
 from flask import Blueprint, jsonify, request
 from src.models import Blockchain, db, Logistics, Commodity, TH, Produce, User
 from src.utils import chain
-from src.security import RSA
-from src.security import token_auth
+from src.security import RSA, token_auth
 
 
 chain_page = Blueprint('chain_page', __name__)

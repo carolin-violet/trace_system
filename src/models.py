@@ -15,7 +15,7 @@ class User(db.Model):
     __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.String(255), nullable=False)  # 用户id
-    role_id = db.Column(db.Integer, nullable=False)  # 用户角色,0为管理员,1为生产商,2为运输商,3为消费者
+    role = db.Column(db.String(10), nullable=False)  # 用户角色,admin为管理员,producer为生产商,transporter为运输商,customer为消费者
     name = db.Column(db.String(10), nullable=False)  # 姓名
     phone = db.Column(db.String(11), unique=True)  # 手机号码,用作登录账号
     password = db.Column(db.String(20), nullable=False)  # 登录密码
@@ -23,9 +23,9 @@ class User(db.Model):
     public_key = db.Column(db.VARBINARY(1000), nullable=False)  # 用户公钥
     private_key = db.Column(db.VARBINARY(1000), nullable=False)  # 用户私钥
 
-    def __init__(self, user_id, role_id, name, phone, password, gender, public_key, private_key):
+    def __init__(self, user_id, role, name, phone, password, gender, public_key, private_key):
         self.user_id = user_id
-        self.role_id = role_id
+        self.role = role
         self.name = name
         self.phone = phone
         self.password = password

@@ -25,11 +25,7 @@ def login():
         if user.password == password:
             return {
                 "msg": '登录成功',
-                "loginInfo": {
-                    "token": token,
-                    "role_id": user.role_id,
-                    "name": user.name
-                }
+                "token": token
             }
         else:
             return {
@@ -39,6 +35,22 @@ def login():
         return {
                 "msg": '用户不存在'
             }
+
+
+'''
+权限查询
+'''
+
+
+@user_page.route('/user/power', methods=['GET'])
+def power():
+    token_data = token_auth.verify_token(request.headers['token'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
+    role = User.query.filter(User.user_id == token_data['user_id']).first().role
+    return {
+        "role": role
+    }
 
 
 '''

@@ -156,7 +156,7 @@ def query_user():
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['user_id'] == 'admin':
+    if token_data['user_id'] == '0':
         users = User.query.all()
         data = []
         for user in users:

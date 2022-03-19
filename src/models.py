@@ -15,8 +15,8 @@ class User(db.Model):
     __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.String(255), nullable=False)  # 用户id
-    role = db.Column(db.String(10), nullable=False)  # 用户角色,admin为管理员,producer为生产商,transporter为运输商,saler为销售者
-    name = db.Column(db.String(10), nullable=False)  # 姓名
+    role = db.Column(db.String(15), nullable=False)  # 用户角色,admin为管理员,producer为生产商,transporter为运输商,saler为销售者
+    name = db.Column(db.String(15), nullable=False)  # 姓名
     tel = db.Column(db.String(11), unique=True)  # 手机号码,用作登录账号
     password = db.Column(db.String(20), nullable=False)  # 登录密码
     gender = db.Column(db.String(6), nullable=False)  # 性别:male/female

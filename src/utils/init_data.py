@@ -6,6 +6,7 @@ from src.utils.create_tel import create_tel
 
 
 def initialize(db):
+    print('-------------------正在创建数据库表------------------')
     # 创建表
     db.create_all()
 
@@ -70,7 +71,7 @@ def initialize(db):
     tel = create_tel()
     saler3 = User(user_id, 'saler', 'saler3', tel, '123456', 'male', public_key, private_key, '')
 
-    db.session.add([admin, producer1, producer2, producer3, transporter1, transporter2, transporter3, transporter4,
+    db.session.add_all([admin, producer1, producer2, producer3, transporter1, transporter2, transporter3, transporter4,
                     transporter5, transporter6, saler1, saler2, saler3])
     db.session.commit()
 
@@ -80,4 +81,5 @@ def initialize(db):
     blockchain = Chain('', db)
     blockchain.create_genesis_block()
 
+    print('-------------------创建数据库表完成------------------')
 

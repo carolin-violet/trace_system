@@ -2,7 +2,6 @@
 生产信息
 """
 import base64
-
 from flask import Blueprint, request, jsonify, send_file
 import time
 import os

@@ -47,23 +47,6 @@ def login():
 
 
 '''
-权限查询
-'''
-
-
-@user_page.route('/user/power', methods=['GET'])
-def power():
-    token_data = token_auth.verify_token(request.headers['token'])
-    if token_data == 'token过期或错误':
-        return '请重新登录'
-    role = User.query.filter(User.user_id == token_data['user_id']).first().role
-    return {
-        "user_id": token_data['user_id'],
-        "role": role
-    }
-
-
-'''
 注册用户
 '''
 
@@ -239,7 +222,7 @@ def query_saler():
 '''
 
 
-@user_page.route('/users/<user_id>', methods=['GET'])
+@user_page.route('/user/<user_id>', methods=['GET'])
 def all_users(user_id):
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':

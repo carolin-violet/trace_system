@@ -46,7 +46,7 @@ def del_staff(staff_id):
     if token_data == 'token过期或错误':
         return '请重新登录'
     role = TransportCmp.query.filter(TransportCmp.staff_id == token_data['user_id']).first().role
-    if role == 'manager':
+    if (token_data['user_id'] == '0') | (role == 'manager'):
         staff = TransportCmp.query.filter(TransportCmp.staff_id == staff_id).first()
         if staff:
             db.session.delete(staff)

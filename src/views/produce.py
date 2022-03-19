@@ -1,6 +1,8 @@
 """
 生产信息
 """
+import base64
+
 from flask import Blueprint, request, jsonify, send_file
 import time
 import os
@@ -34,7 +36,8 @@ def add_produce_info():
         img = request.json['img']
         rel_path = user_id + '--' + area_id + '--' + batch + '--' + op_type + '--' + op_time.split(' ')[0] + '.' + img.filename.split('.')[-1]
         img_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__))) + '/static/produce_img/' + rel_path
-        img.save(img_path)
+        with open(img_path, 'wb') as fp:
+            fp.write(base64.b64decode(img))
 
         produce_info = Produce(user_id, area_id, batch, op_type, op_time, description, img_path)
         db.session.add(produce_info)

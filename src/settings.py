@@ -21,7 +21,7 @@ class Config(object):
     SQLALCHEMY_POOL_SIZE = 5  # 数据库连接池的大小。默认是数据库引擎的默认值 （通常是 5）
     SQLALCHEMY_POOL_TIMEOUT = 10  # 指定数据库连接池的超时时间。默认是 10
     # 自动回收连接的秒数。这对 MySQL 是必须的，默认 情况下 MySQL 会自动移除闲置 8 小时或者以上的连接。 需要注意地是如果使用 MySQL 的话， Flask-SQLAlchemy 会自动地设置这个值为 2 小时
-    SQLALCHEMY_POOL_RECYCLE = 1
+    SQLALCHEMY_POOL_RECYCLE = 0.001
 
 
     # # Redis的配置

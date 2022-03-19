@@ -24,9 +24,17 @@ def login():
         if user.password == password:
             token = token_auth.create_token(user.user_id)
             user.token = token
+            db.session.commit()
             return {
                 "msg": '登录成功',
-                "token": token
+                "profile": {
+                    "user_id": user.user_id,
+                    "role": user.role,
+                    "name": user.name,
+                    "tel": user.tel,
+                    "gender": user.gender,
+                    "token": user.token,
+                }
             }
         else:
             return {
@@ -157,18 +165,42 @@ def query_user():
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
+
+    '''
+    管理员查询
+    '''
     if token_data['user_id'] == '0':
         users = User.query.all()
-        data = []
+        data = {
+            "producer": [],
+            "transporter": [],
+            "saler": []
+        }
         for user in users:
-            data.append({
-                'user_id': user.user_id,
-                'role': user.role,
-                'name': user.name,
-                'tel': user.tel,
-                'password': user.password,
-                'gender': user.gender,
+            if user.role == 'producer':
+                data['producer'].append({
+                    'user_id': user.user_id,
+                    'name': user.name,
+                    'tel': user.tel,
+                    'password': user.password,
+                    'gender': user.gender,
+                    })
+            elif user.role == 'transporter':
+                data['transporter'].append({
+                    'user_id': user.user_id,
+                    'name': user.name,
+                    'tel': user.tel,
+                    'password': user.password,
+                    'gender': user.gender,
                 })
+            elif user.role == 'saler':
+                data['saler'].append({
+                    'user_id': user.user_id,
+                    'name': user.name,
+                    'tel': user.tel,
+                    'password': user.password,
+                    'gender': user.gender,
+                    })
         return jsonify(data)
     else:
         return '无权限'

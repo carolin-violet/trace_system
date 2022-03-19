@@ -10,9 +10,24 @@ def initialize(db):
     # 创建表
     db.create_all()
 
+    init_user(db)
+
     '''
-    初始化用户
+    创建初始区块
     '''
+    blockchain = Chain('', db)
+    blockchain.create_genesis_block()
+
+    print('-------------------创建数据库表完成------------------')
+    return 'success'
+
+
+'''
+初始化用户表
+'''
+
+
+def init_user(db):
     # 创建管理员账户
     public_key, private_key = create_keys()
     admin = User('0', 'admin', 'admin', 'admin', '123456', 'male', public_key, private_key, '')
@@ -74,12 +89,4 @@ def initialize(db):
     db.session.add_all([admin, producer1, producer2, producer3, transporter1, transporter2, transporter3, transporter4,
                     transporter5, transporter6, saler1, saler2, saler3])
     db.session.commit()
-
-    '''
-    创建初始区块
-    '''
-    blockchain = Chain('', db)
-    blockchain.create_genesis_block()
-
-    print('-------------------创建数据库表完成------------------')
 

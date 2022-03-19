@@ -17,12 +17,13 @@ user_page = Blueprint('user_page', __name__)
 
 @user_page.route('/login', methods=['POST'])
 def login():
-    account = request.json['account']
+    tel = request.json['tel']  # 姓名或者手机号
     password = request.json['password']
-    user = User.query.filter((User.phone == account) or (User.name == account)).first()
-    token = token_auth.create_token(user.user_id)
+    user = User.query.filter(User.tel == tel).first()
     if user:
         if user.password == password:
+            token = token_auth.create_token(user.user_id)
+            user.token = token
             return {
                 "msg": '登录成功',
                 "token": token
@@ -61,7 +62,7 @@ def power():
 
 @user_page.route('/users', methods=['POST'])
 def add_user():
-    role_id = request.json['role_id']
+    role = request.json['role']
     name = request.json['name']
     tel = request.json['tel']
     password = request.json['password']
@@ -72,7 +73,7 @@ def add_user():
     else:
         user_id = str(uuid1()).replace('-', '')
         public_key, private_key = create_keys()
-        user = User(user_id, role_id, name, tel, password, gender, public_key, private_key)
+        user = User(user_id, role, name, tel, password, gender, public_key, private_key, '')
         db.session.add(user)
         db.session.commit()
         return '注册成功'
@@ -136,8 +137,8 @@ def update_user_phone(user_id):
     if token_data['user_id'] == '0' or user_id:
         user = User.query.filter(User.user_id == user_id).first()
         if user:
-            phone = request.json['phone']
-            user.phone = phone
+            tel = request.json['tel']
+            user.tel = tel
             db.session.commit()
             return '修改成功'
         else:
@@ -162,9 +163,9 @@ def query_user():
         for user in users:
             data.append({
                 'user_id': user.user_id,
-                'role_id': user.role_id,
+                'role': user.role,
                 'name': user.name,
-                'phone': user.phone,
+                'tel': user.tel,
                 'password': user.password,
                 'gender': user.gender,
                 })
@@ -188,9 +189,9 @@ def all_users(user_id):
         if user:
             return jsonify({
                 'user_id': user.user_id,
-                'role_id': user.role_id,
+                'role': user.role,
                 'name': user.name,
-                'phone': user.phone,
+                'tel': user.tel,
                 'password': user.password,
                 'gender': user.gender,
             })

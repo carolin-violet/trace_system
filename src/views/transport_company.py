@@ -99,7 +99,6 @@ def query_company(company_name):
         data = []
         for info in information:
             data.append({
-                "company_name": info.company_name,
                 "staff_id": info.staff_id,
                 "staff_role": info.staff_role,
                 "staff_name": info.staff_name,

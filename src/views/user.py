@@ -4,7 +4,7 @@
 from flask import Blueprint, request, jsonify
 from src.security import token_auth
 from uuid import uuid1
-from src.models import User, db
+from src.models import User, db, TransportCmp
 from src.security.RSA import create_keys
 
 
@@ -156,51 +156,79 @@ def update_user_phone(user_id):
 
 
 '''
-查询所有用户
+查询所有生产商
 '''
 
 
-@user_page.route('/users', methods=['GET'])
-def query_user():
+@user_page.route('/users/producer', methods=['GET'])
+def query_producer():
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
 
-    '''
-    管理员查询
-    '''
     if token_data['user_id'] == '0':
-        users = User.query.all()
-        data = {
-            "producer": [],
-            "transporter": [],
-            "saler": []
-        }
+        users = User.query.filter(User.role == 'producer').all()
+        data = []
         for user in users:
-            if user.role == 'producer':
-                data['producer'].append({
-                    'user_id': user.user_id,
-                    'name': user.name,
-                    'tel': user.tel,
-                    'password': user.password,
-                    'gender': user.gender,
-                    })
-            elif user.role == 'transporter':
-                data['transporter'].append({
-                    'user_id': user.user_id,
-                    'name': user.name,
-                    'tel': user.tel,
-                    'password': user.password,
-                    'gender': user.gender,
+            data.append({
+                'user_id': user.user_id,
+                'name': user.name,
+                'tel': user.tel,
+                'password': user.password,
+                'gender': user.gender,
                 })
-            elif user.role == 'saler':
-                data['saler'].append({
-                    'user_id': user.user_id,
-                    'name': user.name,
-                    'tel': user.tel,
-                    'password': user.password,
-                    'gender': user.gender,
-                    })
+        return jsonify(data)
+    else:
+        return '无权限'
+
+
+'''
+查询所有运输公司
+'''
+
+
+@user_page.route('/users/transporter', methods=['GET'])
+def query_transport_company():
+    token_data = token_auth.verify_token(request.headers['token'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
+
+    if token_data['user_id'] == '0':
+        company_s = TransportCmp.query.filter(TransportCmp.staff_role == 'manager').all()
+        data = []
+        for company in company_s:
+            data.append({
+                "company_name": company.company_name,
+                "manager_id": company.staff_id,
+                "manager_name": company.staff_name,
+                "manager_tel": company.staff_tel
+            })
+    else:
+        return '无权限'
+
+
+'''
+查询所有销售商
+'''
+
+
+@user_page.route('/users/saler', methods=['GET'])
+def query_saler():
+    token_data = token_auth.verify_token(request.headers['token'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
+
+    if token_data['user_id'] == '0':
+        users = User.query.filter(User.role == 'saler').all()
+        data = []
+        for user in users:
+            data.append({
+                'user_id': user.user_id,
+                'name': user.name,
+                'tel': user.tel,
+                'password': user.password,
+                'gender': user.gender,
+                })
         return jsonify(data)
     else:
         return '无权限'

@@ -40,7 +40,7 @@ def add_company_info():
 
 
 @transport_company_page.route('/transport_company/<company_name>', methods=['DELETE'])
-def del_staff(company_name):
+def del_company(company_name):
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
@@ -103,7 +103,6 @@ def update_company_info(manager_id):
         return '不存在此公司'
 
 
-
 '''
 查询所有公司信息
 '''
@@ -124,6 +123,7 @@ def query_all_company():
                 "manager_name": info.staff_name,
                 "manager_tel": info.staff_tel
             })
+        print(data)
         return jsonify(data)
     else:
         return '无权限'

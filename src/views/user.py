@@ -159,19 +159,30 @@ def query_transport_company():
     if token_data == 'token过期或错误':
         return '请重新登录'
     if token_data['user_id'] == '0':
-        users = User.query.filter(User.role == 'producer').all()
-        # print(users)
+        users = User.query.filter(User.role == 'transporter').all()
         data = []
         for user in users:
-            staff_role = TransportCmp.query.filter(TransportCmp.staff_id == user.user_id).first()
-            if staff_role == 'common':
+            company_info = TransportCmp.query.filter(TransportCmp.staff_id == user.user_id).first()
+            if company_info:
                 data.append({
                     'user_id': user.user_id,
                     'name': user.name,
                     'tel': user.tel,
                     'password': user.password,
                     'gender': user.gender,
+                    'company_name': company_info.company_name,
+                    'staff_role': company_info.staff_role,
                     })
+            elif not company_info:
+                data.append({
+                    'user_id': user.user_id,
+                    'name': user.name,
+                    'tel': user.tel,
+                    'password': user.password,
+                    'gender': user.gender,
+                    'company_name': '无',
+                    'staff_role': '无',
+                })
         return jsonify(data)
     else:
         return '无权限'

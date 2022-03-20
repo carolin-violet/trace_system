@@ -19,6 +19,7 @@ def add_company_info():
     if token_data == 'token过期或错误':
         return '请重新登录'
     if token_data['user_id'] == '0':
+        print(request.json)
         company_name = request.json['company_name']
         staff_id = request.json['staff_id']
         staff_role = request.json['staff_role']
@@ -65,8 +66,7 @@ def del_staff(staff_id):
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    role = TransportCmp.query.filter(TransportCmp.staff_id == token_data['user_id']).first().role
-    if (token_data['user_id'] == '0') | (role == 'manager'):
+    if token_data['user_id'] == '0':
         staff = TransportCmp.query.filter(TransportCmp.staff_id == staff_id).first()
         if staff:
             db.session.delete(staff)
@@ -78,22 +78,20 @@ def del_staff(staff_id):
 
 
 '''
-修改公司信息,主要修改管理员姓名与电话号
+修改员工信息
 '''
 
 
-@transport_company_page.route('/transport_company/info/<manager_id>', methods=['PATCH'])
-def update_company_info(manager_id):
+@transport_company_page.route('/transport_company/info/<staff_id>', methods=['PATCH'])
+def update_company_info(staff_id):
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    company = TransportCmp.query.filter(TransportCmp.staff_id == manager_id).first()
-    if company:
-        if (token_data['user_id'] == '0') | (company.staff_role == 'manager'):
-            manager_name = request.json['manager_name']
-            manager_tel = request.json['manager_tel']
-            company.staff_name = manager_name
-            company.staff_tel = manager_tel
+    staff_info = TransportCmp.query.filter(TransportCmp.staff_id == staff_id).first()
+    if staff_info:
+        if token_data['user_id'] == '0':
+            staff_info.staff_name = request.json['staff_name']
+            staff_info.staff_tel = request.json['staff_tel']
             db.session.commit()
             return '修改成功'
         else:
@@ -137,17 +135,16 @@ def query_company(company_name):
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    role = TransportCmp.query.filter(TransportCmp.staff_id == token_data['user_id']).first().role
-    if (token_data['user_id'] == '0') | (role == 'manager'):
+    if token_data['user_id'] == '0':
         information = TransportCmp.query.filter(TransportCmp.company_name == company_name).all()
         data = []
         for info in information:
-            data.append({
-                "staff_id": info.staff_id,
-                "staff_role": info.staff_role,
-                "staff_name": info.staff_name,
-                "staff_tel": info.staff_tel
-            })
+            if info.staff_role != 'manager':
+                data.append({
+                    "staff_id": info.staff_id,
+                    "staff_name": info.staff_name,
+                    "staff_tel": info.staff_tel
+                })
         return jsonify(data)
     else:
         return '无权限'

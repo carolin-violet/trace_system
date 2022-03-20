@@ -1,5 +1,5 @@
 from uuid import uuid1
-from src.models import User
+from src.models import User, TransportCmp
 from src.security.RSA import create_keys
 from src.utils.chain import Chain
 from src.utils.create_tel import create_tel
@@ -72,6 +72,9 @@ def init_user(db):
     tel = create_tel()
     transporter6 = User(user_id, 'transporter', 'transporter6', tel, '123456', '男', public_key, private_key, '')
 
+    # 顺便创1个公司
+    company1 = TransportCmp('A运输公司', user_id, 'manager', 'transporter6', tel)
+
     # 创建销售商账户
     public_key, private_key = create_keys()
     user_id = str(uuid1()).replace('-', '')
@@ -87,6 +90,6 @@ def init_user(db):
     saler3 = User(user_id, 'saler', 'saler3', tel, '123456', '男', public_key, private_key, '')
 
     db.session.add_all([admin, producer1, producer2, producer3, transporter1, transporter2, transporter3, transporter4,
-                    transporter5, transporter6, saler1, saler2, saler3])
+                    transporter5, transporter6, saler1, saler2, saler3, company1])
     db.session.commit()
 

@@ -123,7 +123,7 @@ def query_all_company():
                 "manager_name": info.staff_name,
                 "manager_tel": info.staff_tel
             })
-        print(data)
+        # print(data)
         return jsonify(data)
     else:
         return '无权限'

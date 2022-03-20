@@ -148,29 +148,33 @@ def query_producer():
         return '无权限'
 
 
-# '''
-# 查询所有运输公司
-# '''
-#
-#
-# @user_page.route('/users/transporter', methods=['GET'])
-# def query_transport_company():
-#     token_data = token_auth.verify_token(request.headers['token'])
-#     if token_data == 'token过期或错误':
-#         return '请重新登录'
-#
-#     if token_data['user_id'] == '0':
-#         company_s = TransportCmp.query.filter(TransportCmp.staff_role == 'manager').all()
-#         data = []
-#         for company in company_s:
-#             data.append({
-#                 "company_name": company.company_name,
-#                 "manager_id": company.staff_id,
-#                 "manager_name": company.staff_name,
-#                 "manager_tel": company.staff_tel
-#             })
-#     else:
-#         return '无权限'
+'''
+查询所有运输人员信息
+'''
+
+
+@user_page.route('/users/transporter', methods=['GET'])
+def query_transport_company():
+    token_data = token_auth.verify_token(request.headers['token'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
+    if token_data['user_id'] == '0':
+        users = User.query.filter(User.role == 'producer').all()
+        # print(users)
+        data = []
+        for user in users:
+            staff_role = TransportCmp.query.filter(TransportCmp.staff_id == user.user_id).first()
+            if staff_role == 'common':
+                data.append({
+                    'user_id': user.user_id,
+                    'name': user.name,
+                    'tel': user.tel,
+                    'password': user.password,
+                    'gender': user.gender,
+                    })
+        return jsonify(data)
+    else:
+        return '无权限'
 
 
 '''

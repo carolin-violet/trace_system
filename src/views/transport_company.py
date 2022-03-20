@@ -29,7 +29,7 @@ def add_company_info():
         transport_company_info = TransportCmp(company_name, staff_id, staff_role, staff_name, staff_tel)
         db.session.add(transport_company_info)
         db.session.commit()
-        return '添加成功'
+        return '成功'
     else:
         return '无权限'
 
@@ -39,7 +39,7 @@ def add_company_info():
 '''
 
 
-@transport_company_page.route('/transport_company/<company_name>', methods=['DELETE'])
+@transport_company_page.route('/transport_companies/<company_name>', methods=['DELETE'])
 def del_company(company_name):
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
@@ -71,6 +71,7 @@ def del_staff(staff_id):
         if staff:
             db.session.delete(staff)
             db.session.commit()
+            return '删除成功'
         else:
             return '不存在此员工'
     else:

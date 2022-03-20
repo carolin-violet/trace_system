@@ -58,7 +58,6 @@ def query_produce_info(producer_id):
         return '请重新登录'
     if token_data['user_id'] == '0':
         information = Produce.query.filter(Produce.user_id == producer_id).all()
-        print(information)
         if not information:
             return "无生产信息"
         data = []

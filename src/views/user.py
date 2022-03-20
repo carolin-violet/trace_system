@@ -93,11 +93,11 @@ def del_user(user_id):
 
 
 '''
-修改单个用户的密码
+修改单个用户信息
 '''
 
 
-@user_page.route('/users/password/<user_id>', methods=['PATCH'])
+@user_page.route('/users/info/<user_id>', methods=['PATCH'])
 def update_user_password(user_id):
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
@@ -105,31 +105,14 @@ def update_user_password(user_id):
     if token_data['user_id'] == '0' or user_id:
         user = User.query.filter(User.user_id == user_id).first()
         if user:
+            name = request.json['name']
             password = request.json['password']
-            user.password = password
-            db.session.commit()
-            return '修改成功'
-        else:
-            return '用户不存在'
-    else:
-        return '无权限'
-
-
-'''
-修改单个用户的手机号
-'''
-
-
-@user_page.route('/users/phone/<user_id>', methods=['PATCH'])
-def update_user_phone(user_id):
-    token_data = token_auth.verify_token(request.headers['token'])
-    if token_data == 'token过期或错误':
-        return '请重新登录'
-    if token_data['user_id'] == '0' or user_id:
-        user = User.query.filter(User.user_id == user_id).first()
-        if user:
             tel = request.json['tel']
+            gender = request.json['gender']
+            user.name = name
+            user.password = password
             user.tel = tel
+            user.gender = gender
             db.session.commit()
             return '修改成功'
         else:

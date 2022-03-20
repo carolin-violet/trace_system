@@ -67,7 +67,7 @@ def add_user():
         user = User(user_id, role, name, tel, password, gender, public_key, private_key, '')
         db.session.add(user)
         db.session.commit()
-        return '注册成功'
+        return '成功'
 
 
 '''
@@ -98,7 +98,7 @@ def del_user(user_id):
 
 
 @user_page.route('/users/info/<user_id>', methods=['PATCH'])
-def update_user_password(user_id):
+def update_user_info(user_id):
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
@@ -148,29 +148,29 @@ def query_producer():
         return '无权限'
 
 
-'''
-查询所有运输公司
-'''
-
-
-@user_page.route('/users/transporter', methods=['GET'])
-def query_transport_company():
-    token_data = token_auth.verify_token(request.headers['token'])
-    if token_data == 'token过期或错误':
-        return '请重新登录'
-
-    if token_data['user_id'] == '0':
-        company_s = TransportCmp.query.filter(TransportCmp.staff_role == 'manager').all()
-        data = []
-        for company in company_s:
-            data.append({
-                "company_name": company.company_name,
-                "manager_id": company.staff_id,
-                "manager_name": company.staff_name,
-                "manager_tel": company.staff_tel
-            })
-    else:
-        return '无权限'
+# '''
+# 查询所有运输公司
+# '''
+#
+#
+# @user_page.route('/users/transporter', methods=['GET'])
+# def query_transport_company():
+#     token_data = token_auth.verify_token(request.headers['token'])
+#     if token_data == 'token过期或错误':
+#         return '请重新登录'
+#
+#     if token_data['user_id'] == '0':
+#         company_s = TransportCmp.query.filter(TransportCmp.staff_role == 'manager').all()
+#         data = []
+#         for company in company_s:
+#             data.append({
+#                 "company_name": company.company_name,
+#                 "manager_id": company.staff_id,
+#                 "manager_name": company.staff_name,
+#                 "manager_tel": company.staff_tel
+#             })
+#     else:
+#         return '无权限'
 
 
 '''

@@ -4,7 +4,7 @@
 from flask import Blueprint, request, jsonify
 import time
 from src.security import token_auth
-from src.models import TH, db, User
+from src.models import TH, db
 
 th_page = Blueprint('th_page', __name__)
 
@@ -39,17 +39,17 @@ def query_produce_th(producer_id):
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    role = User.query.filter(User.user_id == token_data['user_id']).first().role
-    if (role == 'producer' or 'admin') & (token_data['user_id'] == producer_id or '0'):
+    if token_data['user_id'] == '0':
         information = TH.query.filter(TH.user_id == producer_id).all()
-
+        print(information)
         data = []
         for info in information:
             data.append({
+                "area_id": info.area_id,
                 "batch": info.batch,
                 "temp": info.temp,
                 "hum": info.hum,
-                "date": info.date
+                "time": info.time
             })
         return jsonify(data)
     else:

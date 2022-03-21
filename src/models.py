@@ -75,15 +75,15 @@ class TH(db.Model):
     batch = db.Column(db.Integer, nullable=False)  # 生产批次
     temp = db.Column(db.FLOAT, nullable=False)  # 温度
     hum = db.Column(db.FLOAT, nullable=False)  # 湿度
-    date = db.Column(db.String(100), nullable=False)  # 时间
+    time = db.Column(db.String(100), nullable=False)  # 时间
 
-    def __init__(self, user_id, area_id, batch, temp, hum, date):
+    def __init__(self, user_id, area_id, batch, temp, hum, time):
         self.user_id = user_id
         self.area_id = area_id
         self.batch = batch
         self.temp = temp
         self.hum = hum
-        self.date = date
+        self.time = time
 
 
 '''

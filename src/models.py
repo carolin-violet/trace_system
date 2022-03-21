@@ -50,7 +50,7 @@ class Produce(db.Model):
     op_type = db.Column(db.String(2), nullable=False)  # 播种,浇水,施肥,除虫,除草,收割,存储,出库
     op_time = db.Column(db.String(100), nullable=False)  # 操作时间
     description = db.Column(db.Text, default='')  # 详情描述
-    img = db.Column(db.Text, default='')  # 照片存放地址
+    img = db.Column(db.TEXT, default='')  # 照片存放地址
 
     def __init__(self, user_id, area_id, batch, op_type, op_time, description, img):
         self.user_id = user_id

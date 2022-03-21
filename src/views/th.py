@@ -41,7 +41,6 @@ def query_produce_th(producer_id):
         return '请重新登录'
     if token_data['user_id'] == '0':
         information = TH.query.filter(TH.user_id == producer_id).all()
-        print(information)
         data = []
         for info in information:
             data.append({

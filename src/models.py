@@ -94,7 +94,7 @@ class TH(db.Model):
 class Commodity(db.Model):
     __tablename__ = 'commodity'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.String(255), nullable=False)  # 所属生产厂家用户id
+    producer_id = db.Column(db.String(255), nullable=False)  # 所属生产厂家用户id
     area_id = db.Column(db.Integer, nullable=False)  # 农田区域
     batch = db.Column(db.Integer, nullable=False)  # 生产批次
     name = db.Column(db.String(10), nullable=False)  # 商品名称
@@ -105,8 +105,8 @@ class Commodity(db.Model):
     des = db.Column(db.String(100), nullable=False)  # 目的地
     qrcode_url = db.Column(db.Text, nullable=False)  # 二维码存放的网址
 
-    def __init__(self, user_id, area_id, batch, name, weight, saler_id, logistics_id, ini, des, qrcode_url):
-        self.user_id = user_id
+    def __init__(self, producer_id, area_id, batch, name, weight, saler_id, logistics_id, ini, des, qrcode_url):
+        self.producer_id = producer_id
         self.area_id = area_id
         self.batch = batch
         self.name = name

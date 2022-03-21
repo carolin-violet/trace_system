@@ -1,11 +1,11 @@
 """
 商品信息模块
 """
-from flask import Blueprint, request, jsonify, send_file
+from flask import Blueprint, request, jsonify
 from uuid import uuid1
 import os
 from src.models import Commodity, db, User
-from src.utils import img
+from src.utils import QR_code
 from src.security import token_auth
 
 
@@ -19,7 +19,7 @@ commodity_page = Blueprint('commodity_page', __name__)
 
 @commodity_page.route('/commodity', methods=['POST'])
 def add_commodity():
-    user_id = request.json['user_id']
+    producer_id = request.json['producer_id']
     area_id = int(request.json['area_id'])
     batch = int(request.json['batch'])
     name = request.json['name']
@@ -31,9 +31,9 @@ def add_commodity():
 
     qrcode_url = "http://127.0.0.1:5000" + "/commodity/detail/" + str(logistics_id) + '/' + str(saler_id)
     qr_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__))) + '/static/qr_codes/'+logistics_id+'.png'
-    img.make_qrcode(qrcode_url, qr_path)
+    QR_code.make_qrcode(qrcode_url, qr_path)
 
-    commodity = Commodity(user_id, area_id, batch, name, weight, saler_id, logistics_id, ini, des, qrcode_url)
+    commodity = Commodity(producer_id, area_id, batch, name, weight, saler_id, logistics_id, ini, des, qrcode_url)
     db.session.add(commodity)
     db.session.commit()
 
@@ -78,7 +78,7 @@ def query_commodity():
         data = []
         for commodity in commodities:
             data.append({
-                'user_id': commodity.user_id,
+                'producer_id': commodity.producer_id,
                 'area_id': commodity.area_id,
                 'batch': commodity.batch,
                 'name': commodity.name,

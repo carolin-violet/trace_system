@@ -26,21 +26,12 @@ def add_produce_info():
         batch = request.json['batch']
         op_type = request.json['op_type']
         op_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        img = request.json['img']
         description = request.json['description']
 
-        '''
-        接收并保存拍摄的图片
-        '''
-        img = request.json['img']
-        rel_path = user_id + '--' + area_id + '--' + batch + '--' + op_type + '--' + op_time.split(' ')[0] + '.' + img.filename.split('.')[-1]
-        img_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__))) + '/static/produce_img/' + rel_path
-        with open(img_path, 'wb') as fp:
-            fp.write(base64.b64decode(img))
-
-        produce_info = Produce(user_id, area_id, batch, op_type, op_time, description, img_path)
+        produce_info = Produce(user_id, area_id, batch, op_type, op_time, description, img)
         db.session.add(produce_info)
         db.session.commit()
-
         return '添加成功'
     else:
         return '无权限'

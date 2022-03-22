@@ -135,20 +135,16 @@ def query_chain():
     if token_data == 'token过期或错误':
         return '请重新登录'
     if token_data['user_id'] == '0':
-        blocks = Blockchain.query.all()
-        data = []
-
-        for block in blocks:
-
-            data.append({
-                "logistics_id": block.logistics_id,
-                "cur_hash": block.cur_hash,
-                "pre_hash": block.pre_hash,
-                "timestamp": block.timestamp,
-                "nonce": block.nonce,
-                "data": block.data,
-            })
-        return jsonify(data)
+        out_chain_commodity = []
+        commodities = Commodity.query.all()
+        for commodity in commodities:
+            is_arrive = Logistics.query.filter(Logistics.logistics_id == commodity.logistics_id).last().status == '已到货'
+            is_in_chain = Blockchain.query.filter(Blockchain.logistics_id == commodity.logistics_id).first()
+            if is_arrive & is_in_chain:
+                out_chain_commodity.append({
+                    "logistics_id": commodity.logistics_id
+                })
+            return out_chain_commodity
     else:
         return '无权限'
 

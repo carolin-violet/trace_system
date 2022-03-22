@@ -86,7 +86,7 @@ class Chain:
         return Hash.get_hash(data).startswith('0')
 
     '''
-    验证区块链有效性
+    验证区块链有效性：分别验证前一个区块的计算的hash与当前区块中上一个区块的hash是否一样，相邻区块的nonce进行工作量证明验证
     '''
     def validate_chain(self):
         pre_block = self.chain[0]
@@ -105,6 +105,9 @@ class Chain:
             # print('前一个区块的hash：', self.chain[cur_index].pre_hash)
             # print('当前计算区块的hash：', pre_hash)
             if pre_hash != self.chain[cur_index].pre_hash:
+                return False
+
+            if not self.validate_proof(pre_block.nonce, self.chain[cur_index].nonce):
                 return False
 
             pre_block = self.chain[cur_index]

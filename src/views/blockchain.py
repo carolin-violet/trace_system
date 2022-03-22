@@ -125,6 +125,35 @@ def query_chain():
 
 
 '''
+查询不在区块链中的商品信息(运输状态为已到货)
+'''
+
+
+@chain_page.route('/blockchain/out-chain', methods=['GET'])
+def query_chain():
+    token_data = token_auth.verify_token(request.headers['token'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
+    if token_data['user_id'] == '0':
+        blocks = Blockchain.query.all()
+        data = []
+
+        for block in blocks:
+
+            data.append({
+                "logistics_id": block.logistics_id,
+                "cur_hash": block.cur_hash,
+                "pre_hash": block.pre_hash,
+                "timestamp": block.timestamp,
+                "nonce": block.nonce,
+                "data": block.data,
+            })
+        return jsonify(data)
+    else:
+        return '无权限'
+
+
+'''
 查询单个区块的数据
 '''
 

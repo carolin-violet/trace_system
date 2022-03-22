@@ -61,7 +61,7 @@ def add_block():
         th_data.append({
             "temp": th.temp,
             "hum": th.hum,
-            "date": th.date,
+            "time": th.time,
         })
     produces = Produce.query.filter((Produce.producer_id == commodity.producer_id) & (Produce.area_id == commodity.area_id) & (Produce.batch == commodity.batch)).all()
     for produce in produces:
@@ -143,7 +143,7 @@ def query_out_chain():
                 out_chain_commodity.append({
                     "logistics_id": commodity.logistics_id
                 })
-            return jsonify(out_chain_commodity)
+        return jsonify(out_chain_commodity)
     else:
         return '无权限'
 

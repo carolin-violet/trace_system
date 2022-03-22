@@ -44,7 +44,7 @@ class User(db.Model):
 class Produce(db.Model):
     __tablename__ = 'produce'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.String(255), nullable=False)  # 生产厂家用户id
+    producer_id = db.Column(db.String(255), nullable=False)  # 生产厂家用户id
     area_id = db.Column(db.Integer, nullable=False)  # 农田区域id
     batch = db.Column(db.Integer, nullable=False)  # 生产批次
     op_type = db.Column(db.String(2), nullable=False)  # 播种,浇水,施肥,除虫,除草,收割,存储,出库
@@ -52,8 +52,8 @@ class Produce(db.Model):
     description = db.Column(db.Text, default='')  # 详情描述
     img = db.Column(db.TEXT, default='')  # 照片存放地址
 
-    def __init__(self, user_id, area_id, batch, op_type, op_time, description, img):
-        self.user_id = user_id
+    def __init__(self, producer_id, area_id, batch, op_type, op_time, description, img):
+        self.producer_id = producer_id
         self.area_id = area_id
         self.batch = batch
         self.op_type = op_type

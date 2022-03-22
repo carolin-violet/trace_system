@@ -39,7 +39,7 @@ def add_block():
     '''
     commodity = Commodity.query.filter(Commodity.logistics_id == logistics_id).first()
     commodity_data = {
-        'user_id': commodity.user_id,
+        'producer_id': commodity.producer_id,
         'area_id': commodity.area_id,
         'batch': commodity.batch,
         'name': commodity.name,
@@ -56,20 +56,20 @@ def add_block():
     '''
     th_data = []
     produce_data = []
-    ths = TH.query.filter((TH.user_id == commodity.user_id) & (TH.area_id == commodity.area_id) & (TH.batch == commodity.batch)).all()
+    ths = TH.query.filter((TH.user_id == commodity.producer_id) & (TH.area_id == commodity.area_id) & (TH.batch == commodity.batch)).all()
     for th in ths:
         th_data.append({
             "temp": th.temp,
             "hum": th.hum,
             "date": th.date,
         })
-    produces = Produce.query.filter((Produce.user_id == commodity.user_id) & (Produce.area_id == commodity.area_id) & (Produce.batch == commodity.batch)).all()
+    produces = Produce.query.filter((Produce.producer_id == commodity.producer_id) & (Produce.area_id == commodity.area_id) & (Produce.batch == commodity.batch)).all()
     for produce in produces:
         produce_data.append({
             "op_type": produce.op_type,
             "op_time": produce.op_time,
             "description": produce.description,
-            "img_path": produce.img_path,
+            "img": produce.img,
         })
 
     '''
@@ -137,13 +137,13 @@ def query_out_chain():
         out_chain_commodity = []
         commodities = Commodity.query.all()
         for commodity in commodities:
-            is_arrive = Logistics.query.filter(Logistics.logistics_id == commodity.logistics_id)[-1].status == '已到货'
+            commodity_status = Logistics.query.filter(Logistics.logistics_id == commodity.logistics_id).all()[-1].status
             is_in_chain = Blockchain.query.filter(Blockchain.logistics_id == commodity.logistics_id).first()
-            if is_arrive & is_in_chain:
+            if (commodity_status == '已到货') & (not is_in_chain):
                 out_chain_commodity.append({
                     "logistics_id": commodity.logistics_id
                 })
-            return out_chain_commodity
+            return jsonify(out_chain_commodity)
     else:
         return '无权限'
 

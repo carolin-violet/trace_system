@@ -149,31 +149,6 @@ def query_out_chain():
 
 
 '''
-查询单个区块的数据
-'''
-
-
-@chain_page.route('/blockchain/<logistics_id>', methods=['GET'])
-def query_block(logistics_id):
-    token_data = token_auth.verify_token(request.headers['token'])
-    if token_data == 'token过期或错误':
-        return '请重新登录'
-    if token_data['user_id'] == '0':
-        block = Blockchain.query.filter(Blockchain.logistics_id == logistics_id).first()
-
-        return jsonify({
-            "logistics_id": block.logistics_id,
-            "cur_hash": block.cur_hash,
-            "pre_hash": block.pre_hash,
-            "timestamp": block.timestamp,
-            "nonce": block.nonce,
-            "data_path": block.data_path,
-        })
-    else:
-        return '无权限'
-
-
-'''
 验证区块链的合理性
 '''
 

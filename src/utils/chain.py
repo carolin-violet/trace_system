@@ -99,9 +99,11 @@ class Chain:
                 "pre_hash": pre_block.pre_hash,
                 "timestamp": pre_block.timestamp,
                 "nonce": pre_block.nonce,
-                "data": pre_block.data,
+                "data": pre_block.data_path,
             }
             pre_hash = Hash.get_hash(pre_info)
+            # print('前一个区块的hash：', self.chain[cur_index].pre_hash)
+            # print('当前计算区块的hash：', pre_hash)
             if pre_hash != self.chain[cur_index].pre_hash:
                 return False
 

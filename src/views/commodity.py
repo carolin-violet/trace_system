@@ -24,7 +24,7 @@ def add_commodity():
     batch = int(request.json['batch'])
     name = request.json['name']
     weight = float(request.json['weight'])
-    saler_id = float(request.json['saler_id'])
+    saler_id = request.json['saler_id']
     logistics_id = str(uuid1())
     ini = request.json['ini']
     des = request.json['des']

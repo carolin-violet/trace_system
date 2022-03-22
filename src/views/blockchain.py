@@ -110,14 +110,13 @@ def query_chain():
         data = []
 
         for block in blocks:
-
             data.append({
                 "logistics_id": block.logistics_id,
                 "cur_hash": block.cur_hash,
                 "pre_hash": block.pre_hash,
                 "timestamp": block.timestamp,
                 "nonce": block.nonce,
-                "data": block.data,
+                "data_path": block.data_path,
             })
         return jsonify(data)
     else:
@@ -130,7 +129,7 @@ def query_chain():
 
 
 @chain_page.route('/blockchain/out-chain', methods=['GET'])
-def query_chain():
+def query_out_chain():
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
@@ -138,7 +137,7 @@ def query_chain():
         out_chain_commodity = []
         commodities = Commodity.query.all()
         for commodity in commodities:
-            is_arrive = Logistics.query.filter(Logistics.logistics_id == commodity.logistics_id).last().status == '已到货'
+            is_arrive = Logistics.query.filter(Logistics.logistics_id == commodity.logistics_id)[-1].status == '已到货'
             is_in_chain = Blockchain.query.filter(Blockchain.logistics_id == commodity.logistics_id).first()
             if is_arrive & is_in_chain:
                 out_chain_commodity.append({
@@ -168,7 +167,7 @@ def query_block(logistics_id):
             "pre_hash": block.pre_hash,
             "timestamp": block.timestamp,
             "nonce": block.nonce,
-            "data": block.data,
+            "data_path": block.data_path,
         })
     else:
         return '无权限'

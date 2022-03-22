@@ -16,14 +16,8 @@ sale_page = Blueprint('sale_page', __name__)
 
 @sale_page.route('/commodity/qrcode_img/<logistics_id>', methods=['GET'])
 def get_qrcode(logistics_id):
-    token_data = token_auth.verify_token(request.headers['token'])
-    if token_data == 'token过期或错误':
-        return '请重新登录'
-    role = User.query.filter(User.user_id == token_data['user_id']).first().role
-    saler_id = Commodity.query.filter(Commodity.logistics_id == logistics_id).first().saler_id
-    if (role == 'saler' or 'admin') & (token_data['user_id'] == saler_id or '0'):
-        img_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__))) + '/static/qr_codes/'+logistics_id+'.png'
-        return send_file(img_path, mimetype='image/gif')
+    img_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__))) + '/static/qr_codes/'+logistics_id+'.png'
+    return send_file(img_path, mimetype='image/gif')
 
 
 '''

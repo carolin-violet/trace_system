@@ -15,7 +15,7 @@ sale_page = Blueprint('sale_page', __name__)
 '''
 
 
-@sale_page.route('/commodity/<saler_id>', methods=['GET'])
+@sale_page.route('/commodities/<saler_id>', methods=['GET'])
 def get_commodity(saler_id):
     commodities = Commodity.query.filter(Commodity.saler_id == saler_id).all()
     data = []

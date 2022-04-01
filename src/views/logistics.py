@@ -36,20 +36,13 @@ def add_logistics():
 
 @logistics_page.route('/logistics/<logistics_id>', methods=['DELETE'])
 def del_logistics(logistics_id):
-    token_data = token_auth.verify_token(request.headers['token'])
-    if token_data == 'token过期或错误':
-        return '请重新登录'
-    role = TransportCmp.query.filter(TransportCmp.staff_id == token_data['user_id']).first().role
-    if role == 'manager':
-        logistics = Logistics.query.filter(Logistics.logistics_id == logistics_id).first()
-        if logistics:
-            db.session.delete(logistics)
-            db.session.commit()
-            return '删除成功'
-        else:
-            return '物流不存在'
+    logistics = Logistics.query.filter(Logistics.logistics_id == logistics_id).first()
+    if logistics:
+        db.session.delete(logistics)
+        db.session.commit()
+        return '删除成功'
     else:
-        return '无权限'
+        return '物流不存在'
 
 
 '''

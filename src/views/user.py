@@ -80,7 +80,7 @@ def del_user(user_id):
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['user_id'] == '0':
+    if token_data.role == 'admin':
         user = User.query.filter(User.user_id == user_id).first()
         if user:
             db.session.delete(user)
@@ -102,7 +102,7 @@ def update_user_info(user_id):
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['user_id'] == '0' or user_id:
+    if (token_data.role == 'admin') | (token_data.user_id == request.json['user_id']):
         user = User.query.filter(User.user_id == user_id).first()
         if user:
             name = request.json['name']
@@ -131,8 +131,7 @@ def query_producer():
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-
-    if token_data['user_id'] == '0':
+    if token_data.role == 'admin':
         users = User.query.filter(User.role == 'producer').all()
         data = []
         for user in users:
@@ -158,7 +157,7 @@ def query_transport_company():
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['user_id'] == '0':
+    if token_data.role == 'admin':
         users = User.query.filter(User.role == 'transporter').all()
         data = []
         for user in users:
@@ -198,8 +197,7 @@ def query_saler():
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-
-    if token_data['user_id'] == '0':
+    if token_data.role == 'admin':
         users = User.query.filter(User.role == 'saler').all()
         data = []
         for user in users:
@@ -225,7 +223,7 @@ def all_users(user_id):
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['user_id'] == '0' or user_id:
+    if (token_data.role == 'admin') | (token_data.user_id == request.json['user_id']):
         user = User.query.filter(User.user_id == user_id).first()
         if user:
             return jsonify({

@@ -39,7 +39,7 @@ def query_produce_th(producer_id):
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['user_id'] == '0':
+    if token_data.role == 'admin':
         information = TH.query.filter(TH.user_id == producer_id).all()
         data = []
         for info in information:

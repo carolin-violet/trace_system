@@ -47,20 +47,13 @@ def add_commodity():
 
 @commodity_page.route('/commodity/<logistics_id>', methods=['DELETE'])
 def del_commodity(logistics_id):
-    token_data = token_auth.verify_token(request.headers['token'])
-    if token_data == 'token过期或错误':
-        return '请重新登录'
-    role = User.query.filter(User.user_id == token_data['user_id']).first().role
-    if role == 'producer' or 'admin':
-        commodity = Commodity.query.filter(Commodity.logistics_id == logistics_id).first()
-        if commodity:
-            db.session.delete(commodity)
-            db.session.commit()
-            return '删除成功'
-        else:
-            return '商品不存在'
+    commodity = Commodity.query.filter(Commodity.logistics_id == logistics_id).first()
+    if commodity:
+        db.session.delete(commodity)
+        db.session.commit()
+        return '删除成功'
     else:
-        return '无权限'
+        return '商品不存在'
 
 
 '''
@@ -73,7 +66,7 @@ def query_commodity():
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['user_id'] == '0':
+    if token_data.role == 'admin':
         commodities = Commodity.query.all()
         data = []
         for commodity in commodities:

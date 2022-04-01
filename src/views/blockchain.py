@@ -105,7 +105,7 @@ def query_chain():
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['user_id'] == '0':
+    if token_data.role == 'admin':
         blocks = Blockchain.query.all()
         data = []
 
@@ -133,7 +133,7 @@ def query_out_chain():
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['user_id'] == '0':
+    if token_data.role == 'admin':
         out_chain_commodity = []
         commodities = Commodity.query.all()
         for commodity in commodities:
@@ -158,7 +158,7 @@ def validate_chain():
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['user_id'] == '0':
+    if token_data.role == 'admin':
         blocks = Blockchain.query.all()
         blockchain = chain.Chain(blocks, db)
         is_correct = blockchain.validate_chain()

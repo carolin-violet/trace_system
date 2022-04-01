@@ -20,7 +20,7 @@ def add_produce_info():
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['user_id'] == '0':
+    if (token_data.role == 'admin') | (token_data.user_id == request.json['user_id']):
         user_id = request.json['user_id']
         area_id = request.json['area_id']
         batch = request.json['batch']
@@ -47,7 +47,7 @@ def query_produce_info(producer_id):
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['user_id'] == '0':
+    if (token_data.role == 'admin') | (token_data.user_id == producer_id):
         information = Produce.query.filter(Produce.user_id == producer_id).all()
         if not information:
             return "无生产信息"

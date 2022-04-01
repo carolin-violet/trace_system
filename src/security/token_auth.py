@@ -1,6 +1,6 @@
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from src.settings import Config
-
+from src.models import User
 
 '''
 生成token
@@ -26,7 +26,14 @@ def verify_token(token):
     try:
         # 转换为字典
         data = s.loads(token)
-        return data
+        try:
+            user = User.query.filter(User.user_id == data['user_id']).first()
+            return {
+                "user_id": data['user_id'],
+                "role": user.role,
+            }
+        except Exception:
+            return '用户不存在'
     except Exception:
         return 'token过期或错误'
 

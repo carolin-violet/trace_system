@@ -38,6 +38,7 @@ def login():
                         "tel": user.tel,
                         "gender": user.gender,
                         "token": user.token,
+                        }
                     }
             except Exception:
                 return {

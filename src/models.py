@@ -22,9 +22,8 @@ class User(db.Model):
     gender = db.Column(db.String(6), nullable=False)  # 性别:male/female
     public_key = db.Column(db.VARBINARY(1000), nullable=False)  # 用户公钥
     private_key = db.Column(db.VARBINARY(1000), nullable=False)  # 用户私钥
-    token = db.Column(db.String(255), nullable=False)  # 用户token
 
-    def __init__(self, user_id, role, name, tel, password, gender, public_key, private_key, token):
+    def __init__(self, user_id, role, name, tel, password, gender, public_key, private_key):
         self.user_id = user_id
         self.role = role
         self.name = name
@@ -33,7 +32,6 @@ class User(db.Model):
         self.gender = gender
         self.public_key = public_key
         self.private_key = private_key
-        self.token = token
 
 
 '''

@@ -216,15 +216,14 @@ def get_user_info():
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    user = User.query.filter(User.token == request.headers['token']).first()
+    user = User.query.filter(User.user_id == token_data.user_id).first()
     if user:
         try:
             staff_role = TransportCmp.query.filter(TransportCmp.staff_id == user.user_id).first().staff_role
             if staff_role == 'manager':
                 return {
                     "user_id": user.user_id,
-                    "role": user.role,
-                    "staff_role": staff_role,
+                    "role": 'transport_manager',
                     "name": user.name,
                     "tel": user.tel,
                     "gender": user.gender,

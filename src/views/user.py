@@ -25,32 +25,9 @@ def login():
             token = token_auth.create_token(user.user_id)
             user.token = token
             db.session.commit()
-            try:
-                staff_role = TransportCmp.query.filter(TransportCmp.staff_id == user.user_id).first().staff_role
-                if staff_role == 'manager':
-                    return {
-                    "msg": '登录成功',
-                    "profile": {
-                        "user_id": user.user_id,
-                        "role": user.role,
-                        "staff_role": staff_role,
-                        "name": user.name,
-                        "tel": user.tel,
-                        "gender": user.gender,
-                        "token": user.token,
-                        }
-                    }
-            except Exception:
-                return {
-                    "msg": '登录成功',
-                    "profile": {
-                        "user_id": user.user_id,
-                        "role": user.role,
-                        "name": user.name,
-                        "tel": user.tel,
-                        "gender": user.gender,
-                        "token": user.token,
-                    }
+            return {
+                'msg': '登录成功',
+                'token': token
             }
         else:
             return {
@@ -230,28 +207,36 @@ def query_saler():
 
 
 '''
-查询单个用户
+利用token获取单个用户信息
 '''
 
 
-@user_page.route('/user/<user_id>', methods=['GET'])
-def all_users(user_id):
+@user_page.route('/user/info', methods=['GET'])
+def get_user_info():
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if (token_data.role == 'admin') | (token_data.user_id == request.json['user_id']):
-        user = User.query.filter(User.user_id == user_id).first()
-        if user:
-            return jsonify({
-                'user_id': user.user_id,
-                'role': user.role,
-                'name': user.name,
-                'tel': user.tel,
-                'password': user.password,
-                'gender': user.gender,
-            })
-        else:
-            return '用户不存在'
+    user = User.query.filter(User.token == request.headers['token']).first()
+    if user:
+        try:
+            staff_role = TransportCmp.query.filter(TransportCmp.staff_id == user.user_id).first().staff_role
+            if staff_role == 'manager':
+                return {
+                    "user_id": user.user_id,
+                    "role": user.role,
+                    "staff_role": staff_role,
+                    "name": user.name,
+                    "tel": user.tel,
+                    "gender": user.gender,
+                }
+        except Exception:
+            return {
+                "user_id": user.user_id,
+                "role": user.role,
+                "name": user.name,
+                "tel": user.tel,
+                "gender": user.gender,
+        }
     else:
-        return '无权限'
+        return '用户不存在'
 

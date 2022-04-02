@@ -216,7 +216,7 @@ def get_user_info():
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    user = User.query.filter(User.user_id == token_data.user_id).first()
+    user = User.query.filter(User.user_id == token_data['user_id']).first()
     if user:
         try:
             staff_role = TransportCmp.query.filter(TransportCmp.staff_id == user.user_id).first().staff_role

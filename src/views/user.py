@@ -25,16 +25,31 @@ def login():
             token = token_auth.create_token(user.user_id)
             user.token = token
             db.session.commit()
-            return {
-                "msg": '登录成功',
-                "profile": {
-                    "user_id": user.user_id,
-                    "role": user.role,
-                    "name": user.name,
-                    "tel": user.tel,
-                    "gender": user.gender,
-                    "token": user.token,
-                }
+            try:
+                staff_role = TransportCmp.query.filter(TransportCmp.staff_id == user.user_id).first().staff_role
+                if staff_role == 'manager':
+                    return {
+                    "msg": '登录成功',
+                    "profile": {
+                        "user_id": user.user_id,
+                        "role": user.role,
+                        "staff_role": staff_role,
+                        "name": user.name,
+                        "tel": user.tel,
+                        "gender": user.gender,
+                        "token": user.token,
+                    }
+            except Exception:
+                return {
+                    "msg": '登录成功',
+                    "profile": {
+                        "user_id": user.user_id,
+                        "role": user.role,
+                        "name": user.name,
+                        "tel": user.tel,
+                        "gender": user.gender,
+                        "token": user.token,
+                    }
             }
         else:
             return {

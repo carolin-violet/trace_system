@@ -1,10 +1,8 @@
 """
 生产信息
 """
-import base64
 from flask import Blueprint, request, jsonify, send_file
 import time
-import os
 from src.security import token_auth
 from src.models import Produce, db, User
 
@@ -20,7 +18,7 @@ def add_produce_info():
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if (token_data.role == 'admin') | (token_data.user_id == request.json['user_id']):
+    if (token_data['role'] == 'admin') | (token_data['user_id'] == request.json['user_id']):
         user_id = request.json['user_id']
         area_id = request.json['area_id']
         batch = request.json['batch']
@@ -47,8 +45,8 @@ def query_produce_info(producer_id):
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if (token_data.role == 'admin') | (token_data.user_id == producer_id):
-        information = Produce.query.filter(Produce.user_id == producer_id).all()
+    if (token_data['role'] == 'admin') | (token_data['user_id'] == producer_id):
+        information = Produce.query.filter(Produce.producer_id == producer_id).all()
         if not information:
             return "无生产信息"
         data = []

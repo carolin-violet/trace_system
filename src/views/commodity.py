@@ -66,7 +66,7 @@ def query_commodity():
     token_data = token_auth.verify_token(request.headers['token'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data.role == 'admin':
+    if token_data['role'] == 'admin':
         commodities = Commodity.query.all()
         data = []
         for commodity in commodities:

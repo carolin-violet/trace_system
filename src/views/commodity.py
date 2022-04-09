@@ -4,7 +4,7 @@
 from flask import Blueprint, request, jsonify
 from uuid import uuid1
 import os
-from src.models import Commodity, db, User
+from src.models import Commodity, db
 from src.utils import QR_code
 from src.security import token_auth
 
@@ -19,6 +19,9 @@ commodity_page = Blueprint('commodity_page', __name__)
 
 @commodity_page.route('/commodity', methods=['POST'])
 def add_commodity():
+    token_data = token_auth.verify_token(request.headers['Authorization'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
     producer_id = request.json['producer_id']
     area_id = int(request.json['area_id'])
     batch = int(request.json['batch'])
@@ -37,7 +40,10 @@ def add_commodity():
     db.session.add(commodity)
     db.session.commit()
 
-    return '添加成功'
+    return {
+            "code": 0,
+            "msg": '添加成功',
+        }
 
 
 '''
@@ -47,11 +53,17 @@ def add_commodity():
 
 @commodity_page.route('/commodity/<logistics_id>', methods=['DELETE'])
 def del_commodity(logistics_id):
+    token_data = token_auth.verify_token(request.headers['Authorization'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
     commodity = Commodity.query.filter(Commodity.logistics_id == logistics_id).first()
     if commodity:
         db.session.delete(commodity)
         db.session.commit()
-        return '删除成功'
+        return {
+            "code": 0,
+            "msg": '删除成功',
+        }
     else:
         return '商品不存在'
 
@@ -66,7 +78,6 @@ def query_commodity():
     token_data = token_auth.verify_token(request.headers['Authorization'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-
     commodities = Commodity.query.all()
     data = []
     for commodity in commodities:

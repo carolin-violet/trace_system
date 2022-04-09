@@ -34,29 +34,6 @@ def add_logistics():
         "msg": '添加成功',
     }
 
-
-'''
-删除物流信息
-'''
-
-
-@logistics_page.route('/logistics/<logistics_id>', methods=['DELETE'])
-def del_logistics(logistics_id):
-    token_data = token_auth.verify_token(request.headers['Authorization'])
-    if token_data == 'token过期或错误':
-        return '请重新登录'
-    logistics = Logistics.query.filter(Logistics.logistics_id == logistics_id).first()
-    if logistics:
-        db.session.delete(logistics)
-        db.session.commit()
-        return {
-            "code": 0,
-            "msg": '物流不存在',
-        }
-    else:
-        return '物流不存在'
-
-
 '''
 查询指定产品的物流信息
 '''

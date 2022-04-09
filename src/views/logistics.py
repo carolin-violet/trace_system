@@ -3,7 +3,7 @@
 """
 from flask import Blueprint, request, jsonify
 import time
-from src.models import Logistics, db, TransportCmp
+from src.models import Logistics, db
 from src.security import token_auth
 
 logistics_page = Blueprint('logistics_page', __name__)
@@ -16,6 +16,9 @@ logistics_page = Blueprint('logistics_page', __name__)
 
 @logistics_page.route('/logistics', methods=['POST'])
 def add_logistics():
+    token_data = token_auth.verify_token(request.headers['Authorization'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
     logistics_id = request.json['logistics_id']
     transporter_id = request.json['transporter_id']
     cur_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -26,7 +29,10 @@ def add_logistics():
     db.session.add(logistics)
     db.session.commit()
 
-    return '添加成功'
+    return {
+        "code": 0,
+        "msg": '添加成功',
+    }
 
 
 '''
@@ -36,11 +42,17 @@ def add_logistics():
 
 @logistics_page.route('/logistics/<logistics_id>', methods=['DELETE'])
 def del_logistics(logistics_id):
+    token_data = token_auth.verify_token(request.headers['Authorization'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
     logistics = Logistics.query.filter(Logistics.logistics_id == logistics_id).first()
     if logistics:
         db.session.delete(logistics)
         db.session.commit()
-        return '删除成功'
+        return {
+            "code": 0,
+            "msg": '物流不存在',
+        }
     else:
         return '物流不存在'
 
@@ -52,6 +64,9 @@ def del_logistics(logistics_id):
 
 @logistics_page.route('/logistics/<logistics_id>', methods=['GET'])
 def query_logistics(logistics_id):
+    token_data = token_auth.verify_token(request.headers['Authorization'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
     logistics_s = Logistics.query.filter(Logistics.logistics_id == logistics_id).all()
     if logistics_s:
         data = []

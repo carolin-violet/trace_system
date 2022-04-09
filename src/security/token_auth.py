@@ -27,11 +27,7 @@ def verify_token(token):
         # 转换为字典
         data = s.loads(token)
         try:
-            user = User.query.filter(User.user_id == data['user_id']).first()
-            return {
-                "user_id": data['user_id'],
-                "role": user.role,
-            }
+            return data
         except Exception:
             return '用户不存在'
     except Exception:

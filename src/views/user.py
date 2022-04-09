@@ -15,9 +15,9 @@ user_page = Blueprint('user_page', __name__)
 '''
 
 
-@user_page.route('/login', methods=['POST'])
+@user_page.route('/user/login', methods=['POST'])
 def login():
-    tel = request.json['tel']  # 姓名或者手机号
+    tel = request.json['username']  # 姓名或者手机号
     password = request.json['password']
     user = User.query.filter(User.tel == tel).first()
     if user:
@@ -26,8 +26,9 @@ def login():
             user.token = token
             db.session.commit()
             return {
-                'msg': '登录成功',
-                'token': token
+                "code": 0,
+                "message": "认证成功",
+                "data": {"token": token}
             }
         else:
             return {
@@ -37,6 +38,39 @@ def login():
         return {
                 "msg": '用户不存在'
             }
+
+
+'''
+获取用户信息
+'''
+
+
+@user_page.route('/user/user_info', methods=['GET'])
+def get_user_info():
+    token_data = token_auth.verify_token(request.headers['Authorization'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
+    user = User.query.filter(User.user_id == token_data['user_id']).first()
+    if user:
+        return {
+            "code": 0,
+            "msg": "认证成功",
+            "data": {
+                "roles": user.role,
+                "name": user.name,
+                "avatar": "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif"
+            }
+        }
+
+
+'''
+注销
+'''
+
+
+@user_page.route('/user/logout', methods=['GET'])
+def logout():
+    return ''
 
 
 '''
@@ -70,19 +104,16 @@ def add_user():
 
 @user_page.route('/users/<user_id>', methods=['DELETE'])
 def del_user(user_id):
-    token_data = token_auth.verify_token(request.headers['token'])
+    token_data = token_auth.verify_token(request.headers['Authorization'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['role'] == 'admin':
-        user = User.query.filter(User.user_id == user_id).first()
-        if user:
-            db.session.delete(user)
-            db.session.commit()
-            return '删除成功'
-        else:
-            return '用户不存在'
+    user = User.query.filter(User.user_id == user_id).first()
+    if user:
+        db.session.delete(user)
+        db.session.commit()
+        return '删除成功'
     else:
-        return '无权限'
+        return '用户不存在'
 
 
 '''
@@ -92,26 +123,23 @@ def del_user(user_id):
 
 @user_page.route('/users/info/<user_id>', methods=['PATCH'])
 def update_user_info(user_id):
-    token_data = token_auth.verify_token(request.headers['token'])
+    token_data = token_auth.verify_token(request.headers['Authorization'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['role'] == 'admin':
-        user = User.query.filter(User.user_id == user_id).first()
-        if user:
-            name = request.json['name']
-            password = request.json['password']
-            tel = request.json['tel']
-            gender = request.json['gender']
-            user.name = name
-            user.password = password
-            user.tel = tel
-            user.gender = gender
-            db.session.commit()
-            return '修改成功'
-        else:
-            return '用户不存在'
+    user = User.query.filter(User.user_id == user_id).first()
+    if user:
+        name = request.json['name']
+        password = request.json['password']
+        tel = request.json['tel']
+        gender = request.json['gender']
+        user.name = name
+        user.password = password
+        user.tel = tel
+        user.gender = gender
+        db.session.commit()
+        return '修改成功'
     else:
-        return '无权限'
+        return '用户不存在'
 
 
 '''
@@ -121,23 +149,20 @@ def update_user_info(user_id):
 
 @user_page.route('/users/producer', methods=['GET'])
 def query_producer():
-    token_data = token_auth.verify_token(request.headers['token'])
+    token_data = token_auth.verify_token(request.headers['Authorization'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['role'] == 'admin':
-        users = User.query.filter(User.role == 'producer').all()
-        data = []
-        for user in users:
-            data.append({
-                'user_id': user.user_id,
-                'name': user.name,
-                'tel': user.tel,
-                'password': user.password,
-                'gender': user.gender,
-                })
-        return jsonify(data)
-    else:
-        return '无权限'
+    users = User.query.filter(User.role == 'producer').all()
+    data = []
+    for user in users:
+        data.append({
+            'user_id': user.user_id,
+            'name': user.name,
+            'tel': user.tel,
+            'password': user.password,
+            'gender': user.gender,
+            })
+    return jsonify(data)
 
 
 '''
@@ -147,37 +172,35 @@ def query_producer():
 
 @user_page.route('/users/transporter', methods=['GET'])
 def query_transport_company():
-    token_data = token_auth.verify_token(request.headers['token'])
+    token_data = token_auth.verify_token(request.headers['Authorization'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['role'] == 'admin':
-        users = User.query.filter(User.role == 'transporter').all()
-        data = []
-        for user in users:
-            company_info = TransportCmp.query.filter(TransportCmp.staff_id == user.user_id).first()
-            if company_info:
-                data.append({
-                    'user_id': user.user_id,
-                    'name': user.name,
-                    'tel': user.tel,
-                    'password': user.password,
-                    'gender': user.gender,
-                    'company_name': company_info.company_name,
-                    'staff_role': company_info.staff_role,
-                    })
-            elif not company_info:
-                data.append({
-                    'user_id': user.user_id,
-                    'name': user.name,
-                    'tel': user.tel,
-                    'password': user.password,
-                    'gender': user.gender,
-                    'company_name': '无',
-                    'staff_role': '无',
+
+    users = User.query.filter(User.role == 'transporter').all()
+    data = []
+    for user in users:
+        company_info = TransportCmp.query.filter(TransportCmp.staff_id == user.user_id).first()
+        if company_info:
+            data.append({
+                'user_id': user.user_id,
+                'name': user.name,
+                'tel': user.tel,
+                'password': user.password,
+                'gender': user.gender,
+                'company_name': company_info.company_name,
+                'staff_role': company_info.staff_role,
                 })
-        return jsonify(data)
-    else:
-        return '无权限'
+        elif not company_info:
+            data.append({
+                'user_id': user.user_id,
+                'name': user.name,
+                'tel': user.tel,
+                'password': user.password,
+                'gender': user.gender,
+                'company_name': '无',
+                'staff_role': '无',
+            })
+    return jsonify(data)
 
 
 '''
@@ -187,55 +210,20 @@ def query_transport_company():
 
 @user_page.route('/users/saler', methods=['GET'])
 def query_saler():
-    token_data = token_auth.verify_token(request.headers['token'])
+    token_data = token_auth.verify_token(request.headers['Authorization'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['role'] == 'admin':
-        users = User.query.filter(User.role == 'saler').all()
-        data = []
-        for user in users:
-            data.append({
-                'user_id': user.user_id,
-                'name': user.name,
-                'tel': user.tel,
-                'password': user.password,
-                'gender': user.gender,
-                })
-        return jsonify(data)
-    else:
-        return '无权限'
+    users = User.query.filter(User.role == 'saler').all()
+    data = []
+    for user in users:
+        data.append({
+            'user_id': user.user_id,
+            'name': user.name,
+            'tel': user.tel,
+            'password': user.password,
+            'gender': user.gender,
+            })
+    return jsonify(data)
 
 
-'''
-利用token获取单个用户信息
-'''
-
-
-@user_page.route('/user/info', methods=['GET'])
-def get_user_info():
-    token_data = token_auth.verify_token(request.headers['token'])
-    if token_data == 'token过期或错误':
-        return '请重新登录'
-    user = User.query.filter(User.user_id == token_data['user_id']).first()
-    if user:
-        try:
-            staff_role = TransportCmp.query.filter(TransportCmp.staff_id == user.user_id).first().staff_role
-            if staff_role == 'manager':
-                return {
-                    "user_id": user.user_id,
-                    "role": 'transport_manager',
-                    "name": user.name,
-                    "tel": user.tel,
-                    "gender": user.gender,
-                }
-        except Exception:
-            return {
-                "user_id": user.user_id,
-                "role": user.role,
-                "name": user.name,
-                "tel": user.tel,
-                "gender": user.gender,
-        }
-    else:
-        return '用户不存在'
 

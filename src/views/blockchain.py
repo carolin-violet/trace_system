@@ -102,25 +102,23 @@ def add_block():
 
 @chain_page.route('/blockchain', methods=['GET'])
 def query_chain():
-    token_data = token_auth.verify_token(request.headers['token'])
+    token_data = token_auth.verify_token(request.headers['Authorization'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['role'] == 'admin':
-        blocks = Blockchain.query.all()
-        data = []
 
-        for block in blocks:
-            data.append({
-                "logistics_id": block.logistics_id,
-                "cur_hash": block.cur_hash,
-                "pre_hash": block.pre_hash,
-                "timestamp": block.timestamp,
-                "nonce": block.nonce,
-                "data_path": block.data_path,
-            })
-        return jsonify(data)
-    else:
-        return '无权限'
+    blocks = Blockchain.query.all()
+    data = []
+
+    for block in blocks:
+        data.append({
+            "logistics_id": block.logistics_id,
+            "cur_hash": block.cur_hash,
+            "pre_hash": block.pre_hash,
+            "timestamp": block.timestamp,
+            "nonce": block.nonce,
+            "data_path": block.data_path,
+        })
+    return jsonify(data)
 
 
 '''
@@ -130,22 +128,20 @@ def query_chain():
 
 @chain_page.route('/blockchain/out-chain', methods=['GET'])
 def query_out_chain():
-    token_data = token_auth.verify_token(request.headers['token'])
+    token_data = token_auth.verify_token(request.headers['Authorization'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['role'] == 'admin':
-        out_chain_commodity = []
-        commodities = Commodity.query.all()
-        for commodity in commodities:
-            commodity_status = Logistics.query.filter(Logistics.logistics_id == commodity.logistics_id).all()[-1].status
-            is_in_chain = Blockchain.query.filter(Blockchain.logistics_id == commodity.logistics_id).first()
-            if (commodity_status == '已到货') & (not is_in_chain):
-                out_chain_commodity.append({
-                    "logistics_id": commodity.logistics_id
-                })
-        return jsonify(out_chain_commodity)
-    else:
-        return '无权限'
+
+    out_chain_commodity = []
+    commodities = Commodity.query.all()
+    for commodity in commodities:
+        commodity_status = Logistics.query.filter(Logistics.logistics_id == commodity.logistics_id).all()[-1].status
+        is_in_chain = Blockchain.query.filter(Blockchain.logistics_id == commodity.logistics_id).first()
+        if (commodity_status == '已到货') & (not is_in_chain):
+            out_chain_commodity.append({
+                "logistics_id": commodity.logistics_id
+            })
+    return jsonify(out_chain_commodity)
 
 
 '''
@@ -155,16 +151,15 @@ def query_out_chain():
 
 @chain_page.route('/blockchain/validate_proof', methods=['GET'])
 def validate_chain():
-    token_data = token_auth.verify_token(request.headers['token'])
+    token_data = token_auth.verify_token(request.headers['Authorization'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['role'] == 'admin':
-        blocks = Blockchain.query.all()
-        blockchain = chain.Chain(blocks, db)
-        is_correct = blockchain.validate_chain()
-        if is_correct:
-            return 'true'  # 区块链正确
-        else:
-            return 'false'   # 区块链中有错
+
+    blocks = Blockchain.query.all()
+    blockchain = chain.Chain(blocks, db)
+    is_correct = blockchain.validate_chain()
+    if is_correct:
+        return 'true'  # 区块链正确
     else:
-        return '无权限'
+        return 'false'   # 区块链中有错
+

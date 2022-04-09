@@ -63,28 +63,27 @@ def del_commodity(logistics_id):
 
 @commodity_page.route('/commodities', methods=['GET'])
 def query_commodity():
-    token_data = token_auth.verify_token(request.headers['token'])
+    token_data = token_auth.verify_token(request.headers['Authorization'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    if token_data['role'] == 'admin':
-        commodities = Commodity.query.all()
-        data = []
-        for commodity in commodities:
-            data.append({
-                'producer_id': commodity.producer_id,
-                'area_id': commodity.area_id,
-                'batch': commodity.batch,
-                'name': commodity.name,
-                'weight': commodity.weight,
-                'saler_id': commodity.saler_id,
-                'logistics_id': commodity.logistics_id,
-                'ini': commodity.ini,
-                'des': commodity.des,
-                'qrcode_url': commodity.qrcode_url
-            })
-        return jsonify(data)
-    else:
-        return '无权限'
+
+    commodities = Commodity.query.all()
+    data = []
+    for commodity in commodities:
+        data.append({
+            'producer_id': commodity.producer_id,
+            'area_id': commodity.area_id,
+            'batch': commodity.batch,
+            'name': commodity.name,
+            'weight': commodity.weight,
+            'saler_id': commodity.saler_id,
+            'logistics_id': commodity.logistics_id,
+            'ini': commodity.ini,
+            'des': commodity.des,
+            'qrcode_url': commodity.qrcode_url
+        })
+    return jsonify(data)
+
 
 
 

@@ -92,7 +92,10 @@ def add_block():
     blockchain = chain.Chain(blocks, db)
     blockchain.new_block(logistics_id, data)
 
-    return '添加成功'
+    return {
+        "code": 0,
+        "msg": '添加成功'
+    }
 
 
 '''
@@ -135,9 +138,15 @@ def query_out_chain():
     out_chain_commodity = []
     commodities = Commodity.query.all()
     for commodity in commodities:
-        commodity_status = Logistics.query.filter(Logistics.logistics_id == commodity.logistics_id).all()[-1].status
+        commodity_lgs = Logistics.query.filter(Logistics.logistics_id == commodity.logistics_id).all()
         is_in_chain = Blockchain.query.filter(Blockchain.logistics_id == commodity.logistics_id).first()
-        if (commodity_status == '已到货') & (not is_in_chain):
+
+        is_arrive = False
+        for lg in commodity_lgs:
+            if lg.status == '已到货':
+                is_arrive = True
+
+        if is_arrive & (not is_in_chain):
             out_chain_commodity.append({
                 "logistics_id": commodity.logistics_id
             })

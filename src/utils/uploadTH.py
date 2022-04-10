@@ -1,6 +1,9 @@
 import json
 import requests
 
+'''
+模拟上传温湿度信息等
+'''
 
 def getToken():
     headers = {

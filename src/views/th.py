@@ -26,7 +26,10 @@ def add_produce_th():
     db.session.add(th)
     db.session.commit()
 
-    return '添加成功'
+    return {
+        "code": 0,
+        "msg": '添加成功'
+    }
 
 
 '''

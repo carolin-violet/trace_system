@@ -34,20 +34,19 @@ def add_produce_th():
 '''
 
 
-@th_page.route('/produce_th/<producer_id>', methods=['GET'])
-def query_produce_th(producer_id):
+@th_page.route('/produce_th/<producer_id>/<area_id>/<batch>', methods=['GET'])
+def query_produce_th(producer_id, area_id, batch):
     token_data = token_auth.verify_token(request.headers['Authorization'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    information = TH.query.filter(TH.user_id == producer_id).all()
+    information = TH.query.filter(TH.user_id == producer_id, TH.area_id == area_id, TH.batch == batch).all()
     data = []
     for info in information:
         data.append({
-            "area_id": info.area_id,
-            "batch": info.batch,
             "temp": info.temp,
             "hum": info.hum,
             "time": info.time
         })
+    print(data)
     return jsonify(data)
 

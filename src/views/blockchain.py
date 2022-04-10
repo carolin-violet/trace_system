@@ -159,7 +159,13 @@ def validate_chain():
     blockchain = chain.Chain(blocks, db)
     is_correct = blockchain.validate_chain()
     if is_correct:
-        return 'true'  # 区块链正确
+        return {
+            "code": 0,
+            "msg": 'true'
+        }  # 区块链正确
     else:
-        return 'false'   # 区块链中有错
+        return {
+            "code": 1,
+            "msg": 'error'
+        }   # 区块链中有错
 

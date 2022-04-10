@@ -40,6 +40,34 @@ def addTH(token):
     print(json.loads(response))
 
 
+def get_out_blocks(token):
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36",
+        "Authorization": token
+    }
+
+    url = 'http://127.0.0.1:5000/blockchain/out-chain'
+
+    response = requests.get(headers=headers, url=url).text
+    return json.loads(response)
+
+
+def add_block(token, data):
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36",
+        "Authorization": token
+    }
+
+    url = 'http://127.0.0.1:5000/blockchain'
+
+    response = requests.post(headers=headers, url=url, json=data)
+    if response.status_code == 500:
+        print(data)
+
+
 if __name__ == '__main__':
     token = getToken()
     addTH(token)
+    data = get_out_blocks(token)
+    for item in data:
+        add_block(token, item)

@@ -120,28 +120,6 @@ class Commodity(db.Model):
 
 
 '''
-运输公司信息
-'''
-
-
-class TransportCmp(db.Model):
-    __tablename__ = 'transport_company'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    company_name = db.Column(db.String(50), nullable=False)  # 公司名
-    staff_id = db.Column(db.String(255), nullable=False)  # 员工id
-    staff_role = db.Column(db.String(10), nullable=False)  # 员工职位 manager为管理者,common为普通员工
-    staff_name = db.Column(db.String(20), nullable=False)  # 员工姓名
-    staff_tel = db.Column(db.String(11), nullable=False)  # 员工联系方式
-
-    def __init__(self, company_name, staff_id, staff_role, staff_name, staff_tel):
-        self.company_name = company_name
-        self.staff_id = staff_id
-        self.staff_role = staff_role
-        self.staff_name = staff_name
-        self.staff_tel = staff_tel
-
-
-'''
 物流信息
 '''
 

@@ -4,7 +4,7 @@
 from flask import Blueprint, request, jsonify
 from src.security import token_auth
 from uuid import uuid1
-from src.models import User, db, TransportCmp
+from src.models import User, db
 from src.security.RSA import create_keys
 
 

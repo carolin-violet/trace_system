@@ -55,6 +55,9 @@ def get_out_blocks(token):
     return json.loads(response)
 
 
+'''
+可以在运输类中引用，让添加物流状态为已到货时调用此方法自动添加区块
+'''
 def add_block(token, data):
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36",

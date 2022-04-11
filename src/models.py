@@ -48,16 +48,16 @@ class Produce(db.Model):
     op_type = db.Column(db.String(2), nullable=False)  # 播种,浇水,施肥,除虫,除草,收割,存储,出库
     op_time = db.Column(db.String(100), nullable=False)  # 操作时间
     description = db.Column(db.Text, default='')  # 详情描述
-    img = db.Column(db.TEXT, default='')  # 照片存放地址
+    img_path = db.Column(db.TEXT, default='')  # 照片存放地址
 
-    def __init__(self, producer_id, area_id, batch, op_type, op_time, description, img):
+    def __init__(self, producer_id, area_id, batch, op_type, op_time, description, img_path):
         self.producer_id = producer_id
         self.area_id = area_id
         self.batch = batch
         self.op_type = op_type
         self.op_time = op_time
         self.description = description
-        self.img = img
+        self.img_path = img_path
 
 
 '''

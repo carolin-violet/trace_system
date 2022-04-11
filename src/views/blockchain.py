@@ -48,7 +48,6 @@ def add_block():
         'logistics_id': commodity.logistics_id,
         'ini': commodity.ini,
         'des': commodity.des,
-        'qrcode_url': commodity.qrcode_url
     }
 
     '''
@@ -69,7 +68,7 @@ def add_block():
             "op_type": produce.op_type,
             "op_time": produce.op_time,
             "description": produce.description,
-            "img": produce.img,
+            "img_path": produce.img_path,
         })
 
     '''

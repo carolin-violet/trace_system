@@ -6,6 +6,7 @@ import time
 from src.security import token_auth
 from src.models import Produce, db
 from src.utils.duplicate_remove import unique_data
+import os
 
 produce_page = Blueprint('produce_page', __name__)
 
@@ -28,7 +29,11 @@ def add_produce():
     img = request.json['img']
     description = request.json['description']
 
-    produce_info = Produce(user_id, area_id, batch, op_type, op_time, description, img)
+    img_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__))) + '/static/produce_img/' + str(user_id) + '-' + str(area_id) + '-' + str(batch) + '-' + str(time.time()) + '.txt'
+    with open(img_path, 'w') as fp:
+        fp.write(img)
+
+    produce_info = Produce(user_id, area_id, batch, op_type, op_time, description, img_path)
     db.session.add(produce_info)
     db.session.commit()
     return {
@@ -75,11 +80,13 @@ def query_produce_summary(producer_id, area_id, batch):
         return "无生产信息"
     data = []
     for info in information:
-        data.append({
-            "op_type": info.op_type,
-            "op_time": info.op_time,
-            "description": info.description,
-            "img": info.img,
-        })
+
+        with open(info.img_path, 'r') as fp:
+            data.append({
+                "op_type": info.op_type,
+                "op_time": info.op_time,
+                "description": info.description,
+                "img": fp.read(),
+            })
     return jsonify(data)
 

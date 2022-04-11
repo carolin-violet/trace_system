@@ -68,6 +68,11 @@ def query_detail(logistics_id, saler_id):
             i += 64
     message = RSA.decrypt(cipher_list, private_key)
 
+    # 将数据中的图片地址切换成图片src
+    for i in range(0, len(message['produce_data'])):
+        with open(message['produce_data'][i]['img_path'], 'r') as fp:
+            message['produce_data'][i]['img_path'] = fp.read()
+
     return render_template('detail.html', data=message)
 
 

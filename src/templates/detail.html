@@ -3,6 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <style>
+        img{
+            width: 50vw;
+            height: auto;
+            border: black 1px solid;
+            background-color: darkgrey;
+            object-fit: cover;
+            object-position: 50% 20%;
+        }
+    </style>
 </head>
 <body>
 <div>
@@ -40,7 +51,7 @@
                     <li>操作时间:{{ item['op_time'] }}</li>
                     <li>操作类型:{{ item['op_type'] }}</li>
                     <li>详情描述:{{ item['description'] }}</li>
-                    <li>图片:{{ item['img'] }}</li>
+                    <li><img src={{ item['img'] }} alt=""></li>
                 </ul>
             </li>
         {% endfor %}
@@ -61,5 +72,6 @@
     </ul>
 </div>
 </body>
-
+<script>
+</script>
 </html>

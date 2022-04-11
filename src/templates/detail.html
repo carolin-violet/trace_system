@@ -5,6 +5,61 @@
     <title>Title</title>
 </head>
 <body>
-{{ data }}
+<div>
+    <h1>商品信息</h1>
+    <ul>
+        <li>生产商id: {{ data['commodity_data']['producer_id'] }}</li>
+        <li>销售商id: {{ data['commodity_data']['saler_id'] }}</li>
+        <li>物流id: {{ data['commodity_data']['logistics_id'] }}</li>
+        <li>产品名称: {{ data['commodity_data']['name'] }}</li>
+        <li>始发地: {{ data['commodity_data']['ini'] }}</li>
+        <li>目的地: {{ data['commodity_data']['des'] }}</li>
+    </ul>
+</div>
+<div>
+    <h1>物流信息</h1>
+    <ul>
+        {% for logistics in data['logistics_data'] %}
+            <li>
+                <ul>
+                    <li>当前时间:{{ logistics['time'] }}</li>
+                    <li>物流状态:{{ logistics['status'] }}</li>
+                    <li>当前所在地:{{ logistics['cur'] }}</li>
+                    <li>运输人员编号:{{ logistics['transporter_id'] }}</li>
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+<div>
+    <h1>生产信息</h1>
+    <ul>
+        {% for item in data['produce_data'] %}
+            <li>
+                <ul>
+                    <li>操作时间:{{ item['op_time'] }}</li>
+                    <li>操作类型:{{ item['op_type'] }}</li>
+                    <li>详情描述:{{ item['description'] }}</li>
+                    <li>图片:{{ item['img'] }}</li>
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+<div>
+    <h1>温湿度信息</h1>
+    <ul>
+        {% for th in data['th_data'] %}
+            <li>
+                <ul>
+                    <li>时间:{{ th['time'] }}</li>
+                    <li>土壤温度:{{ th['temp'] }}</li>
+                    <li>土壤湿度:{{ th['hum'] }}</li>
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
 </body>
+
 </html>

@@ -25,10 +25,10 @@ def login():
     saler_count = User.query.filter(User.role == 'saler').count()
 
     data = [
-        {"role": '管理者', "count": admin_count},
-        {"role": '生产者', "count": producer_count},
-        {"role": '运输人员', "count": transporter_count},
-        {"role": '销售商', "count": saler_count}
+        {"name": '管理者', "value": admin_count},
+        {"name": '生产者', "value": producer_count},
+        {"name": '运输人员', "value": transporter_count},
+        {"name": '销售商', "value": saler_count}
     ]
     return {
         "code": 0,

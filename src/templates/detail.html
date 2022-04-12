@@ -13,28 +13,43 @@
             width: 100%;
         }
 
+        body{
+            background-color: #cdf0cd;
+            {#background-image: linear-gradient(#037e43 20%, #9be1bf 80%);#}
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
 
-        .container h1{
-            text-align: center;
+        #container h1{
+            margin: 10px auto;
+            width: 90vw;
+            border: 1px solid black;
+            font-size: 80px;
+            letter-spacing: 10px;
+            background-color: #9be19b;
         }
 
         {#主题选择栏#}
-        .title{
+        #container .title{
+            margin-top: 10px;
             display: flex;
-            border: 1px solid red;
+            font-size: 100px
         }
-        .title div{
-            flex: 1;'
-            text-align: center;
-            border: 1px solid black;
+        #container .title div{
+            flex: 1;
+            margin: 25px 10px;
+            height: 100px;
+            line-height: 100px;
+            border-radius: 5px;
+            background-color: rgba(255,255,255, 0.5);
         }
-        .title div span{
-            text-align: center;
+        #container .title div span{
+            font-size: 40px;
         }
 
 
         {#主体内容#}
-        .content div{
+        #container .content div{
             display: none;
         }
 
@@ -47,6 +62,25 @@
             object-fit: cover;
             object-position: 50% 20%;
         }
+
+        {#商品信息#}
+        #section1 ul li{
+            margin: 50px auto;
+            line-height: 150px;
+            height: 150px;
+            width: 90vw;
+            text-align: left;
+            white-space: nowrap;
+            text-overflow:ellipsis;
+            overflow:hidden;
+            border: 1px solid black;
+        }
+        #section1 ul li span{
+            border-radius: 5px;
+            width: 30%;
+            display: inline-block;
+            background-color: rgba(255,255,255, 0.5);
+        }
     </style>
 </head>
 <body>
@@ -57,17 +91,17 @@
         <div onclick="showSection('section1')"><span>商品信息</span></div>
         <div onclick="showSection('section2')"><span>物流信息</span></div>
         <div onclick="showSection('section3')"><span>生产信息</span></div>
-        <div onclick="showSection('section4')"><span>温湿度</span></div>
+        <div onclick="showSection('section4')"><span>温湿度信息</span></div>
     </div>
     <div class="content">
         <div class="section" id="section1">
             <ul>
-                <li>生产商id: {{ data['commodity_data']['producer_id'] }}</li>
-                <li>销售商id: {{ data['commodity_data']['saler_id'] }}</li>
-                <li>物流id: {{ data['commodity_data']['logistics_id'] }}</li>
-                <li>产品名称: {{ data['commodity_data']['name'] }}</li>
-                <li>始发地: {{ data['commodity_data']['ini'] }}</li>
-                <li>目的地: {{ data['commodity_data']['des'] }}</li>
+                <li><span>生产商id:</span> {{ data['commodity_data']['producer_id'] }}</li>
+                <li><span>销售商id:</span> {{ data['commodity_data']['saler_id'] }}</li>
+                <li><span>物流id:</span> {{ data['commodity_data']['logistics_id'] }}</li>
+                <li><span>产品名称:</span> {{ data['commodity_data']['name'] }}</li>
+                <li><span>始发地:</span> {{ data['commodity_data']['ini'] }}</li>
+                <li><span>目的地:</span> {{ data['commodity_data']['des'] }}</li>
             </ul>
         </div>
         <div class="section" id="section2">
@@ -117,11 +151,12 @@
 <script>
 
     var section
+    section = document.getElementById('section1')
+    section.style.display = 'block'
     function showSection(sectionId) {
         try {
             section.style.display = 'none'
         } catch (TypeError) {
-
         }
         section = document.getElementById(sectionId)
         section.style.display = 'block'

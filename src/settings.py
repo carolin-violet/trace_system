@@ -6,9 +6,9 @@
 class Config(object):
     """项目的配置"""
 
-    ENV = "production"  # 生态环境        development：开发者模式
+    ENV = "development"  # 生态环境        development：开发者模式   production： 生产模式
     DEBUG = True
-    # SERVER_NAME = "0.0.0.0:5000"
+    # SERVER_NAME = "0.0.0.0:5001"
 
     SECRET_KEY = 'J5RxXy9emBt78iIVP1beu4k4XbbgWxcZI+UrvD7afM9tXNPmnHw8xn4c5+qjnEB1'
     TOKEN_EXPIRATION = 36000
@@ -23,20 +23,3 @@ class Config(object):
     # 自动回收连接的秒数。这对 MySQL 是必须的，默认 情况下 MySQL 会自动移除闲置 8 小时或者以上的连接。 需要注意地是如果使用 MySQL 的话， Flask-SQLAlchemy 会自动地设置这个值为 2 小时
     SQLALCHEMY_POOL_RECYCLE = 3600
 
-
-    # # Redis的配置
-    # REDIS_HOST = '127.0.0.1'
-    # REIDS_PORT = 6379
-    #
-    # # Session保存配置
-    # SESSION_TYPE = 'redis'
-    # # 开启session签名
-    # SESSION_USE_SIGNER = True
-    # # 指定Session保存的redis
-    # SESSION_REDIS = StrictRedis(host=REDIS_HOST, port=REIDS_PORT)
-    # # 设置需要过期
-    # SESSION_PERMANENT = False
-    # # 设置过期时间
-    # PERMANENT_SESSION_LIFETIME = 86400 * 2
-    # # 设置日志等级
-    # LOG_LEVEL = logging.DEBUG

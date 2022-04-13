@@ -62,6 +62,10 @@
 
 
         {#主体内容#}
+        #container .content{
+            height: 70vh;
+            overflow: auto;
+        }
         #container .content div{
             display: none;
         }
@@ -100,6 +104,39 @@
             font-size: 40px;
             border-radius: 10px;
         }
+
+        {#物流信息#}
+        #section2 ul li ul{
+            position: relative;
+            margin: 20px auto;
+            height: 400px;
+            width: 90vw;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 15px;
+        }
+        #section2 ul li ul:before{
+            content: "";
+            left: 0;
+            position: absolute;
+            border: 20px solid;
+            border-color: transparent transparent transparent #ee9ca7;
+            transform: translate(-30px, 10px);
+        }
+        #section2 ul li ul li{
+            margin: 10px auto;
+            line-height: 80px;
+            height: 80px;
+            text-align: left;
+            white-space: nowrap;
+            text-overflow:ellipsis;
+            overflow:hidden;
+        }
+        #section2 ul li ul li span{
+            width: 30%;
+            display: inline-block;
+            margin-left: 18px;
+            font-size: 40px;
+        }
     </style>
 </head>
 <body>
@@ -127,10 +164,10 @@
                 {% for logistics in data['logistics_data'] %}
                     <li>
                         <ul>
-                            <li>当前时间:{{ logistics['time'] }}</li>
-                            <li>物流状态:{{ logistics['status'] }}</li>
-                            <li>当前所在地:{{ logistics['cur'] }}</li>
-                            <li>运输人员编号:{{ logistics['transporter_id'] }}</li>
+                            <li><span>当前时间:</span>{{ logistics['time'] }}</li>
+                            <li><span>物流状态:</span>{{ logistics['status'] }}</li>
+                            <li><span>当前所在地:</span>{{ logistics['cur'] }}</li>
+                            <li><span>运输人员编号:</span>{{ logistics['transporter_id'] }}</li>
                         </ul>
                     </li>
                 {% endfor %}

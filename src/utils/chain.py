@@ -102,17 +102,15 @@ class Chain:
                 "data": pre_block.data_path,
             }
             pre_hash = Hash.get_hash(pre_info)
-            # print('前一个区块的hash：', self.chain[cur_index].pre_hash)
-            # print('当前计算区块的hash：', pre_hash)
             if pre_hash != self.chain[cur_index].pre_hash:
-                return False
+                return cur_index + 1
 
             if not self.validate_proof(pre_block.nonce, self.chain[cur_index].nonce):
-                return False
+                return cur_index + 1
 
             pre_block = self.chain[cur_index]
             cur_index += 1
-        return True
+        return 'true'
 
     '''
     返回最后一个区块

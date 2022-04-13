@@ -8,7 +8,6 @@ class Config(object):
 
     ENV = "development"  # 生态环境        development：开发者模式   production： 生产模式
     DEBUG = True
-    # SERVER_NAME = "0.0.0.0:5001"
 
     SECRET_KEY = 'J5RxXy9emBt78iIVP1beu4k4XbbgWxcZI+UrvD7afM9tXNPmnHw8xn4c5+qjnEB1'
     TOKEN_EXPIRATION = 36000

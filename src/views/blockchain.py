@@ -165,8 +165,8 @@ def validate_chain():
 
     blocks = Blockchain.query.all()
     blockchain = chain.Chain(blocks, db)
-    is_correct = blockchain.validate_chain()
-    if is_correct:
+    res = blockchain.validate_chain()
+    if res == 'true':
         return {
             "code": 0,
             "msg": 'true'
@@ -174,6 +174,6 @@ def validate_chain():
     else:
         return {
             "code": 1,
-            "msg": 'error'
+            "msg": '第{}个区块与前面区块验证错误'.format(res)
         }   # 区块链中有错
 

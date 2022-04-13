@@ -4,7 +4,7 @@ from views import user, commodity, logistics, blockchain, produce, th, sale, sta
 
 
 def create_app():
-    app = Flask(__name__, static_folder='../static')
+    app = Flask(__name__)
     app.config.from_object('settings.Config')
 
     db.app = app

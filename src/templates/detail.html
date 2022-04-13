@@ -8,25 +8,38 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-size: 50px;
+            font-size: 30px;
             text-align: center;
             width: 100%;
         }
 
         body{
-            background-color: #cdf0cd;
-            {#background-image: linear-gradient(#037e43 20%, #9be1bf 80%);#}
+            background: #C6FFDD;  /* fallback for old browsers */
+            background: -webkit-linear-gradient(to top, #f7797d, #FBD786, #C6FFDD);  /* Chrome 10-25, Safari 5.1-6 */
+            background: linear-gradient(to top, #f7797d, #FBD786, #C6FFDD); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
             background-repeat: no-repeat;
             background-attachment: fixed;
         }
 
+        #mask{
+            position: absolute;
+            background-color: rgba(255,255,255,0.3);
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #container{
+            padding-top: 40px;
+        }
+
         #container h1{
-            margin: 10px auto;
+            margin: 0 auto;
             width: 90vw;
-            border: 1px solid black;
+            border-radius: 20px;
             font-size: 80px;
             letter-spacing: 10px;
-            background-color: #9be19b;
+            background-color: rgba(255,255,255,0.5);
         }
 
         {#主题选择栏#}
@@ -40,8 +53,8 @@
             margin: 25px 10px;
             height: 100px;
             line-height: 100px;
-            border-radius: 5px;
-            background-color: rgba(255,255,255, 0.5);
+            border-radius: 10px;
+            background-color: rgba(255,255,255,0.5);
         }
         #container .title div span{
             font-size: 40px;
@@ -73,18 +86,24 @@
             white-space: nowrap;
             text-overflow:ellipsis;
             overflow:hidden;
-            border: 1px solid black;
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 15px;
         }
         #section1 ul li span{
-            border-radius: 5px;
             width: 30%;
             display: inline-block;
-            background-color: rgba(255,255,255, 0.5);
+            height: 120px;
+            line-height: 120px;
+            background-color: rgba(255,255,255,0.5);
+            margin-top: 13px;
+            margin-left: 18px;
+            font-size: 40px;
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
-
+<div id="mask"></div>
 <div id="container">
     <h1>欢迎使用农产品溯源仿真系统</h1>
     <div class="title">

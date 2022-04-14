@@ -42,14 +42,16 @@ def query_produce_th(producer_id, area_id, batch):
     token_data = token_auth.verify_token(request.headers['Authorization'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    information = TH.query.filter(TH.user_id == producer_id, TH.area_id == area_id, TH.batch == batch).all()
+
     data = []
+    information = TH.query.filter(TH.user_id == producer_id, TH.area_id == area_id, TH.batch == batch).all()
+    if request.args['time']:
+        information = list(filter(lambda item: item.time.split(' ')[0] == request.args['time'], information))
+
     for info in information:
         data.append({
             "temp": info.temp,
             "hum": info.hum,
             "time": info.time
         })
-    print(data)
     return jsonify(data)
-

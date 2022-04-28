@@ -1,5 +1,6 @@
 import json
 import requests
+import time
 
 '''
 模拟上传温湿度信息等
@@ -35,8 +36,8 @@ def addTH(token):
         "user_id": 'admin',
         "area_id": 1,
         "batch": 1,
-        "temp": 12,
-        "hum": 10,
+        "temp": 10,
+        "hum": 20,
     }
 
     response = requests.post(headers=headers, url=url, json=data).text
@@ -71,9 +72,28 @@ def add_block(token, data):
         print(data)
 
 
-if __name__ == '__main__':
+def auto_add_block():
     token = getToken()
-    addTH(token)
-    data = get_out_blocks(token)
-    for item in data:
-        add_block(token, item)
+    while True:
+        try:
+            time.sleep(60000)
+            data = get_out_blocks(token)
+            if len(data) > 0:
+                add_block(token, data)
+        except Exception:
+            token = getToken()
+
+
+def auto_add_th():
+    token = getToken()
+    while True:
+        try:
+            time.sleep(1800000)
+            addTH(token)
+        except Exception:
+            token = getToken()
+
+
+
+if __name__ == '__main__':
+    auto_add_block()

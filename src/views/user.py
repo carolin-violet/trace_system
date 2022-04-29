@@ -56,7 +56,7 @@ def get_user_info():
             "code": 0,
             "msg": "认证成功",
             "data": {
-                "roles": user.role,
+                "role": user.role,
                 "name": user.name,
                 "avatar": "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif"
             }

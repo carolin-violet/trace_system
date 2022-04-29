@@ -52,12 +52,16 @@ def get_user_info():
         return '请重新登录'
     user = User.query.filter(User.user_id == token_data['user_id']).first()
     if user:
+        roles = ['admin']
+        if (user.role != 'admin'):
+            roles.append(user.role)
         return {
             "code": 0,
             "msg": "认证成功",
             "data": {
-                "role": user.role,
+                "roles": roles,
                 "name": user.name,
+                "user_id": user.user_id,
                 "avatar": "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif"
             }
         }

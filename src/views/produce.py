@@ -1,10 +1,10 @@
 """
 生产信息
 """
-from flask import Blueprint, request, jsonify, send_file
+from flask import Blueprint, request, jsonify
 import time
 from src.security import token_auth
-from src.models import Produce, db
+from src.models import Produce, db, User
 from src.utils.duplicate_remove import unique_data
 import os
 
@@ -17,11 +17,18 @@ produce_page = Blueprint('produce_page', __name__)
 
 @produce_page.route('/produce', methods=['POST'])
 def add_produce():
+    user_id = request.json['user_id']
+
     token_data = token_auth.verify_token(request.headers['Authorization'])
     if token_data == 'token过期或错误':
         return '请重新登录'
 
-    user_id = request.json['user_id']
+    role = User.query.filter(User.user_id == token_data['user_id']).first().role
+    if role == 'admin' or token_data['user_id'] == user_id:
+        pass
+    else:
+        return '权限不够'
+
     area_id = request.json['area_id']
     batch = request.json['batch']
     op_type = request.json['op_type']
@@ -52,6 +59,13 @@ def query_produce_detail(producer_id):
     token_data = token_auth.verify_token(request.headers['Authorization'])
     if token_data == 'token过期或错误':
         return '请重新登录'
+
+    role = User.query.filter(User.user_id == token_data['user_id']).first().role
+    if role == 'admin' or token_data['user_id'] == producer_id:
+        pass
+    else:
+        return '权限不够'
+
     information = Produce.query.filter(Produce.producer_id == producer_id).all()
     if not information:
         return "无生产信息"
@@ -75,6 +89,13 @@ def query_produce_summary(producer_id, area_id, batch):
     token_data = token_auth.verify_token(request.headers['Authorization'])
     if token_data == 'token过期或错误':
         return '请重新登录'
+
+    role = User.query.filter(User.user_id == token_data['user_id']).first().role
+    if role == 'admin' or token_data['user_id'] == producer_id:
+        pass
+    else:
+        return '权限不够'
+
     information = Produce.query.filter(Produce.producer_id == producer_id, Produce.area_id == area_id, Produce.batch == batch).all()
     if not information:
         return "无生产信息"

@@ -4,7 +4,7 @@
 from flask import Blueprint, request, jsonify
 from uuid import uuid1
 import os
-from src.models import Commodity, db
+from src.models import Commodity, db, User
 from src.utils import QR_code
 from src.security import token_auth
 
@@ -19,10 +19,18 @@ commodity_page = Blueprint('commodity_page', __name__)
 
 @commodity_page.route('/commodity', methods=['POST'])
 def add_commodity():
+    producer_id = request.json['producer_id']
+
     token_data = token_auth.verify_token(request.headers['Authorization'])
     if token_data == 'token过期或错误':
         return '请重新登录'
-    producer_id = request.json['producer_id']
+
+    role = User.query.filter(User.user_id == token_data['user_id']).first().role
+    if role == 'admin' or token_data['user_id'] == producer_id:
+        pass
+    else:
+        return '权限不够'
+
     area_id = int(request.json['area_id'])
     batch = int(request.json['batch'])
     name = request.json['name']
@@ -56,6 +64,13 @@ def del_commodity(logistics_id):
     token_data = token_auth.verify_token(request.headers['Authorization'])
     if token_data == 'token过期或错误':
         return '请重新登录'
+
+    role = User.query.filter(User.user_id == token_data['user_id']).first().role
+    if role == 'admin':
+        pass
+    else:
+        return '权限不够'
+
     commodity = Commodity.query.filter(Commodity.logistics_id == logistics_id).first()
     if commodity:
         db.session.delete(commodity)
@@ -75,9 +90,6 @@ def del_commodity(logistics_id):
 
 @commodity_page.route('/commodities', methods=['GET'])
 def query_commodity():
-    token_data = token_auth.verify_token(request.headers['Authorization'])
-    if token_data == 'token过期或错误':
-        return '请重新登录'
     commodities = Commodity.query.all()
     data = []
     for commodity in commodities:

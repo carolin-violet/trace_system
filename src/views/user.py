@@ -114,14 +114,18 @@ def del_user(user_id):
     token_data = token_auth.verify_token(request.headers['Authorization'])
     if token_data == 'token过期或错误':
         return '请重新登录'
+    role = User.query.filter(User.user_id == token_data['user_id']).first().role
     user = User.query.filter(User.user_id == user_id).first()
     if user:
-        db.session.delete(user)
-        db.session.commit()
-        return {
-            "code": 0,
-            "msg": '删除成功'
-        }
+        if role == 'admin':
+            db.session.delete(user)
+            db.session.commit()
+            return {
+                "code": 0,
+                "msg": '删除成功'
+            }
+        else:
+            return '权限不够'
     else:
         return '用户不存在'
 
@@ -138,15 +142,19 @@ def update_user_info(user_id):
         return '请重新登录'
     user = User.query.filter(User.user_id == user_id).first()
     if user:
-        user.name = request.json['name']
-        user.password = request.json['password']
-        user.tel = request.json['tel']
-        user.gender = request.json['gender']
-        db.session.commit()
-        return {
-            "code": 0,
-            "msg": '修改成功'
-        }
+        role = User.query.filter(User.user_id == token_data['user_id']).first().role
+        if role == 'admin' or token_data['user_id'] == user_id:
+            user.name = request.json['name']
+            user.password = request.json['password']
+            user.tel = request.json['tel']
+            user.gender = request.json['gender']
+            db.session.commit()
+            return {
+                "code": 0,
+                "msg": '修改成功'
+            }
+        else:
+            return '权限不够'
     else:
         return '用户不存在'
 

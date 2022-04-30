@@ -3,7 +3,7 @@
 """
 from flask import Blueprint, request, jsonify
 import time
-from src.models import Logistics, db
+from src.models import Logistics, db, User
 from src.security import token_auth
 
 logistics_page = Blueprint('logistics_page', __name__)
@@ -16,11 +16,19 @@ logistics_page = Blueprint('logistics_page', __name__)
 
 @logistics_page.route('/logistics', methods=['POST'])
 def add_logistics():
+    transporter_id = request.json['transporter_id']
+
     token_data = token_auth.verify_token(request.headers['Authorization'])
     if token_data == 'token过期或错误':
         return '请重新登录'
+
+    role = User.query.filter(User.user_id == token_data['user_id']).first().role
+    if role == 'admin' or token_data['user_id'] == transporter_id:
+        pass
+    else:
+        return '权限不够'
+
     logistics_id = request.json['logistics_id']
-    transporter_id = request.json['transporter_id']
     cur_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     status = request.json['status']
     cur = request.json['cur']
@@ -42,9 +50,7 @@ def add_logistics():
 
 @logistics_page.route('/logistics/<logistics_id>', methods=['GET'])
 def query_logistics(logistics_id):
-    token_data = token_auth.verify_token(request.headers['Authorization'])
-    if token_data == 'token过期或错误':
-        return '请重新登录'
+
     logistics_s = Logistics.query.filter(Logistics.logistics_id == logistics_id).all()
     if logistics_s:
         data = []

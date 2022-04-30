@@ -2,10 +2,10 @@
 区块链api模块
 """
 
-from flask import Blueprint, render_template, send_file, jsonify
+from flask import Blueprint, render_template, send_file, jsonify, request
 import os
 from src.models import User, Blockchain, Commodity
-from src.security import RSA
+from src.security import RSA, token_auth
 
 sale_page = Blueprint('sale_page', __name__)
 
@@ -17,6 +17,15 @@ sale_page = Blueprint('sale_page', __name__)
 
 @sale_page.route('/commodities/<saler_id>', methods=['GET'])
 def get_commodity(saler_id):
+    token_data = token_auth.verify_token(request.headers['Authorization'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
+    role = User.query.filter(User.user_id == token_data['user_id']).first().role
+    if role == 'admin' or 'saler':
+        pass
+    else:
+        return '权限不够'
+
     commodities = Commodity.query.filter(Commodity.saler_id == saler_id).all()
     data = []
     for commodity in commodities:
@@ -41,6 +50,14 @@ def get_commodity(saler_id):
 
 @sale_page.route('/commodity/qrcode_img/<logistics_id>', methods=['GET'])
 def get_qrcode(logistics_id):
+    token_data = token_auth.verify_token(request.headers['Authorization'])
+    if token_data == 'token过期或错误':
+        return '请重新登录'
+    role = User.query.filter(User.user_id == token_data['user_id']).first().role
+    if role == 'admin' or 'saler':
+        pass
+    else:
+        return '权限不够'
     img_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__))) + '/static/qr_codes/'+logistics_id+'.png'
     return send_file(img_path, mimetype='image/gif')
 
@@ -52,6 +69,7 @@ def get_qrcode(logistics_id):
 
 @sale_page.route('/commodity/detail/<logistics_id>/<saler_id>', methods=['GET'])
 def query_detail(logistics_id, saler_id):
+
     block = Blockchain.query.filter(Blockchain.logistics_id == logistics_id).first()
 
     # 获取私钥

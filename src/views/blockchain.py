@@ -5,7 +5,7 @@
 from flask import Blueprint, jsonify, request
 from src.models import Blockchain, db, Logistics, Commodity, TH, Produce, User
 from src.utils import chain
-from src.security import RSA, token_auth
+from src.security import RSA
 
 
 chain_page = Blueprint('chain_page', __name__)
@@ -104,9 +104,6 @@ def add_block():
 
 @chain_page.route('/blockchain', methods=['GET'])
 def query_chain():
-    token_data = token_auth.verify_token(request.headers['Authorization'])
-    if token_data == 'token过期或错误':
-        return '请重新登录'
 
     blocks = Blockchain.query.all()
     data = []
@@ -130,10 +127,6 @@ def query_chain():
 
 @chain_page.route('/blockchain/out-chain', methods=['GET'])
 def query_out_chain():
-    token_data = token_auth.verify_token(request.headers['Authorization'])
-    if token_data == 'token过期或错误':
-        return '请重新登录'
-
     out_chain_commodity = []
     commodities = Commodity.query.all()
     for commodity in commodities:
@@ -159,10 +152,6 @@ def query_out_chain():
 
 @chain_page.route('/blockchain/validate_proof', methods=['GET'])
 def validate_chain():
-    token_data = token_auth.verify_token(request.headers['Authorization'])
-    if token_data == 'token过期或错误':
-        return '请重新登录'
-
     blocks = Blockchain.query.all()
     blockchain = chain.Chain(blocks, db)
     res = blockchain.validate_chain()

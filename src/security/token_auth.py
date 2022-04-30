@@ -1,6 +1,5 @@
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from src.settings import Config
-from src.models import User
 
 '''
 生成token

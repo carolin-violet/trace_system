@@ -85,6 +85,8 @@ def del_commodity(logistics_id):
 
 '''
 查询所有商品信息
+
+
 '''
 
 

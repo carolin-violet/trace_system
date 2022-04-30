@@ -26,11 +26,11 @@ def add_commodity():
         return '请重新登录'
 
     role = User.query.filter(User.user_id == token_data['user_id']).first().role
+
     if role == 'admin' or token_data['user_id'] == producer_id:
         pass
     else:
         return '权限不够'
-
     area_id = int(request.json['area_id'])
     batch = int(request.json['batch'])
     name = request.json['name']

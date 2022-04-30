@@ -70,6 +70,8 @@ def get_qrcode(logistics_id):
 @sale_page.route('/commodity/detail/<logistics_id>/<saler_id>', methods=['GET'])
 def query_detail(logistics_id, saler_id):
 
+    print(logistics_id, saler_id)
+
     block = Blockchain.query.filter(Blockchain.logistics_id == logistics_id).first()
 
     # 获取私钥

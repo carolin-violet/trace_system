@@ -53,24 +53,26 @@ def query_produce_th(producer_id, area_id, batch):
 
     role = User.query.filter(User.user_id == token_data['user_id']).first().role
     if role == 'admin' or token_data['user_id'] == producer_id:
-        data = []
-        information = TH.query.filter(TH.user_id == producer_id, TH.area_id == area_id, TH.batch == batch).all()
-        if request.args['time']:
-            information = list(filter(lambda item: item.time.split(' ')[0] == request.args['time'], information))
-            for info in information:
-                data.append({
-                    "temp": info.temp,
-                    "hum": info.hum,
-                    "time": info.time.split(' ')[1]
-                })
-        else:
-            for info in information:
-                data.append({
-                    "temp": info.temp,
-                    "hum": info.hum,
-                    "time": info.time
-                })
-
-        return jsonify(data)
+        pass
     else:
         return '权限不够'
+
+    data = []
+    information = TH.query.filter(TH.user_id == producer_id, TH.area_id == area_id, TH.batch == batch).all()
+    if request.args['time']:
+        information = list(filter(lambda item: item.time.split(' ')[0] == request.args['time'], information))
+        for info in information:
+            data.append({
+                "temp": info.temp,
+                "hum": info.hum,
+                "time": info.time.split(' ')[1]
+            })
+    else:
+        for info in information:
+            data.append({
+                "temp": info.temp,
+                "hum": info.hum,
+                "time": info.time
+            })
+
+    return jsonify(data)

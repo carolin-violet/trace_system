@@ -24,7 +24,7 @@ def add_logistics():
 
     role = User.query.filter(User.user_id == token_data['user_id']).first().role
 
-    if (role=='admin' or role=='transporter') and token_data['user_id'] == transporter_id:
+    if (role=='admin' or role=='transporter') and token_data['user_id'] == transporter_id or '0':
         pass
     else:
         return '权限不够'
@@ -37,6 +37,7 @@ def add_logistics():
     logistics = Logistics(logistics_id, transporter_id, cur_time, status, cur)
     db.session.add(logistics)
     db.session.commit()
+
 
     return {
         "code": 0,
@@ -52,6 +53,7 @@ def add_logistics():
 @logistics_page.route('/logistics/<logistics_id>', methods=['GET'])
 def query_logistics(logistics_id):
 
+    print('2')
     logistics_s = Logistics.query.filter(Logistics.logistics_id == logistics_id).all()
     if logistics_s:
         data = []

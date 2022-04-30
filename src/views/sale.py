@@ -21,7 +21,7 @@ def get_commodity(saler_id):
     if token_data == 'token过期或错误':
         return '请重新登录'
     role = User.query.filter(User.user_id == token_data['user_id']).first().role
-    if role == 'admin' or 'saler':
+    if (role == 'admin') | (role =='saler'):
         pass
     else:
         return '权限不够'

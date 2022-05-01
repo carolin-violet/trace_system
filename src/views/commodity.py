@@ -40,7 +40,8 @@ def add_commodity():
     ini = request.json['ini']
     des = request.json['des']
 
-    qrcode_url = "http://127.0.0.1:5000" + "/commodity/detail/" + str(logistics_id) + '/' + str(saler_id)
+    # ip为当前局域网ip
+    qrcode_url = "http://10.4.7.250:5000" + "/commodity/detail/" + str(logistics_id) + '/' + str(saler_id)
     qr_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__))) + '/static/qr_codes/'+logistics_id+'.png'
     QR_code.make_qrcode(qrcode_url, qr_path)
 

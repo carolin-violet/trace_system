@@ -5,7 +5,7 @@ import random
 
 
 base_url = 'http://10.4.7.250:5000'
-user_id = '62912edebb1611eca41d1cbfc0eb0cdc'
+user_id = 'd2e1e480c9c711eca7fa1cbfc0eb0cdc'
 
 '''
 模拟上传温湿度信息等
@@ -48,8 +48,6 @@ def addTH(token):
     response = requests.post(headers=headers, url=url, json=data).text
     print('上传成功:', '温度为:', data['temp'], '湿度为:', data['hum'])
     # print(json.loads(response))
-
-
 
 
 if __name__ == '__main__':

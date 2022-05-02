@@ -53,7 +53,6 @@ def add_logistics():
 @logistics_page.route('/logistics/<logistics_id>', methods=['GET'])
 def query_logistics(logistics_id):
 
-    print('2')
     logistics_s = Logistics.query.filter(Logistics.logistics_id == logistics_id).all()
     if logistics_s:
         data = []

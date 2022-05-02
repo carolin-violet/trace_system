@@ -3,6 +3,10 @@ import requests
 import time
 import random
 
+
+base_url = 'http://10.4.7.250:5000'
+user_id = '62912edebb1611eca41d1cbfc0eb0cdc'
+
 '''
 模拟上传温湿度信息等
 '''
@@ -12,7 +16,7 @@ def getToken():
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36"
     }
 
-    url = 'http://127.0.0.1:5000/user/login'
+    url = base_url + '/user/login'
 
     data = {
         "username": "admin",
@@ -31,10 +35,10 @@ def addTH(token):
         "Authorization": token
     }
 
-    url = 'http://127.0.0.1:5000/produce_th'
+    url = base_url +'/produce_th'
 
     data = {
-        "user_id": '62912edebb1611eca41d1cbfc0eb0cdc',
+        "user_id": user_id,
         "area_id": 1,
         "batch": 1,
         "temp": random.uniform(0, 30),

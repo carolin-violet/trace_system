@@ -4,12 +4,19 @@ import time
 import random
 
 
-base_url = 'http://10.4.7.250:5000'
-user_id = 'd2e1e480c9c711eca7fa1cbfc0eb0cdc'
+base_url = 'http://10.4.7.250:5000'  # 后台接口
+user_id = 'd2e1e480c9c711eca7fa1cbfc0eb0cdc'  # 用户id
+
+account = "18955641886"  # 手机号
+password = "123456"
+
+area_id = 1  # 生产区域id
+batch_id = 1  # 生产批次id
 
 '''
 模拟上传温湿度信息等
 '''
+
 
 def getToken():
     headers = {
@@ -19,8 +26,8 @@ def getToken():
     url = base_url + '/user/login'
 
     data = {
-        "username": "admin",
-        "password": '123456'
+        "username": account,
+        "password": password
     }
 
     response = requests.post(headers=headers, url=url, json=data).text
@@ -39,8 +46,8 @@ def addTH(token):
 
     data = {
         "user_id": user_id,
-        "area_id": 1,
-        "batch": 1,
+        "area_id": area_id,
+        "batch": batch_id,
         "temp": random.uniform(0, 30),
         "hum": random.uniform(70, 95),
     }

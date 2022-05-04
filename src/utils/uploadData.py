@@ -60,7 +60,7 @@ def addTH(token):
 if __name__ == '__main__':
     token = getToken()
     while True:
-        time.sleep(900)
+        time.sleep(1)
         print("---------------上传温湿度----------------")
         try:
             addTH(token)

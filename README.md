@@ -8,10 +8,10 @@ ip和端口我是直接在pycharm中配置的,如果需要模拟上传温湿度�
 
 下图为用户扫描二维码查询信息界面
 
-![](/markdown_imgs/1.png)
+![](https://gitee.com/carolin-violet/trace_system/raw/backend/markdown_imgs/1.png)
 
-![](/markdown_imgs/2.png)
+![](https://gitee.com/carolin-violet/trace_system/raw/backend/markdown_imgs/2.png)
 
-![](/markdown_imgs/3.png)
+![](https://gitee.com/carolin-violet/trace_system/raw/backend/markdown_imgs/3.png)
 
-![](/markdown_imgs/4.png)
+![](https://gitee.com/carolin-violet/trace_system/raw/backend/markdown_imgs/4.png)

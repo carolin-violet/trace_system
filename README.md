@@ -6,7 +6,7 @@
 使用时需要对settings.py文件中的数据库进行相应配置，并在commodity.py文件中更改局域网ip，后端服务的
 ip和端口我是直接在pycharm中配置的,如果需要模拟上传温湿度信息的话需要在uploadData.py中配置下base_url和user_id
 
-下图为用户扫描二维码查询信息界面
+下图为用户扫描二维码查询信息界面:
 
 ![](https://gitee.com/carolin-violet/trace_system/raw/backend/markdown_imgs/1.png)
 
